@@ -28,20 +28,22 @@ TTree *tree;
 
 void HHbbbbAnalyzer(){
 	string  masspoint[11]={"1000","1200","1400","1600","1800","2000","2500","3000","3500","4000","4500"};
-	for (int massP=0;massP<1;massP++){
+	for (int massP=0;massP<11;massP++){
+		
+		bool isSignal=0;
 		
 		//signal
-		//f = TFile::Open(Form("/data2/syu/13TeV/BulkGravTohhTohbbhbb/softdrop_BulkGravTohhTohbbhbb_narrow_M-%s_13TeV-madgraph.root",masspoint[massP].data()));
-		//if (!f || !f->IsOpen())continue;
-		//TDirectory * dir = (TDirectory*)f->Get(Form("/data2/syu/13TeV/BulkGravTohhTohbbhbb/softdrop_BulkGravTohhTohbbhbb_narrow_M-%s_13TeV-madgraph.root:/tree",masspoint[massP].data()));
-		//for (int w=0;w<1;w++){
+		f = TFile::Open(Form("/data2/syu/13TeV/BulkGravTohhTohbbhbb/softdrop_BulkGravTohhTohbbhbb_narrow_M-%s_13TeV-madgraph.root",masspoint[massP].data()));
+		if (!f || !f->IsOpen())continue;isSignal=1;
+		TDirectory * dir = (TDirectory*)f->Get(Form("/data2/syu/13TeV/BulkGravTohhTohbbhbb/softdrop_BulkGravTohhTohbbhbb_narrow_M-%s_13TeV-madgraph.root:/tree",masspoint[massP].data()));
+		for (int w=0;w<1;w++){
 			
 		
 		//QCD  1000-1500
-		for (int w=0;w<155;w++){
-		f = TFile::Open(Form("/data7/khurana/NCUGlobalTuples/SPRING15/QCD_HT1000to1500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/crab_QCD_HT1000to1500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_0830/150831_084507/0000/NCUGlobalTuples_%d.root",w));
-		if (!f || !f->IsOpen())continue;
-		TDirectory * dir = (TDirectory*)f->Get(Form("/data7/khurana/NCUGlobalTuples/SPRING15/QCD_HT1000to1500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/crab_QCD_HT1000to1500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_0830/150831_084507/0000/NCUGlobalTuples_%d.root:/tree",w));
+		//for (int w=0;w<155;w++){
+		//f = TFile::Open(Form("/data7/khurana/NCUGlobalTuples/SPRING15/QCD_HT1000to1500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/crab_QCD_HT1000to1500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_0830/150831_084507/0000/NCUGlobalTuples_%d.root",w));
+		//if (!f || !f->IsOpen())continue;
+		//TDirectory * dir = (TDirectory*)f->Get(Form("/data7/khurana/NCUGlobalTuples/SPRING15/QCD_HT1000to1500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/crab_QCD_HT1000to1500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_0830/150831_084507/0000/NCUGlobalTuples_%d.root:/tree",w));
 		
 		//QCD  1500-2000
 		//for (int w=0;w<103;w++){
@@ -89,7 +91,12 @@ void HHbbbbAnalyzer(){
 		    vector<float>   *FATsubjetSDPx =  data.GetPtrVectorFloat("FATsubjetSDPx");
 		    vector<float>   *FATsubjetSDPy =  data.GetPtrVectorFloat("FATsubjetSDPy");
 		    vector<float>   *FATsubjetSDPz =  data.GetPtrVectorFloat("FATsubjetSDPz");
-		    vector<float>   *FATsubjetSDE =  data.GetPtrVectorFloat("FATsubjetSDE");
+			
+			string originFATsubjetSDE="FATsubjetSDE";
+			string signalFATsubjetSDE="FATsubjetSDCE";
+			
+			if (isSignal) vector<float>   *FATsubjetSDE =  data.GetPtrVectorFloat(signalFATsubjetSDE.data());
+		    else vector<float>   *FATsubjetSDE =  data.GetPtrVectorFloat(originFATsubjetSDE.data());
 			
 			int thisHiggsNum=0,thatHiggsNum=0;
 			
