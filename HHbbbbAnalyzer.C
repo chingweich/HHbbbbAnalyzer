@@ -96,7 +96,7 @@ void HHbbbbAnalyzer(){
 			
 		    vector<float>   *FATsubjetSDE =  data.GetPtrVectorFloat(Form("FATsubjetSD%sE",fixName.data()));
 			
-			int thisHiggsNum=0,thatHiggsNum=0;
+			int thisHiggsNum=-1,thatHiggsNum=-1;
 			
 			
 			for(unsigned int i=0;i<FatjetPreSelection.size();i++){
@@ -132,7 +132,7 @@ void HHbbbbAnalyzer(){
 				if(thisHiggsNum!=0)break;
 			}
 			
-			if(thisHiggsNum ==0 || thatHiggsNum==0) continue;
+			if(thisHiggsNum ==-1 || thatHiggsNum==-1) continue;
 			nPass++;
 			
 			
