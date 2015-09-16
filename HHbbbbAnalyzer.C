@@ -95,8 +95,9 @@ void HHbbbbAnalyzer(){
 			string originFATsubjetSDE="FATsubjetSDE";
 			string signalFATsubjetSDE="FATsubjetSDCE";
 			
-			if (isSignal) vector<float>   *FATsubjetSDE =  data.GetPtrVectorFloat(signalFATsubjetSDE.data());
-		    else vector<float>   *FATsubjetSDE =  data.GetPtrVectorFloat(originFATsubjetSDE.data());
+			vector<float>   *FATsubjetSDE;
+			if (isSignal)   *FATsubjetSDE =  data.GetPtrVectorFloat(signalFATsubjetSDE.data());
+		    else   *FATsubjetSDE =  data.GetPtrVectorFloat(originFATsubjetSDE.data());
 			
 			int thisHiggsNum=0,thatHiggsNum=0;
 			
