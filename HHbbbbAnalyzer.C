@@ -24,6 +24,7 @@
 #include <sstream>
 
 TFile *f;
+TTree *tree;
 
 void HHbbbbAnalyzer(){
 	string  masspoint[11]={"1000","1200","1400","1600","1800","2000","2500","3000","3500","4000","4500"};
@@ -49,8 +50,8 @@ void HHbbbbAnalyzer(){
 			for(int i=0;i<nJet;i++){
 				if(FATjetPRmass[i]>135||FATjetPRmass[i]<110)continue;
 				TLorentzVector* thisHiggs = (TLorentzVector*)FATjetP4->At(i);
-				if(thisHiggs.Pt()<30)continue;
-				if(thisHiggs.Eta()>2.5)continue;
+				if(thisHiggs->Pt()<30)continue;
+				if(thisHiggs->Eta()>2.5)continue;
 				
 				FatjetPreSelection.push_back(i);
 			}
@@ -68,28 +69,27 @@ void HHbbbbAnalyzer(){
 			int thisHiggsNum=0,thatHiggsNum=0;
 			
 			
-			for(int i=0;i<FatjetPreSelection.size();i++){
+			for(unsigned int i=0;i<FatjetPreSelection.size();i++){
 				if(FATnSubSDJet[FatjetPreSelection[i]]<2)continue;
-				for(int j=i+1;j<FatjetPreSelection.size();j++){
+				for(unsigned int j=i+1;j<FatjetPreSelection.size();j++){
 					TLorentzVector* thisHiggs = (TLorentzVector*)FATjetP4->At(FatjetPreSelection[i]);
 					TLorentzVector* thatHiggs = (TLorentzVector*)FATjetP4->At(FatjetPreSelection[j]);
-					TLorentzVector* mjj;
-					mjj= thisHiggs+thatHiggs;
+					TLorentzVector mjj=*thisHiggs+*thatHiggs;
 					if(mjj.M()<890)continue;
 					if(thisHiggs->DeltaPhi(*thatHiggs)<1.3)continue;
-					if(FATnSuibSDJet[FatjetPreSelection[j]]<2)continue;
+					if(FATnSubSDJet[FatjetPreSelection[j]]<2)continue;
 					TLorentzVector  FATsubjet_1,FATsubjet_2;
 					FATsubjet_1.SetPxPyPzE(FATsubjetSDPx[FatjetPreSelection[i]][0],FATsubjetSDPy[FatjetPreSelection[i]][0],FATsubjetSDPz[FatjetPreSelection[i]][0],FATsubjetSDCE[FatjetPreSelection[i]][0]);
 					FATsubjet_2.SetPxPyPzE(FATsubjetSDPx[FatjetPreSelection[i]][1],FATsubjetSDPy[FatjetPreSelection[i]][1],FATsubjetSDPz[FatjetPreSelection[i]][1],FATsubjetSDCE[FatjetPreSelection[i]][1]);
 					bool subjet1PassCSV=1,subjet2PassCSV=1;
-					if(FATsubjet_1->DeltaR(*FATsubjet_2)<0.3 && FATjetCISVV2[FatjetPreSelection[i]]<0.244)subjet1PassCSV=0;
-					if(FATsubjet_1->DeltaR(*FATsubjet_2)>0.3 && (FATsubjetSDCSV[FatjetPreSelection[i]][0]<0.244 || FATsubjetSDCSV[FatjetPreSelection[i]][1]<0.244))subjet1PassCSV=0;
+					if(FATsubjet_1.DeltaR(FATsubjet_2)<0.3 && FATjetCISVV2[FatjetPreSelection[i]]<0.244)subjet1PassCSV=0;
+					if(FATsubjet_1.DeltaR(FATsubjet_2)>0.3 && (FATsubjetSDCSV[FatjetPreSelection[i]][0]<0.244 || FATsubjetSDCSV[FatjetPreSelection[i]][1]<0.244))subjet1PassCSV=0;
 					
 					
 					FATsubjet_1.SetPxPyPzE(FATsubjetSDPx[FatjetPreSelection[j]][0],FATsubjetSDPy[FatjetPreSelection[j]][0],FATsubjetSDPz[FatjetPreSelection[j]][0],FATsubjetSDCE[FatjetPreSelection[j]][0]);
 					FATsubjet_2.SetPxPyPzE(FATsubjetSDPx[FatjetPreSelection[j]][1],FATsubjetSDPy[FatjetPreSelection[j]][1],FATsubjetSDPz[FatjetPreSelection[j]][1],FATsubjetSDCE[FatjetPreSelection[j]][1]);
-					if(FATsubjet_1->DeltaR(*FATsubjet_2)<0.3 && FATjetCISVV2[FatjetPreSelection[i]]<0.244)subjet2PassCSV=0;
-					if(FATsubjet_1->DeltaR(*FATsubjet_2)>0.3 && (FATsubjetSDCSV[FatjetPreSelection[i]][0]<0.244 || FATsubjetSDCSV[FatjetPreSelection[i]][1]<0.244))subjet2PassCSV=0;
+					if(FATsubjet_1.DeltaR(FATsubjet_2)<0.3 && FATjetCISVV2[FatjetPreSelection[i]]<0.244)subjet2PassCSV=0;
+					if(FATsubjet_1.DeltaR(FATsubjet_2)>0.3 && (FATsubjetSDCSV[FatjetPreSelection[i]][0]<0.244 || FATsubjetSDCSV[FatjetPreSelection[i]][1]<0.244))subjet2PassCSV=0;
 					if(subjet1PassCSV==0 &&  subjet2PassCSV==0 )continue;
 					
 					thisHiggsNum=FatjetPreSelection[i];
