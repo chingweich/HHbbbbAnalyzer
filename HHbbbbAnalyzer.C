@@ -28,7 +28,7 @@ TTree *tree;
 
 void HHbbbbAnalyzer(){
 	string  masspoint[11]={"1000","1200","1400","1600","1800","2000","2500","3000","3500","4000","4500"};
-	for (int massP=0;massP<11;massP++){
+	for (int massP=0;massP<1;massP++){
 		
 		//signal
 		//f = TFile::Open(Form("/data2/syu/13TeV/BulkGravTohhTohbbhbb/softdrop_BulkGravTohhTohbbhbb_narrow_M-%s_13TeV-madgraph.root",masspoint[massP].data()));
@@ -38,7 +38,7 @@ void HHbbbbAnalyzer(){
 			
 		
 		//QCD  1000-1500
-		for (int w=0;w<1;w++){
+		for (int w=0;w<155;w++){
 		f = TFile::Open(Form("/data7/khurana/NCUGlobalTuples/SPRING15/QCD_HT1000to1500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/crab_QCD_HT1000to1500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_0830/150831_084507/0000/NCUGlobalTuples_%d.root",w));
 		if (!f || !f->IsOpen())continue;
 		TDirectory * dir = (TDirectory*)f->Get(Form("/data7/khurana/NCUGlobalTuples/SPRING15/QCD_HT1000to1500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/crab_QCD_HT1000to1500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_0830/150831_084507/0000/NCUGlobalTuples_%d.root:/tree",w));
@@ -127,6 +127,7 @@ void HHbbbbAnalyzer(){
 				if(thisHiggsNum!=0)break;
 			}
 			
+			if(thisHiggsNum ==0 || thatHiggsNum==0) continue;
 			nPass++;
 			
 			
