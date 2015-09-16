@@ -34,6 +34,31 @@ void HHbbbbAnalyzer(){
 		f = TFile::Open(Form("/data2/syu/13TeV/BulkGravTohhTohbbhbb/softdrop_BulkGravTohhTohbbhbb_narrow_M-%s_13TeV-madgraph.root",masspoint[massP].data()));
 		if (!f || !f->IsOpen())continue;
 		TDirectory * dir = (TDirectory*)f->Get(Form("/data2/syu/13TeV/BulkGravTohhTohbbhbb/softdrop_BulkGravTohhTohbbhbb_narrow_M-%s_13TeV-madgraph.root:/tree",masspoint[massP].data()));
+		for (int w=0;w<1;w++){
+			
+		
+		//QCD  1000-1500
+		for (int w=0;w<155;w++){
+		f = TFile::Open(Form("/data7/khurana/NCUGlobalTuples/SPRING15/QCD_HT1000to1500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/crab_QCD_HT1000to1500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_0830/150831_084507/0000/NCUGlobalTuples_%d.root",w));
+		if (!f || !f->IsOpen())continue;
+		TDirectory * dir = (TDirectory*)f->Get(Form("/data7/khurana/NCUGlobalTuples/SPRING15/QCD_HT1000to1500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/crab_QCD_HT1000to1500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_0830/150831_084507/0000/NCUGlobalTuples_%d.root:/tree",w));
+		
+		//QCD  1500-2000
+		for (int w=0;w<103;w++){
+		f = TFile::Open(Form("/data7/khurana/NCUGlobalTuples/SPRING15/QCD_HT1500to2000_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/crab_QCD_HT1500to2000_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_0830/150831_084638/0000/NCUGlobalTuples_%d.root",w));
+		if (!f || !f->IsOpen())continue;
+		TDirectory * dir = (TDirectory*)f->Get(Form("/data7/khurana/NCUGlobalTuples/SPRING15/QCD_HT1500to2000_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/crab_QCD_HT1500to2000_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_0830/150831_084638/0000/NCUGlobalTuples_%d.root:/tree",w));
+		
+		//QCD  2000-inf
+		for (int w=0;w<71;w++){
+		f = TFile::Open(Form("/data7/khurana/NCUGlobalTuples/SPRING15/QCD_HT2000toInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/crab_QCD_HT2000toInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_0830/150831_084730/0000/NCUGlobalTuples_%d.root",w));
+		if (!f || !f->IsOpen())continue;
+		TDirectory * dir = (TDirectory*)f->Get(Form("/data7/khurana/NCUGlobalTuples/SPRING15/QCD_HT2000toInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/crab_QCD_HT2000toInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_0830/150831_084730/0000/NCUGlobalTuples_%d.root:/tree",w));
+		
+		
+		
+		
+		
 		dir->GetObject("treeMaker",tree);
 		
 		TreeReader data(tree);
@@ -107,7 +132,10 @@ void HHbbbbAnalyzer(){
 			
 		}
 		
-		cout<<"nPass="<<nPass<<endl;
+		cout<<"entries="<<data.GetEntriesFast()<<",nPass="<<nPass<<endl;
+		
+		
+		}
 		
 	}
 	
