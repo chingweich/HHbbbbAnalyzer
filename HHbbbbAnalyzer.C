@@ -37,6 +37,8 @@ void HHbbbbAnalyzer(){
 		
 		TreeReader data(tree);
 		
+		int nPass=0;
+		
 		for(Long64_t jEntry=0; jEntry<data.GetEntriesFast() ;jEntry++){
 			data.GetEntry(jEntry);
 			
@@ -64,6 +66,7 @@ void HHbbbbAnalyzer(){
 		    vector<float>   *FATsubjetSDCE =  data.GetPtrVectorFloat("FATsubjetSDCE");
 			
 			int thisHiggsNum=0,thatHiggsNum=0;
+			
 			
 			for(int i=0;i<FatjetPreSelection.size();i++){
 				if(FATnSubSDJet[FatjetPreSelection[i]]<2)continue;
@@ -99,12 +102,12 @@ void HHbbbbAnalyzer(){
 				if(thisHiggsNum!=0)break;
 			}
 			
-			
+			nPass++;
 			
 			
 		}
 		
-		
+		cout<<"nPass="<<nPass<<endl;
 		
 	}
 	
