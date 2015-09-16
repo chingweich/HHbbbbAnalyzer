@@ -31,29 +31,29 @@ void HHbbbbAnalyzer(){
 	for (int massP=0;massP<11;massP++){
 		
 		//signal
-		f = TFile::Open(Form("/data2/syu/13TeV/BulkGravTohhTohbbhbb/softdrop_BulkGravTohhTohbbhbb_narrow_M-%s_13TeV-madgraph.root",masspoint[massP].data()));
-		if (!f || !f->IsOpen())continue;
-		TDirectory * dir = (TDirectory*)f->Get(Form("/data2/syu/13TeV/BulkGravTohhTohbbhbb/softdrop_BulkGravTohhTohbbhbb_narrow_M-%s_13TeV-madgraph.root:/tree",masspoint[massP].data()));
-		for (int w=0;w<1;w++){
+		//f = TFile::Open(Form("/data2/syu/13TeV/BulkGravTohhTohbbhbb/softdrop_BulkGravTohhTohbbhbb_narrow_M-%s_13TeV-madgraph.root",masspoint[massP].data()));
+		//if (!f || !f->IsOpen())continue;
+		//TDirectory * dir = (TDirectory*)f->Get(Form("/data2/syu/13TeV/BulkGravTohhTohbbhbb/softdrop_BulkGravTohhTohbbhbb_narrow_M-%s_13TeV-madgraph.root:/tree",masspoint[massP].data()));
+		//for (int w=0;w<1;w++){
 			
 		
 		//QCD  1000-1500
-		for (int w=0;w<155;w++){
+		for (int w=0;w<1;w++){
 		f = TFile::Open(Form("/data7/khurana/NCUGlobalTuples/SPRING15/QCD_HT1000to1500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/crab_QCD_HT1000to1500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_0830/150831_084507/0000/NCUGlobalTuples_%d.root",w));
 		if (!f || !f->IsOpen())continue;
 		TDirectory * dir = (TDirectory*)f->Get(Form("/data7/khurana/NCUGlobalTuples/SPRING15/QCD_HT1000to1500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/crab_QCD_HT1000to1500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_0830/150831_084507/0000/NCUGlobalTuples_%d.root:/tree",w));
 		
 		//QCD  1500-2000
-		for (int w=0;w<103;w++){
-		f = TFile::Open(Form("/data7/khurana/NCUGlobalTuples/SPRING15/QCD_HT1500to2000_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/crab_QCD_HT1500to2000_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_0830/150831_084638/0000/NCUGlobalTuples_%d.root",w));
-		if (!f || !f->IsOpen())continue;
-		TDirectory * dir = (TDirectory*)f->Get(Form("/data7/khurana/NCUGlobalTuples/SPRING15/QCD_HT1500to2000_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/crab_QCD_HT1500to2000_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_0830/150831_084638/0000/NCUGlobalTuples_%d.root:/tree",w));
+		//for (int w=0;w<103;w++){
+		//f = TFile::Open(Form("/data7/khurana/NCUGlobalTuples/SPRING15/QCD_HT1500to2000_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/crab_QCD_HT1500to2000_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_0830/150831_084638/0000/NCUGlobalTuples_%d.root",w));
+		//if (!f || !f->IsOpen())continue;
+		//TDirectory * dir = (TDirectory*)f->Get(Form("/data7/khurana/NCUGlobalTuples/SPRING15/QCD_HT1500to2000_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/crab_QCD_HT1500to2000_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_0830/150831_084638/0000/NCUGlobalTuples_%d.root:/tree",w));
 		
 		//QCD  2000-inf
-		for (int w=0;w<71;w++){
-		f = TFile::Open(Form("/data7/khurana/NCUGlobalTuples/SPRING15/QCD_HT2000toInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/crab_QCD_HT2000toInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_0830/150831_084730/0000/NCUGlobalTuples_%d.root",w));
-		if (!f || !f->IsOpen())continue;
-		TDirectory * dir = (TDirectory*)f->Get(Form("/data7/khurana/NCUGlobalTuples/SPRING15/QCD_HT2000toInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/crab_QCD_HT2000toInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_0830/150831_084730/0000/NCUGlobalTuples_%d.root:/tree",w));
+		//for (int w=0;w<71;w++){
+		//f = TFile::Open(Form("/data7/khurana/NCUGlobalTuples/SPRING15/QCD_HT2000toInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/crab_QCD_HT2000toInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_0830/150831_084730/0000/NCUGlobalTuples_%d.root",w));
+		//if (!f || !f->IsOpen())continue;
+		//TDirectory * dir = (TDirectory*)f->Get(Form("/data7/khurana/NCUGlobalTuples/SPRING15/QCD_HT2000toInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/crab_QCD_HT2000toInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_0830/150831_084730/0000/NCUGlobalTuples_%d.root:/tree",w));
 		
 		
 		
@@ -89,7 +89,7 @@ void HHbbbbAnalyzer(){
 		    vector<float>   *FATsubjetSDPx =  data.GetPtrVectorFloat("FATsubjetSDPx");
 		    vector<float>   *FATsubjetSDPy =  data.GetPtrVectorFloat("FATsubjetSDPy");
 		    vector<float>   *FATsubjetSDPz =  data.GetPtrVectorFloat("FATsubjetSDPz");
-		    vector<float>   *FATsubjetSDCE =  data.GetPtrVectorFloat("FATsubjetSDCE");
+		    vector<float>   *FATsubjetSDE =  data.GetPtrVectorFloat("FATsubjetSDE");
 			
 			int thisHiggsNum=0,thatHiggsNum=0;
 			
@@ -104,15 +104,15 @@ void HHbbbbAnalyzer(){
 					if(thisHiggs->DeltaPhi(*thatHiggs)<1.3)continue;
 					if(FATnSubSDJet[FatjetPreSelection[j]]<2)continue;
 					TLorentzVector  FATsubjet_1,FATsubjet_2;
-					FATsubjet_1.SetPxPyPzE(FATsubjetSDPx[FatjetPreSelection[i]][0],FATsubjetSDPy[FatjetPreSelection[i]][0],FATsubjetSDPz[FatjetPreSelection[i]][0],FATsubjetSDCE[FatjetPreSelection[i]][0]);
-					FATsubjet_2.SetPxPyPzE(FATsubjetSDPx[FatjetPreSelection[i]][1],FATsubjetSDPy[FatjetPreSelection[i]][1],FATsubjetSDPz[FatjetPreSelection[i]][1],FATsubjetSDCE[FatjetPreSelection[i]][1]);
+					FATsubjet_1.SetPxPyPzE(FATsubjetSDPx[FatjetPreSelection[i]][0],FATsubjetSDPy[FatjetPreSelection[i]][0],FATsubjetSDPz[FatjetPreSelection[i]][0],FATsubjetSDE[FatjetPreSelection[i]][0]);
+					FATsubjet_2.SetPxPyPzE(FATsubjetSDPx[FatjetPreSelection[i]][1],FATsubjetSDPy[FatjetPreSelection[i]][1],FATsubjetSDPz[FatjetPreSelection[i]][1],FATsubjetSDE[FatjetPreSelection[i]][1]);
 					bool subjet1PassCSV=1,subjet2PassCSV=1;
 					if(FATsubjet_1.DeltaR(FATsubjet_2)<0.3 && FATjetCISVV2[FatjetPreSelection[i]]<0.244)subjet1PassCSV=0;
 					if(FATsubjet_1.DeltaR(FATsubjet_2)>0.3 && (FATsubjetSDCSV[FatjetPreSelection[i]][0]<0.244 || FATsubjetSDCSV[FatjetPreSelection[i]][1]<0.244))subjet1PassCSV=0;
 					
 					
-					FATsubjet_1.SetPxPyPzE(FATsubjetSDPx[FatjetPreSelection[j]][0],FATsubjetSDPy[FatjetPreSelection[j]][0],FATsubjetSDPz[FatjetPreSelection[j]][0],FATsubjetSDCE[FatjetPreSelection[j]][0]);
-					FATsubjet_2.SetPxPyPzE(FATsubjetSDPx[FatjetPreSelection[j]][1],FATsubjetSDPy[FatjetPreSelection[j]][1],FATsubjetSDPz[FatjetPreSelection[j]][1],FATsubjetSDCE[FatjetPreSelection[j]][1]);
+					FATsubjet_1.SetPxPyPzE(FATsubjetSDPx[FatjetPreSelection[j]][0],FATsubjetSDPy[FatjetPreSelection[j]][0],FATsubjetSDPz[FatjetPreSelection[j]][0],FATsubjetSDE[FatjetPreSelection[j]][0]);
+					FATsubjet_2.SetPxPyPzE(FATsubjetSDPx[FatjetPreSelection[j]][1],FATsubjetSDPy[FatjetPreSelection[j]][1],FATsubjetSDPz[FatjetPreSelection[j]][1],FATsubjetSDE[FatjetPreSelection[j]][1]);
 					if(FATsubjet_1.DeltaR(FATsubjet_2)<0.3 && FATjetCISVV2[FatjetPreSelection[i]]<0.244)subjet2PassCSV=0;
 					if(FATsubjet_1.DeltaR(FATsubjet_2)>0.3 && (FATsubjetSDCSV[FatjetPreSelection[i]][0]<0.244 || FATsubjetSDCSV[FatjetPreSelection[i]][1]<0.244))subjet2PassCSV=0;
 					if(subjet1PassCSV==0 &&  subjet2PassCSV==0 )continue;
