@@ -92,12 +92,9 @@ void HHbbbbAnalyzer(){
 		    vector<float>   *FATsubjetSDPy =  data.GetPtrVectorFloat("FATsubjetSDPy");
 		    vector<float>   *FATsubjetSDPz =  data.GetPtrVectorFloat("FATsubjetSDPz");
 			
-			string originFATsubjetSDE="FATsubjetSDE";
-			string signalFATsubjetSDE="FATsubjetSDCE";
+			string fixName ="C";if(!isSignal)fixName="";
 			
-			vector<float>   *FATsubjetSDE;
-			if (isSignal)   *FATsubjetSDE =  data.GetPtrVectorFloat(signalFATsubjetSDE.data());
-		    else   *FATsubjetSDE =  data.GetPtrVectorFloat(originFATsubjetSDE.data());
+		    vector<float>   *FATsubjetSDE =  data.GetPtrVectorFloat(Form("FATsubjetSD%sE",fixName.data()));
 			
 			int thisHiggsNum=0,thatHiggsNum=0;
 			
