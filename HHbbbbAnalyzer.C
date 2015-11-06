@@ -134,8 +134,8 @@ TH1D* HHbbbbAnalyzerBase(int wM, string st,double & db1,double & db2,double & db
 			
 			vector<int> FatjetPreSelection3i,FatjetPreSelection3j;
 			for(unsigned int i=0;i<FatjetPreSelection2i.size();i++){
-				if(jetPRmassL2L3Corr[FatjetPreSelection2i[i]]>135||jetPRmassL2L3Corr[FatjetPreSelection2i[i]]<105)continue;
-				if(jetPRmassL2L3Corr[FatjetPreSelection2j[i]]>135||jetPRmassL2L3Corr[FatjetPreSelection2j[i]]<105)continue;
+				if(jetPRmassL2L3Corr[FatjetPreSelection2i[i]]>135||jetPRmassL2L3Corr[FatjetPreSelection2i[i]]<100)continue;
+				if(jetPRmassL2L3Corr[FatjetPreSelection2j[i]]>130||jetPRmassL2L3Corr[FatjetPreSelection2j[i]]<90)continue;
 				//if(FATjetPRmass[FatjetPreSelection2i[i]]>150||FATjetPRmass[FatjetPreSelection2i[i]]<90)continue;
 				//if(FATjetPRmass[FatjetPreSelection2j[i]]>150||FATjetPRmass[FatjetPreSelection2j[i]]<90)continue;
 				
@@ -259,26 +259,28 @@ void HHbbbbAnalyzer(){
 		"/data7/khurana/NCUGlobalTuples/SPRING15_2015_10_12/BulkGravToHHBBBBSignal_eleIDjet_CMSSW7412_20151006/BulkGravTohhTohbbhbb_narrow_M-4500_13TeV-madgraph/crab_BulkGravTohhTohbbhbb_narrow_M-4500_13TeV-madgraphMC25ns_eleIDjet_CMSSW7412_20151006/151007_220034/0000/NCUGlobalTuples_",
 	/*11*/
 		//"/data2/syu/13TeV/BulkGravTohhTohbbhbb/softdrop_BulkGravTohhTohbbhbb_narrow_M-4500_13TeV-madgraph.root",
+		"/data7/khurana/NCUGlobalTuples/SPRING15_2015_10_12/crab_QCD_HT700to1000_TuneCUETP8M1_13TeV-madgraphMLM-pythia8MC25ns_eleIDjet_CMSSW7412_20151006/0000/NCUGlobalTuples_",
 		"/data7/khurana/NCUGlobalTuples/SPRING15_2015_10_12/crab_QCD_HT1000to1500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8MC25ns_eleIDjet_CMSSW7412_20151006/151007_220114/0000/NCUGlobalTuples_",
 	    "/data7/khurana/NCUGlobalTuples/SPRING15_2015_10_12/crab_QCD_HT1500to2000_TuneCUETP8M1_13TeV-madgraphMLM-pythia8MC25ns_eleIDjet_CMSSW7412_20151006/151007_220249/0000/NCUGlobalTuples_",
 		"/data7/khurana/NCUGlobalTuples/SPRING15_2015_10_12/crab_QCD_HT2000toInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8MC25ns_eleIDjet_CMSSW7412_20151006/151007_220339/0000/NCUGlobalTuples_",
-		"",
-	};
+		};
 	string  masspoint[10]={"1000","1200","1400","1600","2000","2500","3000","3500","4000","4500"};
 	double eff1[20],eff2[20],eff3[20],eff4[20],eff5[20];
 	TH1D* th1[20];
 	for(int i=0;i<10;i++)th1[i]=HHbbbbAnalyzerBase(2,st1[i],eff1[i],eff2[i],eff3[i],eff4[i],eff5[i],1);
-	th1[10]=HHbbbbAnalyzerBase(155,st1[10],eff1[10],eff2[10],eff3[10],eff4[10],eff5[10]);
-	th1[11]=HHbbbbAnalyzerBase(103,st1[11],eff1[11],eff2[11],eff3[11],eff4[11],eff5[11]);
-	th1[12]=HHbbbbAnalyzerBase(71,st1[12],eff1[12],eff2[12],eff3[12],eff4[12],eff5[12]);
+	th1[10]=HHbbbbAnalyzerBase(394,st1[10],eff1[10],eff2[10],eff3[10],eff4[10],eff5[10]);
+	th1[11]=HHbbbbAnalyzerBase(155,st1[11],eff1[11],eff2[11],eff3[11],eff4[11],eff5[11]);
+	th1[12]=HHbbbbAnalyzerBase(103,st1[12],eff1[12],eff2[12],eff3[12],eff4[12],eff5[12]);
+	th1[13]=HHbbbbAnalyzerBase(71,st1[13],eff1[13],eff2[13],eff3[13],eff4[13],eff5[13]);
 	
 	/*
+	
 	
 	c1 = new TCanvas("c1","",1360,768);
 	
 	setNCUStyle(true);
 	TLegend* leg ;
-	leg=new TLegend(0.791452,0.562447,0.890645,0.783966);
+	leg=new TLegend(0.591452,0.562447,0.690645,0.783966);
 	//leg->SetFillColor(18);
 	//leg->SetFillStyle(0);
 	//leg->SetTextSize(0.02);
@@ -288,22 +290,24 @@ void HHbbbbAnalyzer(){
 	
 	TH1D* th2[5];
 	for(int i=0;i<5;i++){
-		th2[i]=new TH1D("","",13,0,13);
-		for(int j=1;j<14;j++){
+		th2[i]=new TH1D("","",14,0,14);
+		for(int j=1;j<15;j++){
 			if(i==0)th2[i]->SetBinContent(j,eff1[j-1]);
 			if(i==1)th2[i]->SetBinContent(j,eff2[j-1]);
 			if(i==2)th2[i]->SetBinContent(j,eff3[j-1]);
 			if(i==3)th2[i]->SetBinContent(j,eff4[j-1]);
 			if(i==4)th2[i]->SetBinContent(j,eff5[j-1]);
-			th2[i]->GetXaxis()->SetBinLabel(j,Form("%s",masspoint[j-1].data()));
+			if(i<11)th2[i]->GetXaxis()->SetBinLabel(j,Form("%s",masspoint[j-1].data()));
 		}
+		
 	}
 	//TLegend* leg ;
 	//leg=new TLegend(0.691452,0.662447,0.890645,0.883966);
 	
-	th2[0]->GetXaxis()->SetBinLabel(11,"QCD1000-1500");
-	th2[0]->GetXaxis()->SetBinLabel(12,"QCD1500-2000");
-	th2[0]->GetXaxis()->SetBinLabel(13,"QCD2000-Inf.");
+	th2[0]->GetXaxis()->SetBinLabel(11,"QCD700-1000");
+	th2[0]->GetXaxis()->SetBinLabel(12,"QCD1000-1500");
+	th2[0]->GetXaxis()->SetBinLabel(13,"QCD1500-2000");
+	th2[0]->GetXaxis()->SetBinLabel(14,"QCD2000-Inf.");
 	
 	th2[0]->SetMinimum(0);
 	th2[0]->SetLineColor(1);
@@ -331,7 +335,7 @@ void HHbbbbAnalyzer(){
 	//c1->Print("pdf/cutM4.png");
 	th2[4]->Draw("same");
 	leg->Draw("same");
-	c1->Print("pdf/cutM6.png");
+	c1->Print("pdf/cutFlow1106.png");
     //c1->SetLogy(1);
 	
 	//c1->Print("pdf/cutM7.png");
@@ -339,16 +343,17 @@ void HHbbbbAnalyzer(){
 	*/
 	
 	ofstream myfile;
-	myfile.open ("1105.txt");
+	myfile.open ("coutNum.txt");
 	
 	for(int i=0;i<14;i++)eff5[i]*=1000;
 	eff5[11]*=1064;
 	eff5[12]*=121.5;
 	eff5[13]*=25.42 ;
+	eff5[10]*=6524;
 	
 	
 	myfile<<"DATA 0"<<endl;
-	myfile<<"QCD "<<eff5[11]+eff5[12]+eff5[13]<<endl;
-	for(int i=0;i<11;i++)myfile<<"M"<<masspoint[i]<<" "<<eff5[i]<<endl;
+	myfile<<"QCD "<<eff5[10]+eff5[11]+eff5[12]+eff5[13]<<endl;
+	for(int i=0;i<10;i++)myfile<<"M"<<masspoint[i]<<" "<<eff5[i]<<endl;
 	myfile.close();
 }
