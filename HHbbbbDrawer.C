@@ -201,7 +201,8 @@ void HHbbbbAnalyzerBase(int wM, string st,string st2,int SignalBkgNum=0){
 			
 			vector<int> FatjetPreSelection3i,FatjetPreSelection3j;
 			for(unsigned int i=0;i<FatjetPreSelection2i.size();i++){
-				//if(jetPRmassL2L3Corr[FatjetPreSelection2i[i]]>135||jetPRmassL2L3Corr[FatjetPreSelection2i[i]]<105)continue;
+				if(jetPRmassL2L3Corr[FatjetPreSelection2i[i]]>135||jetPRmassL2L3Corr[FatjetPreSelection2i[i]]<100)continue;
+				if(jetPRmassL2L3Corr[FatjetPreSelection2j[i]]>130||jetPRmassL2L3Corr[FatjetPreSelection2j[i]]<90)continue;
 				//if(FATjetPRmass[FatjetPreSelection2j[i]]>130||FATjetPRmass[FatjetPreSelection2j[i]]<95)continue;
 				//if(FATjetPRmass[FatjetPreSelection2i[i]]>150||FATjetPRmass[FatjetPreSelection2i[i]]<90)continue;
 				//if(FATjetPRmass[FatjetPreSelection2j[i]]>150||FATjetPRmass[FatjetPreSelection2j[i]]<90)continue;
@@ -295,7 +296,7 @@ void HHbbbbAnalyzerBase(int wM, string st,string st2,int SignalBkgNum=0){
 			mjjCs=*thisHiggsCs+*thatHiggsCs;
 			cs2->Fill(mjjCs.M());
 			
-			thisHiggsCs ->SetPxPyPzE(thisHiggsCs->Px()*125/jetPRmassL2L3Corr[FatjetPreSelection4j[0]],thisHiggsCs->Py()*125/jetPRmassL2L3Corr[FatjetPreSelection4j[0]],thisHiggsCs->Pz()*125/jetPRmassL2L3Corr[FatjetPreSelection4j[0]],thisHiggsCs->E()*125/jetPRmassL2L3Corr[FatjetPreSelection4j[0]]);
+			thisHiggsCs ->SetPxPyPzE(thisHiggsCs->Px()*125/jetPRmassL2L3Corr[FatjetPreSelection4i[0]],thisHiggsCs->Py()*125/jetPRmassL2L3Corr[FatjetPreSelection4i[0]],thisHiggsCs->Pz()*125/jetPRmassL2L3Corr[FatjetPreSelection4i[0]],thisHiggsCs->E()*125/jetPRmassL2L3Corr[FatjetPreSelection4i[0]]);
 			
 			mjjCs=*thisHiggsCs+*thatHiggsCs;
 			cs3->Fill(mjjCs.M());
