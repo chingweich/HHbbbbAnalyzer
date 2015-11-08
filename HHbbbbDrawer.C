@@ -118,7 +118,7 @@ void HHbbbbAnalyzerBase(int wM, string st,string st2,int SignalBkgNum=0){
 			for(int i=0;i<nJet;i++){
 				TLorentzVector* thisHiggs = (TLorentzVector*)FATjetP4->At(i);
 				if(thisHiggs->Pt()<200)continue;
-				if(fabs(thisHiggs->Eta())>2.5)continue;
+				if(fabs(thisHiggs->Eta())>2.4)continue;
 				FatjetPreSelection.push_back(i);
 			}
 			if(FatjetPreSelection.size()<2)continue;
@@ -201,8 +201,8 @@ void HHbbbbAnalyzerBase(int wM, string st,string st2,int SignalBkgNum=0){
 			
 			vector<int> FatjetPreSelection3i,FatjetPreSelection3j;
 			for(unsigned int i=0;i<FatjetPreSelection2i.size();i++){
-				if(jetPRmassL2L3Corr[FatjetPreSelection2i[i]]>135||jetPRmassL2L3Corr[FatjetPreSelection2i[i]]<100)continue;
-				if(jetPRmassL2L3Corr[FatjetPreSelection2j[i]]>130||jetPRmassL2L3Corr[FatjetPreSelection2j[i]]<90)continue;
+				if(jetPRmassL2L3Corr[FatjetPreSelection2i[i]]>135||jetPRmassL2L3Corr[FatjetPreSelection2i[i]]<105)continue;
+				if(jetPRmassL2L3Corr[FatjetPreSelection2j[i]]>135||jetPRmassL2L3Corr[FatjetPreSelection2j[i]]<105)continue;
 				//if(FATjetPRmass[FatjetPreSelection2j[i]]>130||FATjetPRmass[FatjetPreSelection2j[i]]<95)continue;
 				//if(FATjetPRmass[FatjetPreSelection2i[i]]>150||FATjetPRmass[FatjetPreSelection2i[i]]<90)continue;
 				//if(FATjetPRmass[FatjetPreSelection2j[i]]>150||FATjetPRmass[FatjetPreSelection2j[i]]<90)continue;
