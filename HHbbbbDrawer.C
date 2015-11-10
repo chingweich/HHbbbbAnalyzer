@@ -27,12 +27,12 @@
 
 TCanvas* c1;
 
-void HHbbbbAnalyzerBase(int wM, string st,string st2,int SignalBkgNum=0){
+void HHbbbbAnalyzerBase(int wM, string st,string st2,double Xsec=1,int SignalBkgNum=0){
 	
 	//for (int massP=0;massP<1;massP++){
 		
-		TFile *f;
-		TTree *tree;
+		
+		
 	    
 		
 		int nPass[10]={0};
@@ -63,12 +63,15 @@ void HHbbbbAnalyzerBase(int wM, string st,string st2,int SignalBkgNum=0){
 			TH1D* cs1=new TH1D("case1","case1",2000,400,6000);
 			TH1D* cs2=new TH1D("case2","case2",2000,400,6000);
 			TH1D* cs3=new TH1D("case3","case3",2000,400,6000);
+			TH1D* cs4=new TH1D("case4","case4",2000,400,6000);
+			TH1D* cs5=new TH1D("case5","case5",2000,400,6000);
 		
 			TH2F* th2f=new TH2F("2d","2d",600,0,600,600,0,600);
 		for (int w=1;w<wM;w++){
 			//cout<<Form("%s%d.root",st.data(),w)<<endl;
 		//if(SignalBkgNum==1)f = TFile::Open(Form("%s",st.data()));
 		//else 
+			TFile *f;
 			f = TFile::Open(Form("%s%d.root",st.data(),w));
 		if (!f || !f->IsOpen())continue;
 		TDirectory * dir;
@@ -78,7 +81,7 @@ void HHbbbbAnalyzerBase(int wM, string st,string st2,int SignalBkgNum=0){
 		
 		cout<<w<<endl;
 		
-		
+		TTree *tree;
 		dir->GetObject("treeMaker",tree);
 		
 		TreeReader data(tree);
@@ -201,14 +204,16 @@ void HHbbbbAnalyzerBase(int wM, string st,string st2,int SignalBkgNum=0){
 			
 			vector<int> FatjetPreSelection3i,FatjetPreSelection3j;
 			for(unsigned int i=0;i<FatjetPreSelection2i.size();i++){
+				
+				thf->Fill(jetPRmassL2L3Corr[FatjetPreSelection2i[i]]);
+				thf2->Fill(jetPRmassL2L3Corr[FatjetPreSelection2j[i]]);
+				th2f->Fill(jetPRmassL2L3Corr[FatjetPreSelection2i[i]],jetPRmassL2L3Corr[FatjetPreSelection2j[i]]);
+				
 				if(jetPRmassL2L3Corr[FatjetPreSelection2i[i]]>135||jetPRmassL2L3Corr[FatjetPreSelection2i[i]]<105)continue;
 				if(jetPRmassL2L3Corr[FatjetPreSelection2j[i]]>135||jetPRmassL2L3Corr[FatjetPreSelection2j[i]]<105)continue;
 				//if(FATjetPRmass[FatjetPreSelection2j[i]]>130||FATjetPRmass[FatjetPreSelection2j[i]]<95)continue;
 				//if(FATjetPRmass[FatjetPreSelection2i[i]]>150||FATjetPRmass[FatjetPreSelection2i[i]]<90)continue;
 				//if(FATjetPRmass[FatjetPreSelection2j[i]]>150||FATjetPRmass[FatjetPreSelection2j[i]]<90)continue;
-				thf->Fill(jetPRmassL2L3Corr[FatjetPreSelection2i[i]]);
-				thf2->Fill(jetPRmassL2L3Corr[FatjetPreSelection2j[i]]);
-				th2f->Fill(jetPRmassL2L3Corr[FatjetPreSelection2i[i]],jetPRmassL2L3Corr[FatjetPreSelection2j[i]]);
 				
 				
 				
@@ -296,20 +301,35 @@ void HHbbbbAnalyzerBase(int wM, string st,string st2,int SignalBkgNum=0){
 			mjjCs=*thisHiggsCs+*thatHiggsCs;
 			cs2->Fill(mjjCs.M());
 			
-			thisHiggsCs ->SetPxPyPzE(thisHiggsCs->Px()*125/jetPRmassL2L3Corr[FatjetPreSelection4i[0]],thisHiggsCs->Py()*125/jetPRmassL2L3Corr[FatjetPreSelection4i[0]],thisHiggsCs->Pz()*125/jetPRmassL2L3Corr[FatjetPreSelection4i[0]],thisHiggsCs->E()*125/jetPRmassL2L3Corr[FatjetPreSelection4i[0]]);
 			
 			mjjCs=*thisHiggsCs+*thatHiggsCs;
 			cs3->Fill(mjjCs.M());
+			
+			thisHiggsCs = (TLorentzVector*)FATjetP4->At(FatjetPreSelection4i[0]);
+			thatHiggsCs = (TLorentzVector*)FATjetP4->At(FatjetPreSelection4j[0]);
+			double scaleThis=FATjetPRmass[FatjetPreSelection4i[0]]*125/(thisHiggsCs->M()*jetPRmassL2L3Corr[FatjetPreSelection4i[0]]),
+			scaleThat=FATjetPRmass[FatjetPreSelection4j[0]]*125/(thatHiggsCs->M()*jetPRmassL2L3Corr[FatjetPreSelection4j[0]]);
+			
+			thisHiggsCs ->SetPxPyPzE(thisHiggsCs->Px()*scaleThis,thisHiggsCs->Py()*scaleThis,thisHiggsCs->Pz()*scaleThis,thisHiggsCs->E()*scaleThis);
+			thatHiggsCs ->SetPxPyPzE(thatHiggsCs->Px()*scaleThat,thatHiggsCs->Py()*scaleThat,thatHiggsCs->Pz()*scaleThat,thatHiggsCs->E()*scaleThat);
+		
+			mjjCs=*thisHiggsCs+*thatHiggsCs;
+			cs4->Fill(mjjCs.M());
+			
+			thisHiggsCs = (TLorentzVector*)FATjetP4->At(FatjetPreSelection4i[0]);
+			thatHiggsCs = (TLorentzVector*)FATjetP4->At(FatjetPreSelection4j[0]);
+			mjjCs=*thisHiggsCs+*thatHiggsCs;
+			
+			cs5->Fill(mjjCs.M()+250-thisHiggsCs->M()-thatHiggsCs->M());
 		}
 		
 		
+		
+		
 		}
 		
-		double Xsec=1;
-		if(SignalBkgNum==2)Xsec=1064;
-		else if (SignalBkgNum==3)Xsec=121.5;
-		else if (SignalBkgNum==4)Xsec=25.42;
-		else if (SignalBkgNum==5)Xsec=6524;
+		
+		
 		thf->Scale(1000*Xsec/total);
 		thf2->Scale(1000*Xsec/total);
 		th1->Scale(1000*Xsec/total);
@@ -333,6 +353,8 @@ void HHbbbbAnalyzerBase(int wM, string st,string st2,int SignalBkgNum=0){
 	cs1->Scale(1000*Xsec/total);
 	cs2->Scale(1000*Xsec/total);
 	cs3->Scale(1000*Xsec/total);
+	cs4->Scale(1000*Xsec/total);
+	cs5->Scale(1000*Xsec/total);
 		
 	TFile* outFile = new TFile(Form("root_files/%s.root",st2.data()),"recreate");   
 	th1->Write();
@@ -355,6 +377,8 @@ void HHbbbbAnalyzerBase(int wM, string st,string st2,int SignalBkgNum=0){
 	cs1->Write();
 	cs2->Write();
 	cs3->Write();
+	cs4->Write();
+	cs5->Write();
 	
 	thf->Write();
 	thf2->Write();
@@ -383,14 +407,19 @@ void HHbbbbAnalyzerBase(int wM, string st,string st2,int SignalBkgNum=0){
 	cs1->Clear();
 	cs2->Clear();
 	cs3->Clear();
+	cs4->Clear();
+	cs5->Clear();
 	
 	thf->Clear();
 	thf2->Clear();
 	th2f->Clear();
+	
+	//dir->Close();
+	//delete f;
 }
 
 
-void HHbbbbDrawer(){
+void HHbbbbDrawer(int a){
 	setNCUStyle();
 	
 	string st1[20]={
@@ -406,26 +435,35 @@ void HHbbbbDrawer(){
 		"/data7/khurana/NCUGlobalTuples/SPRING15_2015_10_12/BulkGravToHHBBBBSignal_eleIDjet_CMSSW7412_20151006/BulkGravTohhTohbbhbb_narrow_M-4500_13TeV-madgraph/crab_BulkGravTohhTohbbhbb_narrow_M-4500_13TeV-madgraphMC25ns_eleIDjet_CMSSW7412_20151006/151007_220034/0000/NCUGlobalTuples_",
 	/*11*/
 		//"/data2/syu/13TeV/BulkGravTohhTohbbhbb/softdrop_BulkGravTohhTohbbhbb_narrow_M-4500_13TeV-madgraph.root",
+		"/data7/khurana/NCUGlobalTuples/SPRING15_2015_10_12/crab_QCD_HT100to200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8MC25ns_eleIDjet_CMSSW7412_20151006/151007_220208/0000/NCUGlobalTuples_",
+		"/data7/khurana/NCUGlobalTuples/SPRING15_2015_10_12/crab_QCD_HT200to300_TuneCUETP8M1_13TeV-madgraphMLM-pythia8MC25ns_eleIDjet_CMSSW7412_20151006/151007_220428/0000/NCUGlobalTuples_",
+		"/data7/khurana/NCUGlobalTuples/SPRING15_2015_10_12/crab_QCD_HT300to500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8MC25ns_eleIDjet_CMSSW7412_20151006/NCUGlobalTuples_",
+		"/data7/khurana/NCUGlobalTuples/SPRING15_2015_10_12/crab_QCD_HT500to7000_TuneCUETP8M1_13TeV-madgraphMLM-pythia8MC25ns_eleIDjet_CMSSW7412_20151006/NCUGlobalTuples_",
 		"/data7/khurana/NCUGlobalTuples/SPRING15_2015_10_12/crab_QCD_HT700to1000_TuneCUETP8M1_13TeV-madgraphMLM-pythia8MC25ns_eleIDjet_CMSSW7412_20151006/0000/NCUGlobalTuples_",
+	/*16*/
 		"/data7/khurana/NCUGlobalTuples/SPRING15_2015_10_12/crab_QCD_HT1000to1500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8MC25ns_eleIDjet_CMSSW7412_20151006/151007_220114/0000/NCUGlobalTuples_",
 	    "/data7/khurana/NCUGlobalTuples/SPRING15_2015_10_12/crab_QCD_HT1500to2000_TuneCUETP8M1_13TeV-madgraphMLM-pythia8MC25ns_eleIDjet_CMSSW7412_20151006/151007_220249/0000/NCUGlobalTuples_",
 		"/data7/khurana/NCUGlobalTuples/SPRING15_2015_10_12/crab_QCD_HT2000toInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8MC25ns_eleIDjet_CMSSW7412_20151006/151007_220339/0000/NCUGlobalTuples_",
-		};
+	
+	};
 	
 	string  masspoint[10]={"1000","1200","1400","1600","2000","2500","3000","3500","4000","4500"};
 	
 	TH1D* th1[20];
-	for(int i=0;i<10;i++)HHbbbbAnalyzerBase(7,st1[i],masspoint[i],1);
-	HHbbbbAnalyzerBase(155,st1[11],"QCD1000",2);
-	HHbbbbAnalyzerBase(103,st1[12],"QCD1500",3);
-	HHbbbbAnalyzerBase(71,st1[13],"QCD2000",4);
-	HHbbbbAnalyzerBase(394,st1[10],"QCD700",5);
+	if(a==9)for(int i=0;i<10;i++)HHbbbbAnalyzerBase(7,st1[i],masspoint[i],1,1);
+	if(a==10)HHbbbbAnalyzerBase(813,st1[10],"QCD100" ,27850000,0);
+	if(a==11)HHbbbbAnalyzerBase(516,st1[11],"QCD200" ,1717000,0);
+	if(a==12)HHbbbbAnalyzerBase(565,st1[12],"QCD300" ,351300,0);
+	if(a==13)HHbbbbAnalyzerBase(496,st1[13],"QCD500" ,31630,0);
+	if(a==14)HHbbbbAnalyzerBase(394,st1[14],"QCD700" ,6802,0);
+	if(a==15)HHbbbbAnalyzerBase(155,st1[15],"QCD1000",1206,0);
+	if(a==16)HHbbbbAnalyzerBase(103,st1[16],"QCD1500",120.4,0);
+	if(a==17)HHbbbbAnalyzerBase(71 ,st1[17],"QCD2000",25.24,0);
 	
 	
 	
-	//c1 = new TCanvas("c1","",1360,768);
 	
-	//setNCUStyle(true);
+	
 	
 	
 }
