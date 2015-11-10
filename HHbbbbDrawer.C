@@ -301,6 +301,7 @@ void HHbbbbAnalyzerBase(int wM, string st,string st2,double Xsec=1,int SignalBkg
 			mjjCs=*thisHiggsCs+*thatHiggsCs;
 			cs2->Fill(mjjCs.M());
 			
+			thisHiggsCs ->SetPxPyPzE(thisHiggsCs->Px()*125/jetPRmassL2L3Corr[FatjetPreSelection4i[0]],thisHiggsCs->Py()*125/jetPRmassL2L3Corr[FatjetPreSelection4i[0]],thisHiggsCs->Pz()*125/jetPRmassL2L3Corr[FatjetPreSelection4i[0]],thisHiggsCs->E()*125/jetPRmassL2L3Corr[FatjetPreSelection4i[0]]);
 			
 			mjjCs=*thisHiggsCs+*thatHiggsCs;
 			cs3->Fill(mjjCs.M());
