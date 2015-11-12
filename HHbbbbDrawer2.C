@@ -37,38 +37,7 @@ void HHbbbbAnalyzerBase(int wM, string st,string st2,double Xsec=1,int SignalBkg
 		
 		int nPass[10]={0};
 		int total=0;
-		TH1D* th[30];
 		
-			th[0]=new TH1D("deltaEta","deltaEta",30,0,3);
-			th[1]=new TH1D("Mjj","Mjj",2000,400,4000);
-			th[2]=new TH1D("SDMass1","SDMass1",200,0,200);
-			th[3]=new TH1D("SDMass2","SDMass2",200,0,200);
-			th[4]=new TH1D("PRMass1","PRMass1",200,0,200);
-			th[5]=new TH1D("PRMass2","PRMass2",200,0,200);
-			th[6]=new TH1D("deltaR1","deltaR1",20,0,1);
-			th[7]=new TH1D("deltaR2","deltaR2",20,0,1);
-			th[8]=new TH1D("CSV1","CSV1",20,0,1);
-			th[9]=new TH1D("CSV2","CSV2",20,0,1);
-			th[10]=new TH1D("CSVSum","CSVSum",20,0,2);
-			th[11]=new TH1D("CSVMax","CSVMax",20,0,1);
-			th[12]=new TH1D("CSVMin","CSVMin",20,0,1);
-			th[13]=new TH1D("tau21_1","tau21_1",20,0,1);
-			th[14]=new TH1D("tau21_2","tau21_2",20,0,1);
-			th[15]=new TH1D("jetPt1","jetPt1",1500,0,1500);
-			th[16]=new TH1D("jetPt2","jetPt2",1500,0,1500);
-			th[17]=new TH1D("PRMassC1","PRMassC1",600,0,600);
-			th[18]=new TH1D("PRMassC2","PRMassC2",600,0,600);
-			
-			th[19]=new TH1D("FATjetPRmassL2L3Corr","FATjetPRmassL2L3Corr",600,0,600);
-			th[20]=new TH1D("FATjetPRmassL2L3Corr_2","FATjetPRmassL2L3Corr_2",600,0,600);
-			th[21]=new TH1D("FATjetPRmassL2L3CorrC","FATjetPRmassL2L3CorrC",600,0,600);
-			th[22]=new TH1D("FATjetPRmassL2L3CorrC_2","FATjetPRmassL2L3CorrC_2",600,0,600);
-			
-			th[23]=new TH1D("MjjC","MjjC",2000,400,4000);
-			th[24]=new TH1D("Mbb1","Mbb1",600,0,600);
-			th[25]=new TH1D("Mbb2","Mbb2",600,0,600);
-			th[26]=new TH1D("MbbC1","MbbC1",600,0,600);
-			th[27]=new TH1D("MbbC2","MbbC2",600,0,600);
 			
 			TH1D* cs1=new TH1D("case1","case1",2000,400,6000);
 			TH1D* cs2=new TH1D("case2","case2",2000,400,6000);
@@ -137,21 +106,15 @@ void HHbbbbAnalyzerBase(int wM, string st,string st2,double Xsec=1,int SignalBkg
 			}
 			if(FatjetPreSelection.size()<2)continue;
 			
+			
+			
 			//TH1D* th1=new TH1D("","",,0,);
 			
 			TLorentzVector* thisHiggs = (TLorentzVector*)FATjetP4->At(FatjetPreSelection[0]);
 			TLorentzVector* thatHiggs = (TLorentzVector*)FATjetP4->At(FatjetPreSelection[1]);
 			TLorentzVector mjj=*thisHiggs+*thatHiggs;
-			csS->Fill(mjj.M()+250-thisHiggs->M()-thatHiggs->M());
-			th[24]->Fill(thisHiggs->M());
-			th[25]->Fill(thatHiggs->M());
-			
-			th[0]->Fill(fabs(thisHiggs->Eta()-thatHiggs->Eta()));
-			th[1]->Fill(mjj.M());
-			th[2]->Fill(FATjetSDmass[FatjetPreSelection[0]]);
-			th[3]->Fill(FATjetSDmass[FatjetPreSelection[1]]);
-			th[4]->Fill(FATjetPRmass[FatjetPreSelection[0]]);
-			th[5]->Fill(FATjetPRmass[FatjetPreSelection[1]]);
+		
+		
 			
 			TLorentzVector  FATsubjet_1,FATsubjet_2,FATsubjet_3,FATsubjet_4;;
 			FATsubjet_1.SetPxPyPzE(FATsubjetSDPx[FatjetPreSelection[0]][0],FATsubjetSDPy[FatjetPreSelection[0]][0],FATsubjetSDPz[FatjetPreSelection[0]][0],FATsubjetSDE[FatjetPreSelection[0]][0]);
@@ -160,83 +123,22 @@ void HHbbbbAnalyzerBase(int wM, string st,string st2,double Xsec=1,int SignalBkg
 			FATsubjet_4.SetPxPyPzE(FATsubjetSDPx[FatjetPreSelection[1]][1],FATsubjetSDPy[FatjetPreSelection[1]][1],FATsubjetSDPz[FatjetPreSelection[1]][1],FATsubjetSDE[FatjetPreSelection[1]][1]);
 				
 				
-			th[6]->Fill(FATsubjet_1.DeltaR(FATsubjet_2));
-			th[7]->Fill(FATsubjet_3.DeltaR(FATsubjet_4));
-			
-			
-			th[8]->Fill(FATjetCISVV2[FatjetPreSelection[0]]);
-			th[9]->Fill(FATjetCISVV2[FatjetPreSelection[1]]);
-			
-			th[10]->Fill(FATjetCISVV2[FatjetPreSelection[0]]+FATjetCISVV2[FatjetPreSelection[1]]);
+		
 			double temp=FATjetCISVV2[FatjetPreSelection[0]]>FATjetCISVV2[FatjetPreSelection[1]]?FATjetCISVV2[FatjetPreSelection[0]]:FATjetCISVV2[FatjetPreSelection[1]];
-			th[11]->Fill(temp);
+		
 			temp=FATjetCISVV2[FatjetPreSelection[0]]<FATjetCISVV2[FatjetPreSelection[1]]?FATjetCISVV2[FatjetPreSelection[0]]:FATjetCISVV2[FatjetPreSelection[1]];
-			th[12]->Fill(temp);
+		
 			
 			
 			
-			th[13]->Fill(FATjetTau2[FatjetPreSelection[0]]/FATjetTau1[FatjetPreSelection[0]]);
-			th[14]->Fill(FATjetTau2[FatjetPreSelection[1]]/FATjetTau1[FatjetPreSelection[1]]);
-			
-			th[15]->Fill(thisHiggs->Pt());
-			//cout<<thisHiggs->Pt()<<endl;
-			th[16]->Fill(thatHiggs->Pt());
 			
 
-			vector<int> FatjetPreSelection1i,FatjetPreSelection1j;
-			for(unsigned int i=0;i<FatjetPreSelection.size();i++){
-				TLorentzVector* thisHiggs = (TLorentzVector*)FATjetP4->At(FatjetPreSelection[i]);
-				for(unsigned int j=i+1;j<FatjetPreSelection.size();j++){
-					TLorentzVector* thatHiggs = (TLorentzVector*)FATjetP4->At(FatjetPreSelection[j]);
-				    if(fabs(thisHiggs->Eta()-thatHiggs->Eta())<1.3){
-						FatjetPreSelection1i.push_back(FatjetPreSelection[i]);
-						FatjetPreSelection1j.push_back(FatjetPreSelection[j]);
-					}
-				}
-				//if(isDeltaEta13)break;
-			}
-			if(FatjetPreSelection1i.size()<1)continue;
-	
-			nPass[0]++;
-			
-			vector<int> FatjetPreSelection2i,FatjetPreSelection2j;
-			for(unsigned int i=0;i<FatjetPreSelection1i.size();i++){
-				TLorentzVector* thisHiggs = (TLorentzVector*)FATjetP4->At(FatjetPreSelection1i[i]);
-				TLorentzVector* thatHiggs = (TLorentzVector*)FATjetP4->At(FatjetPreSelection1j[i]);
-				TLorentzVector mjj=*thisHiggs+*thatHiggs;
-				//cout<<mjj.M()<<endl;
-				if(mjj.M()>1000){
-					//cout<<"y"<<endl;
-					FatjetPreSelection2i.push_back(FatjetPreSelection1i[i]);
-				    FatjetPreSelection2j.push_back(FatjetPreSelection1j[i]);
-					
-				}
-				
-				
-			}
-			if(FatjetPreSelection2i.size()<1)continue;
-			nPass[1]++;
-			
 			vector<int> FatjetPreSelection3i,FatjetPreSelection3j;
-			for(unsigned int i=0;i<FatjetPreSelection2i.size();i++){
-				
-				th[19]->Fill(jetPRmassL2L3Corr[FatjetPreSelection2i[i]]);
-				th[20]->Fill(jetPRmassL2L3Corr[FatjetPreSelection2j[i]]);
-				th2f->Fill(jetPRmassL2L3Corr[FatjetPreSelection2i[i]],jetPRmassL2L3Corr[FatjetPreSelection2j[i]]);
-				
-				if(jetPRmassL2L3Corr[FatjetPreSelection2i[i]]>135||jetPRmassL2L3Corr[FatjetPreSelection2i[i]]<105)continue;
-				if(jetPRmassL2L3Corr[FatjetPreSelection2j[i]]>135||jetPRmassL2L3Corr[FatjetPreSelection2j[i]]<105)continue;
-				//if(FATjetPRmass[FatjetPreSelection2j[i]]>130||FATjetPRmass[FatjetPreSelection2j[i]]<95)continue;
-				//if(FATjetPRmass[FatjetPreSelection2i[i]]>150||FATjetPRmass[FatjetPreSelection2i[i]]<90)continue;
-				//if(FATjetPRmass[FatjetPreSelection2j[i]]>150||FATjetPRmass[FatjetPreSelection2j[i]]<90)continue;
-				
-				
-				
-				FatjetPreSelection3i.push_back(FatjetPreSelection2i[i]);
-				FatjetPreSelection3j.push_back(FatjetPreSelection2j[i]);
-			}
-			if(FatjetPreSelection3i.size()<1)continue;
-			nPass[2]++;
+			
+			FatjetPreSelection3i.push_back(FatjetPreSelection[0]);
+			FatjetPreSelection3j.push_back(FatjetPreSelection[1]);
+			
+			
 			
 			vector<int> FatjetPreSelection4i,FatjetPreSelection4j;
 			for(unsigned int i=0;i<FatjetPreSelection3i.size();i++){
@@ -282,25 +184,7 @@ void HHbbbbAnalyzerBase(int wM, string st,string st2,double Xsec=1,int SignalBkg
 			
 			//int numHiggsHP=0,numHiggsLP=0;
 			
-			bool isPassingTau=0;
-			for(unsigned int i=0;i<FatjetPreSelection4i.size();i++){
-				bool thisHiggsHP=0,thisHiggsLP=0;
-				if(FATjetTau2[FatjetPreSelection4i[i]]/FATjetTau1[FatjetPreSelection4i[i]]<0.5)thisHiggsHP=1;
-				if(FATjetTau2[FatjetPreSelection4i[i]]/FATjetTau1[FatjetPreSelection4i[i]]<0.75 && FATjetTau2[FatjetPreSelection4i[i]]/FATjetTau1[FatjetPreSelection4i[i]]>0.5)thisHiggsLP=1;
-				if(thisHiggsHP)thisHiggsLP=1;
-				bool thatHiggsHP=0,thatHiggsLP=0;
-			
-				
-				if(FATjetTau2[FatjetPreSelection4j[i]]/FATjetTau1[FatjetPreSelection4j[i]]<0.5)thatHiggsHP=1;
-				if(FATjetTau2[FatjetPreSelection4j[i]]/FATjetTau1[FatjetPreSelection4j[i]]<0.75 && FATjetTau2[FatjetPreSelection4j[i]]/FATjetTau1[FatjetPreSelection4j[i]]>0.5)thatHiggsLP=1;
-				if(thatHiggsHP)thatHiggsLP=1;
-				
-				if(thisHiggsLP==0 || thatHiggsLP==0 )continue;
-				if(thisHiggsHP==0 && thatHiggsHP==0) continue;
-				
-				isPassingTau=1;
-			}
-			if(isPassingTau==0)continue;
+
 			
   
 			nPass[4]++;
@@ -325,7 +209,6 @@ void HHbbbbAnalyzerBase(int wM, string st,string st2,double Xsec=1,int SignalBkg
 			thatHiggsCs = (TLorentzVector*)FATjetP4->At(FatjetPreSelection4j[0]);
 			double scaleThis = 125/thisHiggsCs->M();
 			double scaleThat = 125/thatHiggsCs->M();
-			
 			thisHiggsCs ->SetPxPyPzE(thisHiggsCs->Px()*scaleThis,thisHiggsCs->Py()*scaleThis,thisHiggsCs->Pz()*scaleThis,thisHiggsCs->E()*scaleThis);
 			thatHiggsCs ->SetPxPyPzE(thatHiggsCs->Px()*scaleThat,thatHiggsCs->Py()*scaleThat,thatHiggsCs->Pz()*scaleThat,thatHiggsCs->E()*scaleThat);
 		
@@ -338,15 +221,7 @@ void HHbbbbAnalyzerBase(int wM, string st,string st2,double Xsec=1,int SignalBkg
 			
 			cs5->Fill(mjjCs.M()+250-thisHiggsCs->M()-thatHiggsCs->M());
 			
-			th[21]->Fill(jetPRmassL2L3Corr[FatjetPreSelection4i[0]]);
-			th[22]->Fill(jetPRmassL2L3Corr[FatjetPreSelection4j[0]]);
 			
-			th[17]->Fill(FATjetPRmass[FatjetPreSelection4i[0]]);
-			th[18]->Fill(FATjetPRmass[FatjetPreSelection4j[0]]);
-			
-			th[26]->Fill(thisHiggsCs->M());
-			th[27]->Fill(thatHiggsCs->M());
-			th[23]->Fill(mjjCs.M());
 		}
 		
 		
@@ -355,7 +230,7 @@ void HHbbbbAnalyzerBase(int wM, string st,string st2,double Xsec=1,int SignalBkg
 		}
 		
 		
-	for(int i=0 ;i< 28;i++)th[i]->Scale(1000*Xsec/total);
+	
 	
 	th2f->Scale(1000*Xsec/total);
 	cs1->Scale(1000*Xsec/total);
@@ -365,9 +240,9 @@ void HHbbbbAnalyzerBase(int wM, string st,string st2,double Xsec=1,int SignalBkg
 	cs5->Scale(1000*Xsec/total);
 	csS->Scale(1000*Xsec/total);
 		
-	TFile* outFile = new TFile(Form("root_files/%s.root",st2.data()),"recreate");   
+	TFile* outFile = new TFile(Form("root_files_14/%s.root",st2.data()),"recreate");   
 	
-	for(int i=0 ;i< 28;i++)th[i]->Write();
+	
 	
 	cs1->Write();
 	cs2->Write();
@@ -380,7 +255,7 @@ void HHbbbbAnalyzerBase(int wM, string st,string st2,double Xsec=1,int SignalBkg
 	//cout<<th2f->GetCorrelationFactor();
 	outFile->Close();
 	
-	for(int i=0 ;i<28;i++)th[i]->Clear();
+	
 	
 	cs1->Clear();
 	cs2->Clear();
@@ -395,7 +270,7 @@ void HHbbbbAnalyzerBase(int wM, string st,string st2,double Xsec=1,int SignalBkg
 }
 
 
-void HHbbbbDrawer(int a){
+void HHbbbbDrawer2(int a){
 	setNCUStyle();
 	
 	string st1[20]={
