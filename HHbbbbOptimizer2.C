@@ -85,17 +85,18 @@ void HHbbbbAnalyzerBase(int wM, string st,string st2,double Xsec=1,int SignalBkg
 		*/
 		
 		TH1D* th1[10];
-		th1[0]=new TH1D("1000_dEta","1000_dEta",400,0,4);
-		th1[1]=new TH1D("1200_dEta","1200_dEta",400,0,4);
-		th1[2]=new TH1D("1400_dEta","1400_dEta",400,0,4);
-		th1[3]=new TH1D("1600_dEta","1600_dEta",400,0,4);
-		th1[4]=new TH1D("2000_dEta","2000_dEta",400,0,4);
-		th1[5]=new TH1D("2500_dEta","2500_dEta",400,0,4);
-		th1[6]=new TH1D("3000_dEta","3000_dEta",400,0,4);
-		th1[7]=new TH1D("3500_dEta","3500_dEta",400,0,4);
-		th1[8]=new TH1D("4000_dEta","4000_dEta",400,0,4);
-		th1[9]=new TH1D("4500_dEta","4500_dEta",400,0,4);
-		for(int i=0 ;i< 10;i++)th1[i]->Sumw2();
+		th1[0]=new TH1D("Mass_dEta8","Mass_dEta8",1000,0,5000);
+		th1[1]=new TH1D("Mass_dEta9","Mass_dEta9",1000,0,5000);
+		th1[2]=new TH1D("Mass_dEta10","Mass_dEta10",1000,0,5000);
+		th1[3]=new TH1D("Mass_dEta11","Mass_dEta11",1000,0,5000);
+		th1[4]=new TH1D("Mass_dEta12","Mass_dEta12",1000,0,5000);
+		th1[5]=new TH1D("Mass_dEta13","Mass_dEta13",1000,0,5000);
+		th1[6]=new TH1D("Mass_dEta14","Mass_dEta14",1000,0,5000);
+		th1[7]=new TH1D("Mass_dEta15","Mass_dEta15",1000,0,5000);
+		th1[8]=new TH1D("dEta","dEta",100,0,4);
+		//th1[8]=new TH1D("Mass_dEta8","4000_dEta",400,0,4);
+		//th1[9]=new TH1D("Mass_dEta8","4500_dEta",400,0,4);
+		for(int i=0 ;i< 9;i++)th1[i]->Sumw2();
 		
 		for (int w=1;w<wM;w++){
 			//cout<<Form("%s%d.root",st.data(),w)<<endl;
@@ -245,26 +246,15 @@ void HHbbbbAnalyzerBase(int wM, string st,string st2,double Xsec=1,int SignalBkg
 				TLorentzVector mjj=*thisHiggs+*thatHiggs;
 				//cout<<mjj.M()<<endl;
 				if(mjj.M()<1000)continue;
-				//cout<<mjj.M()<<endl;
-				th1[0]->Fill(fabs(thisHiggs->Eta()-thatHiggs->Eta()));
-				if(mjj.M()<1200*0.85)continue;
-				th1[1]->Fill(fabs(thisHiggs->Eta()-thatHiggs->Eta()));
-				if(mjj.M()<1400*0.85)continue;
-				th1[2]->Fill(fabs(thisHiggs->Eta()-thatHiggs->Eta()));
-				if(mjj.M()<1600*0.85)continue;
-				th1[3]->Fill(fabs(thisHiggs->Eta()-thatHiggs->Eta()));
-				if(mjj.M()<2000*0.85)continue;
-				th1[4]->Fill(fabs(thisHiggs->Eta()-thatHiggs->Eta()));
-				if(mjj.M()<2500*0.85)continue;
-				th1[5]->Fill(fabs(thisHiggs->Eta()-thatHiggs->Eta()));
-				if(mjj.M()<3000*0.85)continue;
-				th1[6]->Fill(fabs(thisHiggs->Eta()-thatHiggs->Eta()));
-				if(mjj.M()<3500*0.85)continue;
-				th1[7]->Fill(fabs(thisHiggs->Eta()-thatHiggs->Eta()));
-				if(mjj.M()<4000*0.85)continue;
 				th1[8]->Fill(fabs(thisHiggs->Eta()-thatHiggs->Eta()));
-				if(mjj.M()<4500*0.85)continue;
-				th1[9]->Fill(fabs(thisHiggs->Eta()-thatHiggs->Eta()));
+				if(fabs(thisHiggs->Eta()-thatHiggs->Eta())<0.8)th1[0]->Fill(mjj.M());
+				if(fabs(thisHiggs->Eta()-thatHiggs->Eta())<0.9)th1[1]->Fill(mjj.M());
+				if(fabs(thisHiggs->Eta()-thatHiggs->Eta())<1.0)th1[2]->Fill(mjj.M());
+				if(fabs(thisHiggs->Eta()-thatHiggs->Eta())<1.1)th1[3]->Fill(mjj.M());
+				if(fabs(thisHiggs->Eta()-thatHiggs->Eta())<1.2)th1[4]->Fill(mjj.M());
+				if(fabs(thisHiggs->Eta()-thatHiggs->Eta())<1.3)th1[5]->Fill(mjj.M());
+				if(fabs(thisHiggs->Eta()-thatHiggs->Eta())<1.4)th1[6]->Fill(mjj.M());
+				if(fabs(thisHiggs->Eta()-thatHiggs->Eta())<1.5)th1[7]->Fill(mjj.M());
 				}
 			}
 			
@@ -274,19 +264,19 @@ void HHbbbbAnalyzerBase(int wM, string st,string st2,double Xsec=1,int SignalBkg
 		}
 		cout<<"entries="<<total<<endl;
 		//cout<<double(nPass[3])/total<<endl;
-		for(int i=0 ;i< 10;i++){
+		for(int i=0 ;i< 9;i++){
 			//th2f[i]->Scale(3000*Xsec/total);
 			th1[i]->Scale(3000*Xsec/total);
 			//th2[i]->Scale(3000*Xsec/total);
 		}
-		TFile* outFile = new TFile(Form("root_files_Op_DeltaEta/%s.root",st2.data()),"recreate");
-		for(int i=0 ;i< 10;i++){
+		TFile* outFile = new TFile(Form("root_files_Op_DeltaEta_shape/%s.root",st2.data()),"recreate");
+		for(int i=0 ;i< 9;i++){
 			//th2f[i]->Write();
 			th1[i]->Write();
 			//th2[i]->Write();
 		}
 		outFile->Close();
-		for(int i=0 ;i< 10;i++){
+		for(int i=0 ;i< 9;i++){
 			//th2f[i]->Clear();
 			th1[i]->Clear();
 			//th2[i]->Clear();
@@ -337,7 +327,7 @@ void HHbbbbOptimizer(int a){
 
 }
 /*
-void HHbbbbOptimizer(){
+void HHbbbbOptimizer2(){
 	
 	int width [nWidth]={20,25,30,35,40,45,50,55,60};
 	int bmin[nBmin]={90,95,100,105,110};
