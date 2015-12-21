@@ -1,0 +1,29 @@
+# Fully Hadronic HH analysis
+imax 1
+kmax *
+---------------
+shapes data_obs CMS_jj_NOCAT ../workspaces/CMS_jj_bkg_HH_13TeV.root w_all:data_obs_CMS_jj_NOCAT
+shapes bkg_fit_jj CMS_jj_NOCAT ../workspaces/CMS_jj_bkg_HH_13TeV.root w_all:CMS_bkg_fit_CMS_jj_NOCAT
+shapes HH_jj CMS_jj_NOCAT ../workspaces/CMS_jj_HH_1600_8TeV.root w_all:HH_jj_sig_CMS_jj_NOCAT
+---------------
+bin          CMS_jj_NOCAT
+observation   13026
+------------------------------
+bin                      CMS_jj_NOCAT       CMS_jj_NOCAT      
+process                 HH_jj     bkg_fit_jj     
+process                 0        1          
+rate                       5.109 1
+--------------------------------
+# signal scaled by 0.0006 to a cross section of 10/fb and also scale factor of 1 are applied.
+lumi_8TeV       lnN  1.026    - 
+CMS_eff_vtag_sf         lnN  1.056       - # mass cut efficiency
+CMS_scale_j         lnN  1.120 	   - # jet energy scale
+CMS_res_j         lnN  1.040	- # jet energy resolution
+CMS_pu         lnN  1.030       - # pileup
+# Parametric shape uncertainties, entered by hand.
+CMS_sig_p1_jes    param   0.0   1.0   # dijet mass shift due to JES uncertainty
+CMS_sig_p2_jer     param   0.0   1.0   # dijet mass resolution shift due to JER uncertainty
+CMS_bkg_fit_CMS_jj_NOCAT_norm           flatParam  # Normalization uncertainty on background slope
+CMS_bkg_fit_slope1_CMS_jj_NOCAT         flatParam  # Mean and absolute uncertainty on background slope
+CMS_bkg_fit_slope2_CMS_jj_NOCAT         flatParam  # Mean and absolute uncertainty on background slope
+CMS_bkg_fit_slope3_CMS_jj_NOCAT         flatParam  # Mean and absolute uncertainty on background slope
