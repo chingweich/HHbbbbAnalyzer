@@ -1702,20 +1702,20 @@ TH1D* HHbbbbAnalyzerJetEff(int wM, string st,string st2,double Xsec,double & db1
 		int total=0;
 		
 		TH1D* thpt1=new TH1D("fatPt","",50,200,4000);
-		TH1D* thpt2=new TH1D("fatPt","",50,200,4000);
+		TH1D* thpt2=new TH1D("fatPtD","",50,200,4000);
 		double bins[10]={0,30,50,70,100,140,200,300,670,2000};
 		TH1D* pt11=new TH1D("sub1Pt","",9,bins);
-		TH1D* pt12=new TH1D("sub1Pt","",9,bins);
+		TH1D* pt12=new TH1D("sub1PtD","",9,bins);
 		TH1D* pt21=new TH1D("sub2Pt","",9,bins);
-		TH1D* pt22=new TH1D("sub2Pt","",9,bins);
+		TH1D* pt22=new TH1D("sub2PtD","",9,bins);
 		TH1D* pt31=new TH1D("sub1And2Pt","",9,bins);
-		TH1D* pt32=new TH1D("sub1And2Pt","",9,bins);
+		TH1D* pt32=new TH1D("sub1And2PtD","",9,bins);
 		
 		TH2D* ep11=new TH2D("FatEta_vs_fatPt","",9,bins,50,0,2.4);
-		TH2D* ep12=new TH2D("FatEta_vs_fatPt","",9,bins,50,0,2.4);
+		TH2D* ep12=new TH2D("FatEta_vs_fatPtD","",9,bins,50,0,2.4);
 		
 		TH2D* ep21=new TH2D("FatEta_vs_subPt","",9,bins,50,0,2.4);
-		TH2D* ep22=new TH2D("FatEta_vs_subPt","",9,bins,50,0,2.4);
+		TH2D* ep22=new TH2D("FatEta_vs_subPtD","",9,bins,50,0,2.4);
 		
 		
 		for (int w=1;w<wM;w++){
@@ -1781,15 +1781,25 @@ TH1D* HHbbbbAnalyzerJetEff(int wM, string st,string st2,double Xsec,double & db1
 				ep11->Fill(thisHiggs->Pt(),thisHiggs->Eta());
 				ep21->Fill(temp,thisHiggs->Eta());
 				ep21->Fill(temp2,thisHiggs->Eta());
+				
+				if(FATsubjetSDCSV[i][0]>0.605){
+					pt12->Fill(temp);
+					pt32->Fill(temp);
+					ep22->Fill(temp,thisHiggs->Eta());
+				}
+				
+				if(FATsubjetSDCSV[i][1]>0.605){
+					pt22->Fill(temp2);
+					pt32->Fill(temp2);
+					ep22->Fill(temp2,thisHiggs->Eta());
+				}
+				
+				
 				if(FATsubjetSDCSV[i][0]<0.605||FATsubjetSDCSV[i][1]<0.605)continue;
 				thpt2->Fill(thisHiggs->Pt());
-				pt12->Fill(temp);
-				pt22->Fill(temp2);
-				pt32->Fill(temp);
-				pt32->Fill(temp2);
 				ep12->Fill(thisHiggs->Pt(),thisHiggs->Eta());
-				ep22->Fill(temp,thisHiggs->Eta());
-				ep22->Fill(temp2,thisHiggs->Eta());
+				
+				
 			}
 		
 			
@@ -1801,7 +1811,7 @@ TH1D* HHbbbbAnalyzerJetEff(int wM, string st,string st2,double Xsec,double & db1
 			}
 			
 		}
-		
+		/*
 		
 		int binx=thpt1->GetNbinsX();
 		double x[binx],y[binx];
@@ -1853,6 +1863,7 @@ TH1D* HHbbbbAnalyzerJetEff(int wM, string st,string st2,double Xsec,double & db1
 		TGraphErrors* tg3=new TGraphErrors(pt11); 
 		TGraphErrors* tg4=new TGraphErrors(pt21); 
 		TGraphErrors* tg5=new TGraphErrors(pt31); 
+		*/
 		//c1 = new TCanvas("c1","",1360,768);
 		//tg1->Draw("APL");
 		
@@ -1861,11 +1872,18 @@ TH1D* HHbbbbAnalyzerJetEff(int wM, string st,string st2,double Xsec,double & db1
 	
 	TFile* outFile = new TFile(Form("0129/%s.root",st2.data()),"recreate");
 	thpt1->Write();
+	thpt2->Write();
 	pt11->Write();
 	pt21->Write();
 	pt31->Write();
 	ep11->Write();
 	ep21->Write();
+	
+	pt12->Write();
+	pt22->Write();
+	pt32->Write();
+	ep12->Write();
+	ep22->Write();
 	//tg2->Write();
 	
 	return th2;
