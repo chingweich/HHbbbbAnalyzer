@@ -3,6 +3,7 @@
 #include <iostream>
 #include <algorithm>
 #include <TH1D.h>
+#include <TH2D.h>
 #include <TRandom.h>
 #include <TLorentzVector.h>
 #include <TFile.h>
@@ -35,10 +36,10 @@ TH1D* HHbbbbAnalyzerBase(int wM, string st,string st2,double Xsec,double & db1,d
 		TTree *tree;
 	    TH1D* th2 =new TH1D("cut flow","",5,0,5);
 		
-		int nPass[10]={0};
+		int nPass[20]={0};
 		int total=0;
 		
-		TH1D * th1[30];
+		TH1D * th1[30],*thd;
 		th1[0]=new TH1D("cat0","cat0",4000,1000,5000);
 		th1[1]=new TH1D("cat1","cat1",4000,1000,5000);
 		th1[2]=new TH1D("cat2","cat2",4000,1000,5000);
@@ -54,6 +55,10 @@ TH1D* HHbbbbAnalyzerBase(int wM, string st,string st2,double Xsec,double & db1,d
 		th1[12]=new TH1D("dR_com_cat2","dR_com_cat0",4000,1000,5000);
 		th1[13]=new TH1D("dR_com_cat3","dR_com_cat1",4000,1000,5000);
 		th1[14]=new TH1D("dR_com_cat4","dR_com_cat1",4000,1000,5000);
+		thd=new TH1D("dEta","dEta",40,-2,2);
+		
+		TH1D* thht=new TH1D("HT","HT",1000,0,3000);
+		TH1D* thht2=new TH1D("HTcut","HT",1000,0,3000);
 		
 		for(int ii=0;ii<15;ii++)th1[ii]->Sumw2();
 		
@@ -79,7 +84,7 @@ TH1D* HHbbbbAnalyzerBase(int wM, string st,string st2,double Xsec,double & db1,d
 				dir = (TDirectory*)f->Get(Form("%s:/tree",st.data()));
 			}
 		
-		cout<<w<<endl;
+		if(w%10==0)cout<<w<<endl;
 		
 		
 		dir->GetObject("treeMaker",tree);
@@ -88,7 +93,7 @@ TH1D* HHbbbbAnalyzerBase(int wM, string st,string st2,double Xsec,double & db1,d
 		
 		total+=data.GetEntriesFast();
 	
-
+		//data.Print();
 		
 		for(Long64_t jEntry=0; jEntry<data.GetEntriesFast() ;jEntry++){
 			data.GetEntry(jEntry);
@@ -96,19 +101,28 @@ TH1D* HHbbbbAnalyzerBase(int wM, string st,string st2,double Xsec,double & db1,d
 			Int_t nJet         = data.GetInt("FATnJet");
 			TClonesArray* FATjetP4 = (TClonesArray*) data.GetPtrTObject("FATjetP4");
 			float*   FATjetPRmass= data.GetPtrFloat("FATjetPRmass");  
+			Float_t HT=data.GetFloat("HT"); 
 			
-			
+			thht->Fill(HT);
 			
 			if(nJet<1)continue;
 			
-			vector<int> FatjetPreSelection;
+			vector<int> FatjetPreSelection_00;
 			for(int i=0;i<nJet;i++){
 				TLorentzVector* thisHiggs = (TLorentzVector*)FATjetP4->At(i);
 				if(thisHiggs->Pt()<200)continue;
+				FatjetPreSelection_00.push_back(i);
+			}
+			
+			nPass[0]++;
+			vector<int> FatjetPreSelection;
+			for(unsigned int i=0;i<FatjetPreSelection_00.size();i++){
+				TLorentzVector* thisHiggs = (TLorentzVector*)FATjetP4->At(FatjetPreSelection_00[i]);
 				if(fabs(thisHiggs->Eta())>2.4)continue;
 				FatjetPreSelection.push_back(i);
 			}
-		
+			
+			nPass[1]++;
 		    //bool isDeltaEta13=0;
 			vector<int> FatjetPreSelection1i,FatjetPreSelection1j;
 			for(unsigned int i=0;i<FatjetPreSelection.size();i++){
@@ -119,12 +133,13 @@ TH1D* HHbbbbAnalyzerBase(int wM, string st,string st2,double Xsec,double & db1,d
 						FatjetPreSelection1i.push_back(FatjetPreSelection[i]);
 						FatjetPreSelection1j.push_back(FatjetPreSelection[j]);
 					}
+					thd->Fill(thisHiggs->Eta()-thatHiggs->Eta());
 				}
 				//if(isDeltaEta13)break;
 			}
 			if(FatjetPreSelection1i.size()<1)continue;
 	
-			nPass[0]++;
+			nPass[2]++;
 	
 			
 			float*  FATjetCISVV2 = data.GetPtrFloat("FATjetCISVV2"); 
@@ -161,7 +176,7 @@ TH1D* HHbbbbAnalyzerBase(int wM, string st,string st2,double Xsec,double & db1,d
 				
 			}
 			if(FatjetPreSelection2i.size()<1)continue;
-			nPass[1]++;
+			nPass[3]++;
 			//cout<<jEntry<<"1"<<endl;
 			
 			vector<int> FatjetPreSelection3i,FatjetPreSelection3j;
@@ -176,7 +191,7 @@ TH1D* HHbbbbAnalyzerBase(int wM, string st,string st2,double Xsec,double & db1,d
 				FatjetPreSelection3j.push_back(FatjetPreSelection2j[i]);
 			}
 			if(FatjetPreSelection3i.size()<1)continue;
-			nPass[2]++;
+			nPass[4]++;
 			//cout<<jEntry<<"2"<<endl;
 			
 			/*
@@ -222,7 +237,7 @@ TH1D* HHbbbbAnalyzerBase(int wM, string st,string st2,double Xsec,double & db1,d
             if(FatjetPreSelection4i.size()<1)continue;
 			*/
 			
-			nPass[3]++;
+			
 			
 			//int numHiggsHP=0,numHiggsLP=0;
 			
@@ -247,8 +262,9 @@ TH1D* HHbbbbAnalyzerBase(int wM, string st,string st2,double Xsec,double & db1,d
 			}
 			//if(isPassingTau==0)continue;
 			if(FatjetPreSelection4i.size()<1)continue;
-			nPass[3]++;
+			nPass[5]++;
 			
+			thht2->Fill(HT);
 			
 			//for(unsigned int i=0;i<FatjetPreSelection4i.size();i++){
 			int numSub=0,numdRSub=0,numdR_com_sub;
@@ -261,11 +277,26 @@ TH1D* HHbbbbAnalyzerBase(int wM, string st,string st2,double Xsec,double & db1,d
 			TLorentzVector* thisHiggsF = (TLorentzVector*)FATjetP4->At(FatjetPreSelection4i[0]);
 			TLorentzVector* thatHiggsF = (TLorentzVector*)FATjetP4->At(FatjetPreSelection4j[0]);
 			TLorentzVector mjjF=*thisHiggsF+*thatHiggsF;
-			if(numSub==0)th1[0]->Fill(mjjF.M());
-			if(numSub==1)th1[1]->Fill(mjjF.M());
-			if(numSub==2)th1[2]->Fill(mjjF.M());
-			if(numSub==3)th1[3]->Fill(mjjF.M());
-			if(numSub==4)th1[4]->Fill(mjjF.M());
+			if(numSub==0){
+				th1[0]->Fill(mjjF.M());
+				nPass[6]++;
+			}
+			if(numSub==1){
+				th1[1]->Fill(mjjF.M());
+				nPass[7]++;
+			}
+			if(numSub==2){
+				th1[2]->Fill(mjjF.M());
+				nPass[8]++;
+			}
+			if(numSub==3){
+				th1[3]->Fill(mjjF.M());
+				nPass[9]++;
+			}
+			if(numSub==4){
+				th1[4]->Fill(mjjF.M());
+				nPass[10]++;
+			}
 			
 			
 			}
@@ -281,7 +312,7 @@ TH1D* HHbbbbAnalyzerBase(int wM, string st,string st2,double Xsec,double & db1,d
 		//th1->SetBinContent(1,total);
 		//string label[5]={"1","2","3","4","5"};
 		for(int i=0;i<5;i++){
-			cout<<Form("nPass[%d]=",i)<<double(nPass[i])/total<<endl;
+			//cout<<Form("nPass[%d]=",i)<<double(nPass[i])/total<<endl;
 			th2->SetBinContent(i+1,double(nPass[i])/total);
 			th2->GetXaxis()->SetBinLabel(i+1,Form("%d",i+1));
 		}
@@ -293,24 +324,59 @@ TH1D* HHbbbbAnalyzerBase(int wM, string st,string st2,double Xsec,double & db1,d
 	db3=double(nPass[2])/total;
 	db4=double(nPass[3])/total;
 	db5=double(nPass[4])/total; 
-	cout<<db1<<","<<db2<<","<<db3<<","<<db4<<","<<db5<<",p="<<nPass[4]<<endl;
+	//cout<<db1<<","<<db2<<","<<db3<<","<<db4<<","<<db5<<",p="<<nPass[4]<<endl;
+	
+	cout<<"nPass[0]="<<nPass[0]<<endl;
+	cout<<"nPass[1]="<<nPass[1]<<endl;
+	cout<<"nPass[2]="<<nPass[2]<<endl;
+	cout<<"nPass[3]="<<nPass[3]<<endl;
+	cout<<"nPass[4]="<<nPass[4]<<endl;
+	cout<<"nPass[5]="<<nPass[5]<<endl;
+	cout<<"nPass[6]="<<nPass[6]<<endl;
+	cout<<"nPass[7]="<<nPass[7]<<endl;
+	cout<<"nPass[8]="<<nPass[8]<<endl;
+	cout<<"nPass[9]="<<nPass[9]<<endl;
+	cout<<"nPass[10]="<<nPass[10]<<endl;
 	
 	
 	for(int i=0 ;i< 5;i++){
 			//th2f[i]->Scale(3000*Xsec/total);
-			if (isSignal==0)th1[i]->Scale(2700*Xsec/total);
+			if (isSignal==0){
+				//cout<<Xsec<<","<<total<<endl;
+				th1[i]->Scale(1960*Xsec/total);
+				
+			}
 			//th2[i]->Scale(3000*Xsec/total);
 		}
+		
+		if (isSignal==0){
+			thd->Scale(1960*Xsec/total);
+			thht->Scale(1960*Xsec/total);
+			thht2->Scale(1960*Xsec/total);	
+		}
+		
+		
 		TFile* outFile = new TFile(Form("root_files_cat_newNtuple/%s.root",st2.data()),"recreate");
 		for(int i=0 ;i< 5;i++){
 			//th2f[i]->Write();
 			th1[i]->Write();
 			//th2[i]->Write();
 		}
+		thd->Write();
+		
 		outFile->Close();
+		
+		TFile* outFile2 = new TFile(Form("root_files_bkg_HT/%s.root",st2.data()),"recreate");
+		thht->Write();
+		thht2->Write();
+		outFile2->Close();
+		
 		for(int i=0 ;i< 5;i++){
 			//th2f[i]->Clear();
 			th1[i]->Clear();
+			thd->Clear();
+			thht->Clear();
+			thht2->Clear();
 			//th2[i]->Clear();
 		}
 	
@@ -371,7 +437,7 @@ TH1D* HHbbbbAnalyzerBaseDCut(int wM, string st,string st2,double Xsec,double & d
 				dir = (TDirectory*)f->Get(Form("%s:/tree",st.data()));
 			}
 		
-		cout<<w<<endl;
+		if(w%10==0)cout<<w<<endl;
 		
 		
 		dir->GetObject("treeMaker",tree);
@@ -514,7 +580,7 @@ TH1D* HHbbbbAnalyzerBaseDCut(int wM, string st,string st2,double Xsec,double & d
             if(FatjetPreSelection4i.size()<1)continue;
 			*/
 			
-			nPass[3]++;
+			
 			
 			//int numHiggsHP=0,numHiggsLP=0;
 			
@@ -553,11 +619,26 @@ TH1D* HHbbbbAnalyzerBaseDCut(int wM, string st,string st2,double Xsec,double & d
 			TLorentzVector* thisHiggsF = (TLorentzVector*)FATjetP4->At(FatjetPreSelection4i[0]);
 			TLorentzVector* thatHiggsF = (TLorentzVector*)FATjetP4->At(FatjetPreSelection4j[0]);
 			TLorentzVector mjjF=*thisHiggsF+*thatHiggsF;
-			if(numSub==0)th1[0]->Fill(mjjF.M());
-			if(numSub==1)th1[1]->Fill(mjjF.M());
-			if(numSub==2)th1[2]->Fill(mjjF.M());
-			if(numSub==3)th1[3]->Fill(mjjF.M());
-			if(numSub==4)th1[4]->Fill(mjjF.M());
+			if(numSub==0){
+				th1[0]->Fill(mjjF.M());
+				nPass[4]++;
+			}
+			if(numSub==1){
+				th1[1]->Fill(mjjF.M());
+				nPass[5]++;
+			}
+			if(numSub==2){
+				th1[2]->Fill(mjjF.M());
+				nPass[6]++;
+			}
+			if(numSub==3){
+				th1[3]->Fill(mjjF.M());
+				nPass[7]++;
+			}
+			if(numSub==4){
+				th1[4]->Fill(mjjF.M());
+				nPass[8]++;
+			}
 			
 			
 			}
@@ -585,12 +666,21 @@ TH1D* HHbbbbAnalyzerBaseDCut(int wM, string st,string st2,double Xsec,double & d
 	db3=double(nPass[2])/total;
 	db4=double(nPass[3])/total;
 	db5=double(nPass[4])/total; 
-	cout<<db1<<","<<db2<<","<<db3<<","<<db4<<","<<db5<<",p="<<nPass[4]<<endl;
+	//cout<<db1<<","<<db2<<","<<db3<<","<<db4<<","<<db5<<",p="<<nPass[4]<<endl;
 	
+	cout<<"nPass[0]="<<nPass[0]<<endl;
+	cout<<"nPass[1]="<<nPass[1]<<endl;
+	cout<<"nPass[2]="<<nPass[2]<<endl;
+	cout<<"nPass[3]="<<nPass[3]<<endl;
+	cout<<"nPass[4]="<<nPass[4]<<endl;
+	cout<<"nPass[5]="<<nPass[5]<<endl;
+	cout<<"nPass[6]="<<nPass[6]<<endl;
+	cout<<"nPass[7]="<<nPass[7]<<endl;
+	cout<<"nPass[8]="<<nPass[8]<<endl;
 	
 	for(int i=0 ;i< 5;i++){
 			//th2f[i]->Scale(3000*Xsec/total);
-			if (isSignal==0)th1[i]->Scale(2700*Xsec/total);
+			if (isSignal==0)th1[i]->Scale(1960*Xsec/total);
 			//th2[i]->Scale(3000*Xsec/total);
 		}
 		TFile* outFile = new TFile(Form("root_files_cat_DNtuple/%s.root",st2.data()),"recreate");
@@ -1611,12 +1701,21 @@ TH1D* HHbbbbAnalyzerJetEff(int wM, string st,string st2,double Xsec,double & db1
 		int nPass[10]={0};
 		int total=0;
 		
-		TH1D* thpt1=new TH1D("fatPt","",50,200,4200);
-		TH1D* thpt2=new TH1D("fatPt","",50,200,4200);
-		TH1D* pt11=new TH1D("sub1Pt","",50,0,2000);
-		TH1D* pt12=new TH1D("sub1Pt","",50,0,2000);
-		TH1D* pt21=new TH1D("sub2Pt","",50,0,2000);
-		TH1D* pt22=new TH1D("sub2Pt","",50,0,2000);
+		TH1D* thpt1=new TH1D("fatPt","",50,200,4000);
+		TH1D* thpt2=new TH1D("fatPt","",50,200,4000);
+		double bins[10]={0,30,50,70,100,140,200,300,670,2000};
+		TH1D* pt11=new TH1D("sub1Pt","",9,bins);
+		TH1D* pt12=new TH1D("sub1Pt","",9,bins);
+		TH1D* pt21=new TH1D("sub2Pt","",9,bins);
+		TH1D* pt22=new TH1D("sub2Pt","",9,bins);
+		TH1D* pt31=new TH1D("sub1And2Pt","",9,bins);
+		TH1D* pt32=new TH1D("sub1And2Pt","",9,bins);
+		
+		TH2D* ep11=new TH2D("FatEta_vs_fatPt","",9,bins,50,0,2.4);
+		TH2D* ep12=new TH2D("FatEta_vs_fatPt","",9,bins,50,0,2.4);
+		
+		TH2D* ep21=new TH2D("FatEta_vs_subPt","",9,bins,50,0,2.4);
+		TH2D* ep22=new TH2D("FatEta_vs_subPt","",9,bins,50,0,2.4);
 		
 		
 		for (int w=1;w<wM;w++){
@@ -1665,7 +1764,6 @@ TH1D* HHbbbbAnalyzerJetEff(int wM, string st,string st2,double Xsec,double & db1
 			
 			if(nJet<1)continue;
 			
-			vector<int> FatjetPreSelection;
 			for(int i=0;i<nJet;i++){
 				TLorentzVector* thisHiggs = (TLorentzVector*)FATjetP4->At(i);
 				if(thisHiggs->Pt()<200)continue;
@@ -1673,15 +1771,25 @@ TH1D* HHbbbbAnalyzerJetEff(int wM, string st,string st2,double Xsec,double & db1
 				if(FATjetPassIDLoose[i]==0)continue;
 				thpt1->Fill(thisHiggs->Pt());
 				
-				double temp=sqrt( pow(FATsubjetSDPx[i][0],2)+pow(FATsubjetSDPy[i][0],2));
+				double temp= sqrt( pow(FATsubjetSDPx[i][0],2)+pow(FATsubjetSDPy[i][0],2));
 				double temp2=sqrt( pow(FATsubjetSDPx[i][1],2)+pow(FATsubjetSDPy[i][1],2));
 				//FatjetPreSelection.push_back(i);
 				pt11->Fill(temp);
 				pt21->Fill(temp2);
+				pt31->Fill(temp);
+				pt31->Fill(temp2);
+				ep11->Fill(thisHiggs->Pt(),thisHiggs->Eta());
+				ep21->Fill(temp,thisHiggs->Eta());
+				ep21->Fill(temp2,thisHiggs->Eta());
 				if(FATsubjetSDCSV[i][0]<0.605||FATsubjetSDCSV[i][1]<0.605)continue;
 				thpt2->Fill(thisHiggs->Pt());
 				pt12->Fill(temp);
 				pt22->Fill(temp2);
+				pt32->Fill(temp);
+				pt32->Fill(temp2);
+				ep12->Fill(thisHiggs->Pt(),thisHiggs->Eta());
+				ep22->Fill(temp,thisHiggs->Eta());
+				ep22->Fill(temp2,thisHiggs->Eta());
 			}
 		
 			
@@ -1715,10 +1823,28 @@ TH1D* HHbbbbAnalyzerJetEff(int wM, string st,string st2,double Xsec,double & db1
 			if(pt21->GetBinContent(i)==0)pt21->SetBinContent(i,0);
 			else pt21->SetBinContent(i,pt22->GetBinContent(i)/pt21->GetBinContent(i));
 			
+			if(pt31->GetBinContent(i)==0)pt31->SetBinContent(i,0);
+			else pt31->SetBinContent(i,pt32->GetBinContent(i)/pt31->GetBinContent(i));
+			
 			subx[i]=pt11->GetBinCenter(i);
 			suby1[i]=pt11->GetBinContent(i);
 			suby2[i]=pt21->GetBinContent(i);
 		}
+		
+		for(int i=1;i<51;i++){
+			for(int j=1;j<51;j++){
+				
+				if(ep11->GetBinContent(i,j)==0)ep11->SetBinContent(i,j,0);
+				else ep11->SetBinContent(i,j,ep12->GetBinContent(i,j)/ep11->GetBinContent(i,j));
+				//if(ep11->GetBinContent(i,j)>1e-7)cout<<i<<","<<j<<","<<ep11->GetBinContent(i,j)<<endl;
+				
+				if(ep21->GetBinContent(i,j)==0)ep21->SetBinContent(i,j,0);
+				else ep21->SetBinContent(i,j,ep22->GetBinContent(i,j)/ep21->GetBinContent(i,j));
+				
+				
+			}
+		}
+		
 		
 		
 		TGraphErrors* tg1=new TGraphErrors(thpt1); 
@@ -1726,16 +1852,20 @@ TH1D* HHbbbbAnalyzerJetEff(int wM, string st,string st2,double Xsec,double & db1
 		
 		TGraphErrors* tg3=new TGraphErrors(pt11); 
 		TGraphErrors* tg4=new TGraphErrors(pt21); 
+		TGraphErrors* tg5=new TGraphErrors(pt31); 
 		//c1 = new TCanvas("c1","",1360,768);
 		//tg1->Draw("APL");
 		
 		//cout<<Form("0114/%s.png",st2.data())<<endl;
 		//c1->Print(Form("0114/%s.png",st2.data()));
 	
-	TFile* outFile = new TFile(Form("0114/%s.root",st2.data()),"recreate");
-	tg1->Write();
-	tg3->Write();
-	tg4->Write();
+	TFile* outFile = new TFile(Form("0129/%s.root",st2.data()),"recreate");
+	thpt1->Write();
+	pt11->Write();
+	pt21->Write();
+	pt31->Write();
+	ep11->Write();
+	ep21->Write();
 	//tg2->Write();
 	
 	return th2;
@@ -1803,8 +1933,8 @@ void HHbbbbAnalyzer(int a){
 	//th1[a]=HHbbbbAnalyzerBase(aa[a],st1[a],masspointN[a],Xsec[a],eff1,eff2,eff3,eff4,eff5,sig);
 	//th1[a]=HHbbbbAnalyzerCompare(aa[a],st1[a],masspointN[a],Xsec[a],eff1,eff2,eff3,eff4,eff5,sig);
 	//th1[a]=HHbbbbAnalyzerCSVEff(aa[a],st1[a],masspointN[a],Xsec[a],eff1,eff2,eff3,eff4,eff5,sig);
-	//th1[a]=HHbbbbAnalyzerJetEff(aa[a],st1[a],masspointN[a],Xsec[a],eff1,eff2,eff3,eff4,eff5,sig);
-	th1[a]=HHbbbbAnalyzerBaseDCut(aa[a],st1[a],masspointN[a],Xsec[a],eff1,eff2,eff3,eff4,eff5,sig);
+	th1[a]=HHbbbbAnalyzerJetEff(aa[a],st1[a],masspointN[a],Xsec[a],eff1,eff2,eff3,eff4,eff5,sig);
+	//th1[a]=HHbbbbAnalyzerBaseDCut(aa[a],st1[a],masspointN[a],Xsec[a],eff1,eff2,eff3,eff4,eff5,sig);
 	
 	
 	TFile * tf ;
