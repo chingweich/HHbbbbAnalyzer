@@ -372,38 +372,56 @@ TH1D* HHbbbbAnalyzerBase(int wM, string st,string st2,double Xsec,double & db1,d
 */
 
 
-void HHbbbbAnalyzerBaseC(int wM, string st,string st2,double Xsec,bool nameRoot=0,bool isData=0){	
+void HHbbbbAnalyzerBaseC(int wMs,int wM, string st,string st2,double Xsec,bool nameRoot=0,bool isData=0){	
 	TFile *f;
 	TTree *tree;
 	int nPass[20]={0};int total=0;
 	int dataPassingcsc=0;
 	
-	TH1D * th1[30];
+	TH1D * th1[50];
 	
-	th1[0]=new TH1D("subjet00_0b","subjet00_0b",200,0,2000);
-	th1[1]=new TH1D("subjet01_0b","subjet01_0b",200,0,2000);
-	th1[2]=new TH1D("subjet10_0b","subjet10_0b",200,0,2000);
-	th1[3]=new TH1D("subjet11_0b","subjet11_0b",200,0,2000);
+	th1[0]=new TH1D("Pt_j0_sj0_0b","Pt_j0_sj0_0b",200,0,2000);
+	th1[1]=new TH1D("Pt_j0_sj1_0b","Pt_j0_sj1_0b",200,0,2000);
+	th1[2]=new TH1D("Pt_j1_sj0_0b","Pt_j1_sj0_0b",200,0,2000);
+	th1[3]=new TH1D("Pt_j1_sj1_0b","Pt_j1_sj1_0b",200,0,2000);
 	
-	th1[4]=new TH1D("subjet00_1b","subjet00_1b",200,0,2000);
-	th1[5]=new TH1D("subjet01_1b","subjet01_1b",200,0,2000);
-	th1[6]=new TH1D("subjet10_1b","subjet10_1b",200,0,2000);
-	th1[7]=new TH1D("subjet11_1b","subjet11_1b",200,0,2000);
+	th1[4]=new TH1D("Pt_j0_sj0_1b","Pt_j0_sj0_1b",200,0,2000);
+	th1[5]=new TH1D("Pt_j0_sj1_1b","Pt_j0_sj1_1b",200,0,2000);
+	th1[6]=new TH1D("Pt_j1_sj0_1b","Pt_j1_sj0_1b",200,0,2000);
+	th1[7]=new TH1D("Pt_j1_sj1_1b","Pt_j1_sj1_1b",200,0,2000);
 	
-	th1[8]=new TH1D("subjet00_2b","subjet00_2b",200,0,2000);
-	th1[9]=new TH1D("subjet01_2b","subjet01_2b",200,0,2000);
-	th1[10]=new TH1D("subjet10_2b","subjet10_2b",200,0,2000);
-	th1[11]=new TH1D("subjet11_2b","subjet11_2b",200,0,2000);
+	th1[8]=new TH1D("Pt_j0_sj0_2b","Pt_j0_sj0_2b",200,0,2000);
+	th1[9]=new TH1D("Pt_j0_sj1_2b","Pt_j0_sj1_2b",200,0,2000);
+	th1[10]=new TH1D("Pt_j1_sj0_2b","Pt_j1_sj0_2b",200,0,2000);
+	th1[11]=new TH1D("Pt_j1_sj1_2b","Pt_j1_sj1_2b",200,0,2000);
 	
-	th1[12]=new TH1D("deltaR0_0b","deltaR0_0b",50,0,4);
-	th1[13]=new TH1D("deltaR1_0b","deltaR1_0b",50,0,4);
-	th1[14]=new TH1D("deltaR0_1b","deltaR0_1b",50,0,4);
-	th1[15]=new TH1D("deltaR1_1b","deltaR1_1b",50,0,4);
-	th1[16]=new TH1D("deltaR0_2b","deltaR0_2b",50,0,4);
-	th1[17]=new TH1D("deltaR1_2b","deltaR1_2b",50,0,4);
+	th1[12]=new TH1D("deltaR0_0b","deltaR0_0b",20,0,1);
+	th1[13]=new TH1D("deltaR1_0b","deltaR1_0b",20,0,1);
+	th1[14]=new TH1D("deltaR0_1b","deltaR0_1b",20,0,1);
+	th1[15]=new TH1D("deltaR1_1b","deltaR1_1b",20,0,1);
+	th1[16]=new TH1D("deltaR0_2b","deltaR0_2b",20,0,1);
+	th1[17]=new TH1D("deltaR1_2b","deltaR1_2b",20,0,1);
 	
 	th1[18]=new TH1D("pt0","pt0",480,200,1400);
 	th1[19]=new TH1D("pt1","pt1",480,200,1400);
+	
+	th1[20]=new TH1D("DeltaEta","DeltaEta",16,-0.1,1.5);
+	th1[21]=new TH1D("eta_j0","eta_j0",60,-3,3);
+	th1[22]=new TH1D("eta_j1","eta_j1",480,200,1400);
+	th1[23]=new TH1D("HT12","HT12",80,600,2600);
+	th1[24]=new TH1D("prMass_j0","prMass_j0",12,90,150);
+	th1[25]=new TH1D("prMassCut_j0","prMassCut_j0",12,90,150);
+	th1[26]=new TH1D("prMass_j1","prMass_j1",12,90,150);
+	th1[27]=new TH1D("prMassCut_j1","prMassCut_j1",12,90,150);
+	th1[28]=new TH1D("tau21_j0","tau21_j0",10,0,1);
+	th1[29]=new TH1D("tau21_j1","tau21_j1",10,0,1);
+	
+	th1[30]=new TH1D("totalMass_0b","totalMass_0b",75,1000,4000);
+	th1[31]=new TH1D("totalMass_1b","totalMass_1b",75,1000,4000);
+	th1[32]=new TH1D("totalMass_2b","totalMass_2b",75,1000,4000);
+	th1[33]=new TH1D("totalMass_3b","totalMass_3b",75,1000,4000);
+	th1[34]=new TH1D("totalMass_4b","totalMass_4b",75,1000,4000);
+	
 	
 	std::vector<TString> eventlist;                                                                                                                                            
 	if(isData==1){
@@ -420,7 +438,7 @@ void HHbbbbAnalyzerBaseC(int wM, string st,string st2,double Xsec,bool nameRoot=
 		}
 	}
 		
-	for (int w=1;w<wM;w++){
+	for (int w=wMs;w<wM;w++){
 		
 		if (nameRoot==0)f = TFile::Open(Form("%s%d.root",st.data(),w));
 		else f = TFile::Open(st.data());
@@ -488,12 +506,16 @@ void HHbbbbAnalyzerBaseC(int wM, string st,string st2,double Xsec,bool nameRoot=
 			if(mjj<1000)continue;
 			nPass[4]++;
 			//6. fatjetPRmassL2L3Corr-----------------------------------------
+			th1[24]->Fill(fatjetPRmassL2L3Corr[0]);
+			th1[26]->Fill(fatjetPRmassL2L3Corr[1]);
 			if(fatjetPRmassL2L3Corr[0]<105||fatjetPRmassL2L3Corr[0]>135)continue;
 			if(fatjetPRmassL2L3Corr[1]<105||fatjetPRmassL2L3Corr[1]>135)continue;
 			nPass[5]++;
 			//7.-----------------------------------------
 			double tau21_1=(fatjetTau2[0]/fatjetTau1[0]),
-		   tau21_2=(fatjetTau2[1]/fatjetTau1[1]);
+		           tau21_2=(fatjetTau2[1]/fatjetTau1[1]);
+			th1[28]->Fill(tau21_1);	   
+			th1[29]->Fill(tau21_2);	   
 			if(tau21_1>0.75||tau21_2>0.75)continue;
 			if(tau21_1>0.6 &&tau21_2>0.6) continue;
 			nPass[6]++;
@@ -514,6 +536,12 @@ void HHbbbbAnalyzerBaseC(int wM, string st,string st2,double Xsec,bool nameRoot=
 			
 			th1[18]->Fill(thisJet->Pt());
 			th1[19]->Fill(thatJet->Pt());
+			th1[23]->Fill(thisJet->Pt()+thatJet->Pt());
+			th1[20]->Fill(dEta);
+			th1[21]->Fill(thisJet->Eta());
+			th1[22]->Fill(thatJet->Eta());
+			th1[25]->Fill(fatjetPRmassL2L3Corr[0]);
+			th1[27]->Fill(fatjetPRmassL2L3Corr[1]);
 			
 			//8.btag
 			int nbtag=0;
@@ -536,41 +564,45 @@ void HHbbbbAnalyzerBaseC(int wM, string st,string st2,double Xsec,bool nameRoot=
 			
 			if(nbtag==0){
 				nPass[7]++;
-				th1[0]->Fill(sqrt(subjetSDPx[0][0]*subjetSDPx[0][0]+subjetSDPy[0][0]*subjetSDPy[0][0]));
-				th1[1]->Fill(sqrt(subjetSDPx[0][1]*subjetSDPx[0][1]+subjetSDPy[0][1]*subjetSDPy[0][1]));
-				th1[2]->Fill(sqrt(subjetSDPx[1][0]*subjetSDPx[1][0]+subjetSDPy[1][0]*subjetSDPy[1][0]));
-				th1[3]->Fill(sqrt(subjetSDPx[1][1]*subjetSDPx[1][1]+subjetSDPy[1][1]*subjetSDPy[1][1]));
+				th1[0]->Fill(thisSub1->Pt());
+				th1[1]->Fill(thisSub2->Pt());
+				th1[2]->Fill(thatSub1->Pt());
+				th1[3]->Fill(thatSub2->Pt());
 				th1[12]->Fill(dr1);
 				th1[13]->Fill(dr2);
+				th1[30]->Fill((*thisJet+*thatJet).M());
 				
 			}
 			if(nbtag==1){
 				nPass[8]++;
-				th1[4]->Fill(sqrt(subjetSDPx[0][0]*subjetSDPx[0][0]+subjetSDPy[0][0]*subjetSDPy[0][0]));
-				th1[5]->Fill(sqrt(subjetSDPx[0][1]*subjetSDPx[0][1]+subjetSDPy[0][1]*subjetSDPy[0][1]));
-				th1[6]->Fill(sqrt(subjetSDPx[1][0]*subjetSDPx[1][0]+subjetSDPy[1][0]*subjetSDPy[1][0]));
-				th1[7]->Fill(sqrt(subjetSDPx[1][1]*subjetSDPx[1][1]+subjetSDPy[1][1]*subjetSDPy[1][1]));
+				th1[4]->Fill(thisSub1->Pt());
+				th1[5]->Fill(thisSub2->Pt());
+				th1[6]->Fill(thatSub1->Pt());
+				th1[7]->Fill(thatSub2->Pt());
 				th1[14]->Fill(dr1);
 				th1[15]->Fill(dr2);
+				th1[31]->Fill((*thisJet+*thatJet).M());
 				
 			}
 			if(nbtag==2){
 				nPass[9]++;
-				th1[8]->Fill(sqrt(subjetSDPx[0][0]*subjetSDPx[0][0]+subjetSDPy[0][0]*subjetSDPy[0][0]));
-				th1[9]->Fill(sqrt(subjetSDPx[0][1]*subjetSDPx[0][1]+subjetSDPy[0][1]*subjetSDPy[0][1]));
-				th1[10]->Fill(sqrt(subjetSDPx[1][0]*subjetSDPx[1][0]+subjetSDPy[1][0]*subjetSDPy[1][0]));
-				th1[11]->Fill(sqrt(subjetSDPx[1][1]*subjetSDPx[1][1]+subjetSDPy[1][1]*subjetSDPy[1][1]));
+				th1[8]->Fill(thisSub1->Pt());
+				th1[9]->Fill(thisSub2->Pt());
+				th1[10]->Fill(thatSub1->Pt());
+				th1[11]->Fill(thatSub2->Pt());
 				th1[16]->Fill(dr1);
 				th1[17]->Fill(dr2);
+				th1[32]->Fill((*thisJet+*thatJet).M());
 				
 			}
-			if(nbtag==3)nPass[10]++;
-			if(nbtag==4)nPass[11]++;
-			
-			
-			
-			
-			
+			if(nbtag==3){
+				nPass[10]++;
+				th1[33]->Fill((*thisJet+*thatJet).M());
+			}
+			if(nbtag==4){
+				nPass[11]++;
+				th1[34]->Fill((*thisJet+*thatJet).M());
+			}
 		}
 	}	
 	cout<<"entries="<<total<<endl;	
@@ -594,15 +626,15 @@ void HHbbbbAnalyzerBaseC(int wM, string st,string st2,double Xsec,bool nameRoot=
 	
 	TFile* outFile = new TFile(Form("root_files_btaggedScaleFactor/%s.root",st2.data()),"recreate");
 	if(isData==0){
-		for(int i=0;i<20;i++){
+		for(int i=0;i<35;i++){
 			th1[i]->Sumw2();
-			th1[i]->Scale(2197.7*Xsec/total);
+			th1[i]->Scale(2245.87*Xsec/total);
 			
 		}
 	}
-	for(int i=0;i<20;i++)th1[i]->Write();
+	for(int i=0;i<35;i++)th1[i]->Write();
 	th2->Write();
-	th2s->Scale(2197.7*Xsec/total);
+	th2s->Scale(2245.87*Xsec/total);
 	th2s->Write();
 	outFile->Close();
 	
@@ -1704,28 +1736,32 @@ void HHbbbbAnalyzer(int a){
 		27990000,1712000,347700,32100,
 		6831,1207,119.9,25.24
 	};
-	bool sig=0;
-	if (a<22)sig=1;
+	bool sigName=0;
+	if (a<22)sigName=1;
 	
 	if(a==100){
-	string data1="/data7/syu/NCUGlobalTuples/Run2015D/eec7461/JetHT/crab_JetHT-Run2015D-05Oct2015-v1/160220_045419/0000/NCUGlobalTuples_";
-	string data2="/data7/syu/NCUGlobalTuples/Run2015D/eec7461/JetHT/crab_JetHT-Run2015D-PromptReco-v4/160220_045345/0000/NCUGlobalTuples_";
+	string data1="/data7/syu/NCUGlobalTuples/Run2015D/eec7461/JetHT/crab_JetHT-Run2015D-05Oct2015-v1/160223_142842/0000/NCUGlobalTuples_";
+	string data2="/data7/syu/NCUGlobalTuples/Run2015D/eec7461/JetHT/crab_JetHT-Run2015D-PromptReco-v4/160224_140926/0000/NCUGlobalTuples_";
+	string data2_2="/data7/syu/NCUGlobalTuples/Run2015D/eec7461/JetHT/crab_JetHT-Run2015D-PromptReco-v4/160224_140926/0001/NCUGlobalTuples_";
 	string dataName1="JetHT-Run2015D-05Oct2015-v1";
 	string dataName2="JetHT-Run2015D-PromptReco-v4";
-	HHbbbbAnalyzerBaseC(412,data1,dataName1,1,0,1);	
-	//HHbbbbAnalyzerBaseC(856,data2,dataName2,1,0,1);	
+	HHbbbbAnalyzerBaseC(1,412,data1,dataName1,1,0,1);	
+	//HHbbbbAnalyzerBaseC(1,501,data2,Form("%s1",dataName2.data()),1,0,1);	
+	//HHbbbbAnalyzerBaseC(501,1000,data2,Form("%s2",dataName2.data()),1,0,1);	
+	HHbbbbAnalyzerBaseC(1000,1094,data2_2,Form("%s3",dataName2.data()),1,0,1);	
 	//dataPrinter(412,data1,dataName1,1,0);	
 	//dataPrinter(856,data2,dataName2,1,0);	
 	}
 	
-	
+	bool sig=0;
+	if (a<22)sig=1;
 	
 	//th1[a]=HHbbbbAnalyzerCompare(aa[a],st1[a],fileName[a],Xsec[a],eff1,eff2,eff3,eff4,eff5,sig);
 	//th1[a]=HHbbbbAnalyzerCSVEff(aa[a],st1[a],fileName[a],Xsec[a],eff1,eff2,eff3,eff4,eff5,sig);
 	//th1[a]=HHbbbbAnalyzerJetEff(aa[a],st1[a],fileName[a],Xsec[a],eff1,eff2,eff3,eff4,eff5,sig);
 	//th1[a]=HHbbbbAnalyzerBaseDCut(aa[a],st1[a],fileName[a],Xsec[a],eff1,eff2,eff3,eff4,eff5,sig);
 	//th1[a]=HHbbbbAnalyzerBaseHPHP(aa[a],st1[a],fileName[a],Xsec[a],eff1,eff2,eff3,eff4,eff5,sig);
-	if(!(a==22||a==23||a==24||a==25||a==100))HHbbbbAnalyzerBaseC(aa[a],st1[a],fileName[a],Xsec[a],sig);
+	if(!(a==22||a==23||a==24||a==25||a==100))HHbbbbAnalyzerBaseC(1,aa[a],st1[a],fileName[a],Xsec[a],sigName,sig);
 	//dataPrinter(aa[a],st1[a],fileName[a],Xsec[a],sig);
 	
 }
