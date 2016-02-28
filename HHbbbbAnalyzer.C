@@ -304,6 +304,11 @@ void HHbbbbAnalyzerBaseC(int wMs,int wM, string st,string st2,double Xsec,bool n
 	th2s->SetBinContent(4,nPass[11]);
 	th2s->SetBinContent(5,nPass[12]);
 	
+	TH1D * th4=new TH1D("NbtagjetS","NbtagjetS",13,0.5,13.5);
+	for(int ii=1;ii<14;ii++)th4->SetBinContent(ii,nPass[ii]);
+	
+	TH1D * th4s=new TH1D("Nbtagjet","Nbtagjet",13,0.5,13.5);
+	for(int ii=1;ii<14;ii++)th4s->SetBinContent(ii,nPass[ii]);
 	
 	TFile* outFile = new TFile(Form("root_files_btaggedScaleFactor/%s.root",st2.data()),"recreate");
 	if(isData==0){
@@ -315,8 +320,11 @@ void HHbbbbAnalyzerBaseC(int wMs,int wM, string st,string st2,double Xsec,bool n
 	}
 	for(int i=0;i<35;i++)th1[i]->Write();
 	th2->Write();
+	th4->Write();
 	th2s->Scale(2245.87*Xsec/total);
 	th2s->Write();
+	th4s->Scale(2245.87*Xsec/total);
+	th4s->Write();
 	outFile->Close();
 	
 }
@@ -480,10 +488,10 @@ void HHbbbbAnalyzer(int a){
 	string data2_2="/data7/syu/NCUGlobalTuples/Run2015D/eec7461/JetHT/crab_JetHT-Run2015D-PromptReco-v4/160224_140926/0001/NCUGlobalTuples_";
 	string dataName1="JetHT-Run2015D-05Oct2015-v1";
 	string dataName2="JetHT-Run2015D-PromptReco-v4";
-	//HHbbbbAnalyzerBaseC(1,412,data1,dataName1,1,0,1);	
-	HHbbbbAnalyzerBaseC(1,501,data2,Form("%s1",dataName2.data()),1,0,1);	
-	HHbbbbAnalyzerBaseC(501,1000,data2,Form("%s2",dataName2.data()),1,0,1);	
-	//HHbbbbAnalyzerBaseC(1000,1094,data2_2,Form("%s3",dataName2.data()),1,0,1);	
+	HHbbbbAnalyzerBaseC(1,412,data1,dataName1,1,0,1);	
+	//HHbbbbAnalyzerBaseC(1,501,data2,Form("%s1",dataName2.data()),1,0,1);	
+	//HHbbbbAnalyzerBaseC(501,1000,data2,Form("%s2",dataName2.data()),1,0,1);	
+	HHbbbbAnalyzerBaseC(1000,1094,data2_2,Form("%s3",dataName2.data()),1,0,1);	
 	//dataPrinter(412,data1,dataName1,1,0);	
 	//dataPrinter(856,data2,dataName2,1,0);	
 	}
