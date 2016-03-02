@@ -30,7 +30,7 @@
 
 TCanvas* c1;
 
-void HHbbbbAnalyzerBaseC(int wMs,int wM, string st,string st2,double Xsec,bool nameRoot=0,bool isData=0){	
+void HHbbbbAnalyzerBaseC(int wMs,int wM, string st,string st2,double Xsec,int nameRoot=0){	
 	TFile *f;
 	TTree *tree;
 	int nPass[20]={0};int total=0;
@@ -82,7 +82,7 @@ void HHbbbbAnalyzerBaseC(int wMs,int wM, string st,string st2,double Xsec,bool n
 	
 	
 	std::vector<TString> eventlist;                                                                                                                                            
-	if(isData==1){
+	if(nameRoot==2){
 		std::vector<TString> eventlist;                                                                                                                                            
 		std::ifstream fin("somfilename.txt");
 		eventlist.clear();
@@ -98,13 +98,13 @@ void HHbbbbAnalyzerBaseC(int wMs,int wM, string st,string st2,double Xsec,bool n
 		
 	for (int w=wMs;w<wM;w++){
 		
-		if (nameRoot==0)f = TFile::Open(Form("%s%d.root",st.data(),w));
+		if (nameRoot!=1)f = TFile::Open(Form("%s%d.root",st.data(),w));
 		else f = TFile::Open(st.data());
 		if (!f || !f->IsOpen())continue;
 		
 		TDirectory * dir;
 		
-		if (nameRoot==0)dir = (TDirectory*)f->Get(Form("%s%d.root:/tree",st.data(),w));
+		if (nameRoot!=1)dir = (TDirectory*)f->Get(Form("%s%d.root:/tree",st.data(),w));
 		else dir = (TDirectory*)f->Get(Form("%s:/tree",st.data()));
 		
 		if(w%20==0)cout<<w<<endl;
@@ -142,7 +142,7 @@ void HHbbbbAnalyzerBaseC(int wMs,int wM, string st,string st2,double Xsec,bool n
 					break;
 				}
 			}
-			if(!passTrigger && nameRoot)continue;
+			if(!passTrigger && (nameRoot!=0))continue;
 			nPass[1]++;
 		
 			int nFATJet         = data.GetInt("FATnJet");
@@ -201,7 +201,10 @@ void HHbbbbAnalyzerBaseC(int wMs,int wM, string st,string st2,double Xsec,bool n
 			if(tau21_1>0.6 &&tau21_2>0.6) continue;
 			nPass[7]++;
 			
-			if(isData==1){
+			bool isHPHP=0;
+			if(tau21_1<0.6 && tau21_2<0.6 )isHPHP=1;
+			
+			if(nameRoot==2){
 				//data:csc2015
 				TString thisEvent;                                                   
 				Int_t  runId = data.GetInt("runId");
@@ -279,6 +282,7 @@ void HHbbbbAnalyzerBaseC(int wMs,int wM, string st,string st2,double Xsec,bool n
 			if(nbtag==3){
 				nPass[11]++;
 				th1[33]->Fill((*thisJet+*thatJet).M());
+				if(isHPHP)nPass[13]++;
 			}
 			if(nbtag==4){
 				nPass[12]++;
@@ -287,31 +291,33 @@ void HHbbbbAnalyzerBaseC(int wMs,int wM, string st,string st2,double Xsec,bool n
 		}
 	}	
 	cout<<"entries="<<total<<endl;	
-	if(isData==1)cout<<"dataPassingcsc="<<dataPassingcsc<<endl;
-	for(int i=0;i<13;i++)cout<<"nPass["<<i<<"]="<<nPass[i]<<endl;
+	if(nameRoot==2)cout<<"dataPassingcsc="<<dataPassingcsc<<endl;
+	for(int i=0;i<14;i++)cout<<"nPass["<<i<<"]="<<nPass[i]<<endl;
 	
 	TH1D * th2=new TH1D("Nbtagjet","Nbtagjet",5,-0.5,4.5);
 	th2->SetBinContent(1,nPass[8]);
 	th2->SetBinContent(2,nPass[9]);
 	th2->SetBinContent(3,nPass[10]);
-	th2->SetBinContent(4,nPass[11]);
-	th2->SetBinContent(5,nPass[12]);
+	if(nameRoot!=2)th2->SetBinContent(4,nPass[11]);
+	if(nameRoot!=2)th2->SetBinContent(5,nPass[12]);
 	
 	TH1D * th2s=new TH1D("NbtagjetS","NbtagjetS",5,-0.5,4.5);
 	th2s->SetBinContent(1,nPass[8]);
 	th2s->SetBinContent(2,nPass[9]);
 	th2s->SetBinContent(3,nPass[10]);
-	th2s->SetBinContent(4,nPass[11]);
-	th2s->SetBinContent(5,nPass[12]);
+	if(nameRoot!=2)th2s->SetBinContent(4,nPass[11]);
+	if(nameRoot!=2)th2s->SetBinContent(5,nPass[12]);
 	
-	TH1D * th4=new TH1D("NbtagjetS","NbtagjetS",13,0.5,13.5);
-	for(int ii=1;ii<14;ii++)th4->SetBinContent(ii,nPass[ii]);
+	TH1D * th4=new TH1D("cutflow","cutflow",14,0.5,14.5);
+	if(nameRoot==2)for(int ii=1;ii<12;ii++)th4->SetBinContent(ii,nPass[ii-1]);
+	else for(int ii=1;ii<15;ii++)th4->SetBinContent(ii,nPass[ii-1]);
 	
-	TH1D * th4s=new TH1D("Nbtagjet","Nbtagjet",13,0.5,13.5);
-	for(int ii=1;ii<14;ii++)th4s->SetBinContent(ii,nPass[ii]);
+	TH1D * th4s=new TH1D("cutflowS","cutflowS",14,0.5,14.5);
+	if(nameRoot==2)for(int ii=1;ii<12;ii++)th4s->SetBinContent(ii,nPass[ii-1]);
+	else for(int ii=1;ii<15;ii++)th4s->SetBinContent(ii,nPass[ii-1]);
 	
 	TFile* outFile = new TFile(Form("root_files_btaggedScaleFactor/%s.root",st2.data()),"recreate");
-	if(isData==0){
+	if(nameRoot==0){
 		for(int i=0;i<35;i++){
 			th1[i]->Sumw2();
 			th1[i]->Scale(2245.87*Xsec/total);
@@ -488,10 +494,10 @@ void HHbbbbAnalyzer(int a){
 	string data2_2="/data7/syu/NCUGlobalTuples/Run2015D/eec7461/JetHT/crab_JetHT-Run2015D-PromptReco-v4/160224_140926/0001/NCUGlobalTuples_";
 	string dataName1="JetHT-Run2015D-05Oct2015-v1";
 	string dataName2="JetHT-Run2015D-PromptReco-v4";
-	HHbbbbAnalyzerBaseC(1,412,data1,dataName1,1,0,1);	
-	//HHbbbbAnalyzerBaseC(1,501,data2,Form("%s1",dataName2.data()),1,0,1);	
-	//HHbbbbAnalyzerBaseC(501,1000,data2,Form("%s2",dataName2.data()),1,0,1);	
-	HHbbbbAnalyzerBaseC(1000,1094,data2_2,Form("%s3",dataName2.data()),1,0,1);	
+	//HHbbbbAnalyzerBaseC(1,412,data1,dataName1,1,2);	
+	HHbbbbAnalyzerBaseC(1,501,data2,Form("%s1",dataName2.data()),1,2);	
+	HHbbbbAnalyzerBaseC(501,1000,data2,Form("%s2",dataName2.data()),1,2);	
+	//HHbbbbAnalyzerBaseC(1000,1094,data2_2,Form("%s3",dataName2.data()),1,2);	
 	//dataPrinter(412,data1,dataName1,1,0);	
 	//dataPrinter(856,data2,dataName2,1,0);	
 	}
@@ -504,7 +510,7 @@ void HHbbbbAnalyzer(int a){
 	//th1[a]=HHbbbbAnalyzerJetEff(aa[a],st1[a],fileName[a],Xsec[a],eff1,eff2,eff3,eff4,eff5,sig);
 	//th1[a]=HHbbbbAnalyzerBaseDCut(aa[a],st1[a],fileName[a],Xsec[a],eff1,eff2,eff3,eff4,eff5,sig);
 	//th1[a]=HHbbbbAnalyzerBaseHPHP(aa[a],st1[a],fileName[a],Xsec[a],eff1,eff2,eff3,eff4,eff5,sig);
-	if(!(a==22||a==23||a==24||a==25||a==100))HHbbbbAnalyzerBaseC(1,aa[a],st1[a],fileName[a],Xsec[a],sigName,sig);
+	if(!(a==22||a==23||a==24||a==25||a==100))HHbbbbAnalyzerBaseC(1,aa[a],st1[a],fileName[a],Xsec[a],sigName);
 	//dataPrinter(aa[a],st1[a],fileName[a],Xsec[a],sig);
 	
 }
