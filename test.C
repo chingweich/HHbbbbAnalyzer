@@ -32,7 +32,7 @@
 void test(){
 	
 	
-	BTagCalibration calib("csvv1", "CSVv2.csv");
+	BTagCalibration calib("CSVv2L", "CSVv2.csv");
 	BTagCalibrationReader reader(&calib,               // calibration instance
                              BTagEntry::OP_LOOSE,  // operating point
                              "comb",               // measurement type
