@@ -350,7 +350,7 @@ void HHbbbbAnalyzerBaseC(int wMs,int wM, string st,string st2,double Xsec,int na
 					break;
 				}
 			}
-			if(!passTrigger && (nameRoot!=0))continue;
+			if(!passTrigger )continue;
 			nPass[1]++;
 		
 			int nFATJet         = data.GetInt("FATnJet");
@@ -621,19 +621,21 @@ void dataPrinter(int wM, string st,string st2,double Xsec,bool isSignal=0){
 void HHbbbbBtagEff(int a){
 	//setNCUStyle();
 	
-	string st1[30]={
+	//setNCUStyle();
+	
+	string st1[40]={
 		/*0-11*/
-		"/data7/syu/NCUGlobalTuples/Spring15_ReMiniAODSim/4c7722e/BulkGravTohhTohbbhbb/BulkGravTohhTohbbhbb_narrow_M-1000_13TeV-madgraph.root",
-		"/data7/syu/NCUGlobalTuples/Spring15_ReMiniAODSim/4c7722e/BulkGravTohhTohbbhbb/BulkGravTohhTohbbhbb_narrow_M-1200_13TeV-madgraph.root",
-		"/data7/syu/NCUGlobalTuples/Spring15_ReMiniAODSim/4c7722e/BulkGravTohhTohbbhbb/BulkGravTohhTohbbhbb_narrow_M-1400_13TeV-madgraph.root",
-		"/data7/syu/NCUGlobalTuples/Spring15_ReMiniAODSim/4c7722e/BulkGravTohhTohbbhbb/BulkGravTohhTohbbhbb_narrow_M-1600_13TeV-madgraph.root",
-		"/data7/syu/NCUGlobalTuples/Spring15_ReMiniAODSim/4c7722e/BulkGravTohhTohbbhbb/BulkGravTohhTohbbhbb_narrow_M-1800_13TeV-madgraph.root",
-	    "/data7/syu/NCUGlobalTuples/Spring15_ReMiniAODSim/4c7722e/BulkGravTohhTohbbhbb/BulkGravTohhTohbbhbb_narrow_M-2000_13TeV-madgraph.root",
-		"/data7/syu/NCUGlobalTuples/Spring15_ReMiniAODSim/4c7722e/BulkGravTohhTohbbhbb/BulkGravTohhTohbbhbb_narrow_M-2500_13TeV-madgraph.root",
-		"/data7/syu/NCUGlobalTuples/Spring15_ReMiniAODSim/4c7722e/BulkGravTohhTohbbhbb/BulkGravTohhTohbbhbb_narrow_M-3000_13TeV-madgraph.root",
-		"/data7/syu/NCUGlobalTuples/Spring15_ReMiniAODSim/4c7722e/BulkGravTohhTohbbhbb/BulkGravTohhTohbbhbb_narrow_M-3500_13TeV-madgraph.root",
-		"/data7/syu/NCUGlobalTuples/Spring15_ReMiniAODSim/4c7722e/BulkGravTohhTohbbhbb/BulkGravTohhTohbbhbb_narrow_M-4000_13TeV-madgraph.root",
-		"/data7/syu/NCUGlobalTuples/Spring15_ReMiniAODSim/4c7722e/BulkGravTohhTohbbhbb/BulkGravTohhTohbbhbb_narrow_M-4500_13TeV-madgraph.root",
+		"/data7/syu/NCUGlobalTuples/Spring15_ReMiniAODSim/f81355f/BulkGravTohhTohbbhbb/BulkGravTohhTohbbhbb_narrow_M-1000_13TeV-madgraph.root",
+		"/data7/syu/NCUGlobalTuples/Spring15_ReMiniAODSim/f81355f/BulkGravTohhTohbbhbb/BulkGravTohhTohbbhbb_narrow_M-1200_13TeV-madgraph.root",
+		"/data7/syu/NCUGlobalTuples/Spring15_ReMiniAODSim/f81355f/BulkGravTohhTohbbhbb/BulkGravTohhTohbbhbb_narrow_M-1400_13TeV-madgraph.root",
+		"/data7/syu/NCUGlobalTuples/Spring15_ReMiniAODSim/f81355f/BulkGravTohhTohbbhbb/BulkGravTohhTohbbhbb_narrow_M-1600_13TeV-madgraph.root",
+		"/data7/syu/NCUGlobalTuples/Spring15_ReMiniAODSim/f81355f/BulkGravTohhTohbbhbb/BulkGravTohhTohbbhbb_narrow_M-1800_13TeV-madgraph.root",
+	    "/data7/syu/NCUGlobalTuples/Spring15_ReMiniAODSim/f81355f/BulkGravTohhTohbbhbb/BulkGravTohhTohbbhbb_narrow_M-2000_13TeV-madgraph.root",
+		"/data7/syu/NCUGlobalTuples/Spring15_ReMiniAODSim/f81355f/BulkGravTohhTohbbhbb/BulkGravTohhTohbbhbb_narrow_M-2500_13TeV-madgraph.root",
+		"/data7/syu/NCUGlobalTuples/Spring15_ReMiniAODSim/f81355f/BulkGravTohhTohbbhbb/BulkGravTohhTohbbhbb_narrow_M-3000_13TeV-madgraph.root",
+		"/data7/syu/NCUGlobalTuples/Spring15_ReMiniAODSim/f81355f/BulkGravTohhTohbbhbb/BulkGravTohhTohbbhbb_narrow_M-3500_13TeV-madgraph.root",
+		"/data7/syu/NCUGlobalTuples/Spring15_ReMiniAODSim/f81355f/BulkGravTohhTohbbhbb/BulkGravTohhTohbbhbb_narrow_M-4000_13TeV-madgraph.root",
+		"/data7/syu/NCUGlobalTuples/Spring15_ReMiniAODSim/f81355f/BulkGravTohhTohbbhbb/BulkGravTohhTohbbhbb_narrow_M-4500_13TeV-madgraph.root",
 		/*12-21*/
 		"/data7/syu/NCUGlobalTuples/Spring15_ReMiniAODSim/4c7722e/RadionTohhTohbbhbb/RadionTohhTohbbhbb_narrow_M-1000_13TeV-madgraph.root",
 		"/data7/syu/NCUGlobalTuples/Spring15_ReMiniAODSim/4c7722e/RadionTohhTohbbhbb/RadionTohhTohbbhbb_narrow_M-1200_13TeV-madgraph.root",
@@ -646,41 +648,54 @@ void HHbbbbBtagEff(int a){
 		"/data7/syu/NCUGlobalTuples/Spring15_ReMiniAODSim/4c7722e/RadionTohhTohbbhbb/RadionTohhTohbbhbb_narrow_M-3500_13TeV-madgraph.root",
 		"/data7/syu/NCUGlobalTuples/Spring15_ReMiniAODSim/4c7722e/RadionTohhTohbbhbb/RadionTohhTohbbhbb_narrow_M-4000_13TeV-madgraph.root",
 		"/data7/syu/NCUGlobalTuples/Spring15_ReMiniAODSim/4c7722e/RadionTohhTohbbhbb/RadionTohhTohbbhbb_narrow_M-4500_13TeV-madgraph.root",
-		/*22-29*/
-		"/data7/khurana/NCUGlobalTuples/SPRING15_2015_10_12/crab_QCD_HT100to200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8MC25ns_eleIDjet_CMSSW7412_20151006/151007_220208/0000/NCUGlobalTuples_",
-		"/data7/khurana/NCUGlobalTuples/SPRING15_2015_10_12/crab_QCD_HT200to300_TuneCUETP8M1_13TeV-madgraphMLM-pythia8MC25ns_eleIDjet_CMSSW7412_20151006/151007_220428/0000/NCUGlobalTuples_",
-		"/data7/khurana/NCUGlobalTuples/SPRING15_2015_10_12/crab_QCD_HT300to500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8MC25ns_eleIDjet_CMSSW7412_20151006/NCUGlobalTuples_",
-		"/data7/khurana/NCUGlobalTuples/SPRING15_2015_10_12/crab_QCD_HT500to7000_TuneCUETP8M1_13TeV-madgraphMLM-pythia8MC25ns_eleIDjet_CMSSW7412_20151006/NCUGlobalTuples_",
-		"/data7/khurana/NCUGlobalTuples/SPRING15_2015_10_12/crab_QCD_HT700to1000_TuneCUETP8M1_13TeV-madgraphMLM-pythia8MC25ns_eleIDjet_CMSSW7412_20151006/0000/NCUGlobalTuples_",
-		"/data7/khurana/NCUGlobalTuples/SPRING15_2015_10_12/crab_QCD_HT1000to1500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8MC25ns_eleIDjet_CMSSW7412_20151006/151007_220114/0000/NCUGlobalTuples_",
-	    "/data7/khurana/NCUGlobalTuples/SPRING15_2015_10_12/crab_QCD_HT1500to2000_TuneCUETP8M1_13TeV-madgraphMLM-pythia8MC25ns_eleIDjet_CMSSW7412_20151006/151007_220249/0000/NCUGlobalTuples_",
-		"/data7/khurana/NCUGlobalTuples/SPRING15_2015_10_12/crab_QCD_HT2000toInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8MC25ns_eleIDjet_CMSSW7412_20151006/151007_220339/0000/NCUGlobalTuples_",
-	
+		/*22-30*/
+		"/data7/syu/NCUGlobalTuples/Spring15_ReMiniAODSim/f81355f/QCD_HTBinned/QCD_HT100to200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/160306_060112/0000/NCUGlobalTuples_",
+		"/data7/syu/NCUGlobalTuples/Spring15_ReMiniAODSim/f81355f/QCD_HTBinned/QCD_HT100to200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/160306_060112/0001/NCUGlobalTuples_",
+		"/data7/syu/NCUGlobalTuples/Spring15_ReMiniAODSim/f81355f/QCD_HTBinned/QCD_HT200to300_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/160306_060145/0000/NCUGlobalTuples_",
+		"/data7/syu/NCUGlobalTuples/Spring15_ReMiniAODSim/f81355f/QCD_HTBinned/QCD_HT300to500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/160306_060215/0000/NCUGlobalTuples_",
+		"/data7/syu/NCUGlobalTuples/Spring15_ReMiniAODSim/f81355f/QCD_HTBinned/QCD_HT500to700_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/160306_060251/0000/NCUGlobalTuples_",
+		"/data7/syu/NCUGlobalTuples/Spring15_ReMiniAODSim/f81355f/QCD_HTBinned/QCD_HT700to1000_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/160308_130001/0000/NCUGlobalTuples_",
+		"/data7/syu/NCUGlobalTuples/Spring15_ReMiniAODSim/f81355f/QCD_HTBinned/QCD_HT1000to1500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/160308_130035/0000/NCUGlobalTuples_",
+		"/data7/syu/NCUGlobalTuples/Spring15_ReMiniAODSim/f81355f/QCD_HTBinned/QCD_HT1500to2000_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/160308_130118/0000/NCUGlobalTuples_",
+		"/data7/syu/NCUGlobalTuples/Spring15_ReMiniAODSim/f81355f/QCD_HTBinned/QCD_HT2000toInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/160308_130153/0000/NCUGlobalTuples_",
+		
 	};
 	string  masspoint[11]={"1000","1200","1400","1600","1800","2000","2500","3000","3500","4000","4500"};
-	string  fileName[30]={"B1000","B1200","B1400","B1600","B1800","B2000","B2500","B3000","B3500","B4000","B4500",
+	string  fileName[40]={"B1000","B1200","B1400","B1600","B1800","B2000","B2500","B3000","B3500","B4000","B4500",
 	"R1000","R1200","R1400","R1600","R1800","R2000","R2500","R3000","R3500","R4000","R4500",
-	"QCD100","QCD200","QCD300","QCD500","QCD700","QCD1000","QCD1500","QCD2000"};
+	"QCD100_1","QCD100_2","QCD200","QCD300","QCD500","QCD700","QCD1000","QCD1500","QCD2000"};
 	double eff1,eff2,eff3,eff4,eff5;
 	TH1D* th1[30];
-	int aa[30]={
-		2,2,2,2,2,
-		2,2,2,2,2,
-		2,
-		2,2,2,2,2,
-		2,2,2,2,2,
-		2,
-		812,516,565,496,
-		394,155,103,71
+	int aa0[40]={
+		1,1,1,1,1,
+		1,1,1,1,1,
+		1,
+		1,1,1,1,1,
+		1,1,1,1,1,
+		1,
+		1,1000,1,1,1,
+		1,1,1,1,
 	};
-	double Xsec[30]={
+	
+	int aa[40]={
+		2,2,2,2,2,
+		2,2,2,2,2,
+		2,
+		2,2,2,2,2,
+		2,2,2,2,2,
+		2,
+		1000,1904,432,467,449,
+		346,120,90,45,
+		
+	};
+	double Xsec[40]={
 		0.1,0.1,0.1,0.1,0.1,
 		0.1,0.1,0.1,0.1,0.1,
 		0.1,
 		0.1,0.1,0.1,0.1,0.1,
 		0.1,0.1,0.1,0.1,0.1,
 		0.1,
-		27990000,1712000,347700,32100,
+		27990000,27990000,1712000,347700,32100,
 		6831,1207,119.9,25.24
 	};
 	bool sigName=0;
@@ -708,7 +723,7 @@ void HHbbbbBtagEff(int a){
 	//th1[a]=HHbbbbAnalyzerJetEff(aa[a],st1[a],fileName[a],Xsec[a],eff1,eff2,eff3,eff4,eff5,sig);
 	//th1[a]=HHbbbbAnalyzerBaseDCut(aa[a],st1[a],fileName[a],Xsec[a],eff1,eff2,eff3,eff4,eff5,sig);
 	//th1[a]=HHbbbbAnalyzerBaseHPHP(aa[a],st1[a],fileName[a],Xsec[a],eff1,eff2,eff3,eff4,eff5,sig);
-	if(!(a==22||a==23||a==24||a==25||a==100))HHbbbbAnalyzerBaseC(1,aa[a],st1[a],fileName[a],Xsec[a],sigName);
+	if(!(a==22||a==23||a==24||a==25||a==26||a==100))HHbbbbAnalyzerBaseC(aa0[a],aa[a],st1[a],fileName[a],Xsec[a],sigName);
 	//dataPrinter(aa[a],st1[a],fileName[a],Xsec[a],sig);
 	
 }
