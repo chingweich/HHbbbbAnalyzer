@@ -212,7 +212,7 @@ void HHbbbbAnalyzerBaseC(int wMs,int wM, string st,string st2,double Xsec,int na
 			else th1[4]->Fill(thatSub2->Pt(),thatSub2->Eta());
 		
 			//if(FATsubjetSDHadronFlavor[0][0]==5||FATsubjetSDHadronFlavor[0][0]==4)cout<<"Yes"<<endl;
-			cout<<FATsubjetSDHadronFlavor[0][0]<<",";
+			//cout<<FATsubjetSDHadronFlavor[0][0]<<",";
 			
 			int nbtag=0;
 			if(subjetSDCSV[0][0]>0.605){
@@ -283,6 +283,27 @@ void HHbbbbAnalyzerBaseC(int wMs,int wM, string st,string st2,double Xsec,int na
 	th2[1]->Divide(th2[0]);
 	th2[3]->Divide(th2[2]);
 	th2[5]->Divide(th2[4]);
+	
+	TH2D* th3[3];
+	
+	th3[0]=new TH2D("zeroSF_b","zeroSF_b",200,0,2000,60,-3,3);
+	th3[1]=new TH2D("zeroSF_c","zeroSF_c",200,0,2000,60,-3,3);
+	th3[2]=new TH2D("zeroSF_l","zeroSF_l",200,0,2000,60,-3,3);
+
+	TH1D* th4[9];
+	
+	th4[0]=new TH1D("SF_jet0_sub0_pass","SF_jet0_sub0_pass",40,0,2);
+	th4[1]=new TH1D("SF_jet0_sub1_pass","SF_jet0_sub1_pass",40,0,2);
+	th4[2]=new TH1D("SF_jet1_sub0_pass","SF_jet1_sub0_pass",40,0,2);
+	th4[3]=new TH1D("SF_jet1_sub1_pass","SF_jet1_sub1_pass",40,0,2);
+	
+	th4[4]=new TH1D("SF_jet0_sub0_fail","SF_jet0_sub0_fail",40,0,2);
+	th4[5]=new TH1D("SF_jet0_sub1_fail","SF_jet0_sub1_fail",40,0,2);
+	th4[6]=new TH1D("SF_jet1_sub0_fail","SF_jet1_sub0_fail",40,0,2);
+	th4[7]=new TH1D("SF_jet1_sub1_fail","SF_jet1_sub1_fail",40,0,2);
+	
+	
+	th4[8]=new TH1D("weight","weight",40,0,2);
 	
 	
 	
@@ -428,17 +449,17 @@ void HHbbbbAnalyzerBaseC(int wMs,int wM, string st,string st2,double Xsec,int na
 			float MaxBJetPt = 670., MaxLJetPt = 1000.;
 			
 			double pt1=thisSub1->Pt(),pt2=thisSub2->Pt(),pt3=thatSub1->Pt(),pt4=thatSub2->Pt();
-			if(FATsubjetSDHadronFlavor[0][0]!=0 && pt1>MaxBJetPt )pt1=MaxBJetPt;
-			if(FATsubjetSDHadronFlavor[0][0]==0 && pt1>MaxLJetPt )pt1=MaxLJetPt;
+			if(FATsubjetSDHadronFlavor[0][0]!=0 && pt1>MaxBJetPt )pt1=MaxBJetPt-0.1;
+			if(FATsubjetSDHadronFlavor[0][0]==0 && pt1>MaxLJetPt )pt1=MaxLJetPt-0.1;
 			
-			if(FATsubjetSDHadronFlavor[0][0]!=0 && pt2>MaxBJetPt )pt2=MaxBJetPt;
-			if(FATsubjetSDHadronFlavor[0][0]==0 && pt2>MaxLJetPt )pt2=MaxLJetPt;
+			if(FATsubjetSDHadronFlavor[0][1]!=0 && pt2>MaxBJetPt )pt2=MaxBJetPt-0.1;
+			if(FATsubjetSDHadronFlavor[0][1]==0 && pt2>MaxLJetPt )pt2=MaxLJetPt-0.1;
 			
-			if(FATsubjetSDHadronFlavor[0][0]!=0 && pt3>MaxBJetPt )pt3=MaxBJetPt;
-			if(FATsubjetSDHadronFlavor[0][0]==0 && pt3>MaxLJetPt )pt3=MaxLJetPt;
+			if(FATsubjetSDHadronFlavor[1][0]!=0 && pt3>MaxBJetPt )pt3=MaxBJetPt-0.1;
+			if(FATsubjetSDHadronFlavor[1][0]==0 && pt3>MaxLJetPt )pt3=MaxLJetPt-0.1;
 			
-			if(FATsubjetSDHadronFlavor[0][0]!=0 && pt4>MaxBJetPt )pt4=MaxBJetPt;
-			if(FATsubjetSDHadronFlavor[0][0]==0 && pt4>MaxLJetPt )pt4=MaxLJetPt;
+			if(FATsubjetSDHadronFlavor[1][1]!=0 && pt4>MaxBJetPt )pt4=MaxBJetPt-0.1;
+			if(FATsubjetSDHadronFlavor[1][1]==0 && pt4>MaxLJetPt )pt4=MaxLJetPt-0.1;
 			
 			//cout<<pt1<<","<<pt2<<","<<pt3<<","<<pt4<<endl;
 			//cout<<thisSub1->Eta()<<","<<thisSub2->Eta()<<","<<thatSub1->Eta()<<","<<thatSub2->Eta()<<endl;
@@ -465,8 +486,24 @@ void HHbbbbAnalyzerBaseC(int wMs,int wM, string st,string st2,double Xsec,int na
 			else if(FATsubjetSDHadronFlavor[1][1]==4)sf4=HF.eval(BTagEntry::FLAV_C,thatSub2->Eta(),pt4); 
 			else sf4=LF.eval(BTagEntry::FLAV_UDSG,thatSub2->Eta(),pt4); 
 			
-			//cout<<"4"<<endl;
+			if(sf1==0 && FATsubjetSDHadronFlavor[0][0]==5) cout<<"pt1="<<pt1<<endl;
 			
+			if(sf1==0 && FATsubjetSDHadronFlavor[0][0]==5 ) th3[0]->Fill(pt1,thisSub1->Eta());
+			if(sf1==0 && FATsubjetSDHadronFlavor[0][0]==4 ) th3[1]->Fill(pt1,thisSub1->Eta());
+			if(sf1==0 && FATsubjetSDHadronFlavor[0][0]!=5 && FATsubjetSDHadronFlavor[0][0]!=4 ) th3[2]->Fill(pt1,thisSub1->Eta());
+			
+			if(sf2==0 && FATsubjetSDHadronFlavor[0][1]==5 ) th3[0]->Fill(pt2,thisSub2->Eta());
+			if(sf2==0 && FATsubjetSDHadronFlavor[0][1]==4 ) th3[1]->Fill(pt2,thisSub2->Eta());
+			if(sf2==0 && FATsubjetSDHadronFlavor[0][1]!=5 && FATsubjetSDHadronFlavor[0][1]!=4 ) th3[2]->Fill(pt2,thisSub2->Eta());
+			
+			if(sf3==0 && FATsubjetSDHadronFlavor[1][0]==5 ) th3[0]->Fill(pt3,thatSub1->Eta());
+			if(sf3==0 && FATsubjetSDHadronFlavor[1][0]==4 ) th3[1]->Fill(pt3,thatSub1->Eta());
+			if(sf3==0 && FATsubjetSDHadronFlavor[1][0]!=5 && FATsubjetSDHadronFlavor[1][0]!=4 ) th3[2]->Fill(pt3,thatSub1->Eta());
+			
+			if(sf4==0 && FATsubjetSDHadronFlavor[1][1]==5 ) th3[0]->Fill(pt4,thatSub2->Eta());
+			if(sf4==0 && FATsubjetSDHadronFlavor[1][1]==4 ) th3[1]->Fill(pt4,thatSub2->Eta());
+			if(sf4==0 && FATsubjetSDHadronFlavor[1][1]!=5 && FATsubjetSDHadronFlavor[1][1]!=4 ) th3[2]->Fill(pt4,thatSub2->Eta());
+						
 			double eff1,eff2,eff3,eff4;
 
 			if(FATsubjetSDHadronFlavor[0][0]==5)eff1=th1[1]->GetBinContent(ceil(thisSub1->Pt()/10),ceil(thisSub1->Eta()/0.1)+30);
@@ -486,15 +523,32 @@ void HHbbbbAnalyzerBaseC(int wMs,int wM, string st,string st2,double Xsec,int na
 			else eff4=th1[5]->GetBinContent(ceil(thatSub2->Pt()/10),ceil(thatSub2->Eta()/0.1)+30);
 			
 			double scaleFactor=1;
-			if(subjetSDCSV[0][0]>0.605)scaleFactor*=sf1;
+			if(subjetSDCSV[0][0]>=0.605)scaleFactor*=sf1;
 			else scaleFactor*=((1-eff1*sf1)/(1-eff1));
-			if(subjetSDCSV[0][1]>0.605)scaleFactor*=sf2;
+			//else cout<<"1,"<<subjetSDCSV[0][0]<<","<<eff1<<endl;//scaleFactor*=0;
+			if(subjetSDCSV[0][1]>=0.605)scaleFactor*=sf2;
 			else scaleFactor*=((1-eff2*sf2)/(1-eff2));
-			if(subjetSDCSV[1][0]>0.605)scaleFactor*=sf3;
+			//else cout<<"2,"<<subjetSDCSV[0][1]<<","<<eff2<<endl;//scaleFactor*=0;
+			if(subjetSDCSV[1][0]>=0.605)scaleFactor*=sf3;
 			else scaleFactor*=((1-eff3*sf3)/(1-eff3));
-			if(subjetSDCSV[1][1]>0.605)scaleFactor*=sf4;
+			//else cout<<"3,"<<subjetSDCSV[1][0]<<","<<eff3<<endl;//scaleFactor*=0;
+			if(subjetSDCSV[1][1]>=0.605)scaleFactor*=sf4;
 			else scaleFactor*=((1-eff4*sf4)/(1-eff4));
+			//else cout<<"4,"<<subjetSDCSV[1][1]<<","<<eff4<<endl;//scaleFactor*=0;
 			
+			if(subjetSDCSV[0][0]>0.605)th4[0]->Fill(sf1);
+			else th4[4]->Fill(sf1);
+			
+			if(subjetSDCSV[0][1]>0.605)th4[1]->Fill(sf1);
+			else th4[5]->Fill(sf1);
+			
+			if(subjetSDCSV[1][0]>0.605)th4[2]->Fill(sf1);
+			else th4[6]->Fill(sf1);
+			
+			if(subjetSDCSV[1][1]>0.605)th4[3]->Fill(sf1);
+			else th4[7]->Fill(sf1);
+			
+			th4[8]->Fill(scaleFactor);
 			/*
 			if((scaleFactor<0.1||scaleFactor>2) && subjetSDCSV[0][0]>0.605)cout<<"1Y="<<sf1<<",";
 			if((scaleFactor<0.1||scaleFactor>2) && subjetSDCSV[0][0]<0.605)cout<<"1N="<<eff1<<"=="<<((1-eff1*sf1)/(1-eff1))<<",";
@@ -522,8 +576,8 @@ void HHbbbbAnalyzerBaseC(int wMs,int wM, string st,string st2,double Xsec,int na
 		}
 	}	
 	cout<<"entries="<<total<<endl;	
-	if(nameRoot==2)cout<<"dataPassingcsc="<<dataPassingcsc<<endl;
-	for(int i=0;i<14;i++)cout<<"nPass["<<i<<"]="<<nPass[i]<<endl;
+	
+	for(int i=0;i<5;i++)cout<<"nPass["<<i<<"]="<<nPassB[i]<<endl;
 	
 	TH1D * th2o=new TH1D("Nbtagjet","Nbtagjet",5,-0.5,4.5);
 	th2o->SetBinContent(1,nPassB[0]);
@@ -543,6 +597,8 @@ void HHbbbbAnalyzerBaseC(int wMs,int wM, string st,string st2,double Xsec,int na
 	th2o->Write();
 	th2s->Scale(2245.87*Xsec/total);
 	th2s->Write();
+	for(int i=0;i<3;i++)th3[i]->Write();
+	for(int i=0;i<9;i++)th4[i]->Write();
 	outFile->Close();
 	
 }
