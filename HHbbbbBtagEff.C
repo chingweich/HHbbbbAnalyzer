@@ -27,7 +27,7 @@
 #include "jetEnergyScale.h"
 #include <algorithm>
 //#include "BTagCalibrationStandalone.h"
-//#include "HHbbbbBtagMakeEff.C"
+#include "HHbbbbBtagMakeEff.C"
 //#include "dataPrinter.C"
 #include "CondFormats/BTauObjects/interface/BTagCalibration.h"
 #include "CondFormats/BTauObjects/interface/BTagCalibrationReader.h"
@@ -124,10 +124,10 @@ void HHbbbbBtagEff(int a){
 	string data2_2="/data7/syu/NCUGlobalTuples/Run2015D/eec7461/JetHT/crab_JetHT-Run2015D-PromptReco-v4/160224_140926/0001/NCUGlobalTuples_";
 	string dataName1="JetHT-Run2015D-05Oct2015-v1";
 	string dataName2="JetHT-Run2015D-PromptReco-v4";
-	//HHbbbbAnalyzerBaseC(1,412,data1,dataName1,1,2);	
-	HHbbbbBtagEffBaseO(1,501,data2,Form("%s1",dataName2.data()),1,2);	
-	HHbbbbBtagEffBaseO(501,1000,data2,Form("%s2",dataName2.data()),1,2);	
-	//HHbbbbAnalyzerBaseC(1000,1094,data2_2,Form("%s3",dataName2.data()),1,2);	
+	HHbbbbBtagEffBase(1,412,data1,dataName1,1,2);	
+	//HHbbbbBtagEffBase(1,501,data2,Form("%s1",dataName2.data()),1,2);	
+	//HHbbbbBtagEffBase(501,1000,data2,Form("%s2",dataName2.data()),1,2);	
+	HHbbbbBtagEffBase(1000,1094,data2_2,Form("%s3",dataName2.data()),1,2);	
 	//dataPrinter(412,data1,dataName1,1,0);	
 	//dataPrinter(856,data2,dataName2,1,0);	
 	}
@@ -140,7 +140,7 @@ void HHbbbbBtagEff(int a){
 	//th1[a]=HHbbbbAnalyzerJetEff(aa[a],st1[a],fileName[a],Xsec[a],eff1,eff2,eff3,eff4,eff5,sig);
 	//th1[a]=HHbbbbAnalyzerBaseDCut(aa[a],st1[a],fileName[a],Xsec[a],eff1,eff2,eff3,eff4,eff5,sig);
 	//th1[a]=HHbbbbAnalyzerBaseHPHP(aa[a],st1[a],fileName[a],Xsec[a],eff1,eff2,eff3,eff4,eff5,sig);
-	if(!(a==22||a==23||a==24||a==25||a==26||a==100))HHbbbbBtagEffBaseO(aa0[a],aa[a],st1[a],fileName[a],Xsec[a],sigName);
+	if(!(a==22||a==23||a==24||a==25||a==26||a==100))HHbbbbBtagEffBase(aa0[a],aa[a],st1[a],fileName[a],Xsec[a],sigName);
 	//dataPrinter(aa[a],st1[a],fileName[a],Xsec[a],sig);
 	
 }

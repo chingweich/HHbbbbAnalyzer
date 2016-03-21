@@ -28,28 +28,158 @@ void HHbbbbBtagEffBase(int wMs,int wM, string st,string st2,double Xsec,int name
 	th2[3]->Divide(th2[2]);
 	th2[5]->Divide(th2[4]);
 	
-	TH2D* th3[3];
+	TH2D* th3[6];
 	
 	th3[0]=new TH2D("zeroSF_b","zeroSF_b",200,0,2000,60,-3,3);
 	th3[1]=new TH2D("zeroSF_c","zeroSF_c",200,0,2000,60,-3,3);
 	th3[2]=new TH2D("zeroSF_l","zeroSF_l",200,0,2000,60,-3,3);
+	
+	th3[3]=new TH2D("SF_vs_Pt_b","SF_vs_Pt_b",120,0,1200,40,0.8,1.2);
+	th3[4]=new TH2D("SF_vs_Pt_c","SF_vs_Pt_c",120,0,1200,40,0.8,1.2);
+	th3[5]=new TH2D("SF_vs_Pt_l","SF_vs_Pt_l",120,0,1200,40,0.8,1.2);
 
-	TH1D* th4[9];
+	TH1D* th4[12];
 	
 	th4[0]=new TH1D("SF_jet0_sub0_pass","SF_jet0_sub0_pass",40,0.8,1.2);
 	th4[1]=new TH1D("SF_jet0_sub1_pass","SF_jet0_sub1_pass",40,0.8,1.2);
 	th4[2]=new TH1D("SF_jet1_sub0_pass","SF_jet1_sub0_pass",40,0.8,1.2);
 	th4[3]=new TH1D("SF_jet1_sub1_pass","SF_jet1_sub1_pass",40,0.8,1.2);
-	
 	th4[4]=new TH1D("SF_jet0_sub0_fail","SF_jet0_sub0_fail",40,0.8,1.2);
 	th4[5]=new TH1D("SF_jet0_sub1_fail","SF_jet0_sub1_fail",40,0.8,1.2);
 	th4[6]=new TH1D("SF_jet1_sub0_fail","SF_jet1_sub0_fail",40,0.8,1.2);
 	th4[7]=new TH1D("SF_jet1_sub1_fail","SF_jet1_sub1_fail",40,0.8,1.2);
-	
-	
 	th4[8]=new TH1D("weight","weight",40,0,2);
+	th4[9]=new TH1D("weight_0b","weight_0b",40,0,2);
+	th4[10]=new TH1D("weight_1b","weight_1b",40,0,2);
+	th4[11]=new TH1D("weight_2b","weight_2b",40,0,2);
 	
+	TH1D * th5[51];
 	
+	th5[0]=new TH1D("Pt_j0_sj0_0b","Pt_j0_sj0_0b",200,0,2000);
+	th5[1]=new TH1D("Pt_j0_sj1_0b","Pt_j0_sj1_0b",200,0,2000);
+	th5[2]=new TH1D("Pt_j1_sj0_0b","Pt_j1_sj0_0b",200,0,2000);
+	th5[3]=new TH1D("Pt_j1_sj1_0b","Pt_j1_sj1_0b",200,0,2000);
+	
+	th5[4]=new TH1D("Pt_j0_sj0_1b","Pt_j0_sj0_1b",200,0,2000);
+	th5[5]=new TH1D("Pt_j0_sj1_1b","Pt_j0_sj1_1b",200,0,2000);
+	th5[6]=new TH1D("Pt_j1_sj0_1b","Pt_j1_sj0_1b",200,0,2000);
+	th5[7]=new TH1D("Pt_j1_sj1_1b","Pt_j1_sj1_1b",200,0,2000);
+	
+	th5[8]=new TH1D("Pt_j0_sj0_2b","Pt_j0_sj0_2b",200,0,2000);
+	th5[9]=new TH1D("Pt_j0_sj1_2b","Pt_j0_sj1_2b",200,0,2000);
+	th5[10]=new TH1D("Pt_j1_sj0_2b","Pt_j1_sj0_2b",200,0,2000);
+	th5[11]=new TH1D("Pt_j1_sj1_2b","Pt_j1_sj1_2b",200,0,2000);
+	
+	th5[12]=new TH1D("deltaR0_0b","deltaR0_0b",20,0,1);
+	th5[13]=new TH1D("deltaR1_0b","deltaR1_0b",20,0,1);
+	th5[14]=new TH1D("deltaR0_1b","deltaR0_1b",20,0,1);
+	th5[15]=new TH1D("deltaR1_1b","deltaR1_1b",20,0,1);
+	th5[16]=new TH1D("deltaR0_2b","deltaR0_2b",20,0,1);
+	th5[17]=new TH1D("deltaR1_2b","deltaR1_2b",20,0,1);
+	
+	th5[18]=new TH1D("Eta_j0_sj0_0b","Eta_j0_sj0_0b",60,-3,3);
+	th5[19]=new TH1D("Eta_j0_sj1_0b","Eta_j0_sj1_0b",60,-3,3);
+	th5[20]=new TH1D("Eta_j1_sj0_0b","Eta_j1_sj0_0b",60,-3,3);
+	th5[21]=new TH1D("Eta_j1_sj1_0b","Eta_j1_sj1_0b",60,-3,3);
+	
+	th5[22]=new TH1D("Eta_j0_sj0_1b","Eta_j0_sj0_1b",60,-3,3);
+	th5[23]=new TH1D("Eta_j0_sj1_1b","Eta_j0_sj1_1b",60,-3,3);
+	th5[24]=new TH1D("Eta_j1_sj0_1b","Eta_j1_sj0_1b",60,-3,3);
+	th5[25]=new TH1D("Eta_j1_sj1_1b","Eta_j1_sj1_1b",60,-3,3);
+	
+	th5[26]=new TH1D("Eta_j0_sj0_2b","Eta_j0_sj0_2b",60,-3,3);
+	th5[27]=new TH1D("Eta_j0_sj1_2b","Eta_j0_sj1_2b",60,-3,3);
+	th5[28]=new TH1D("Eta_j1_sj0_2b","Eta_j1_sj0_2b",60,-3,3);
+	th5[29]=new TH1D("Eta_j1_sj1_2b","Eta_j1_sj1_2b",60,-3,3);
+	
+	th5[30]=new TH1D("Pt_j0_0b","Pt_j0_0b",200,0,2000);
+	th5[31]=new TH1D("Pt_j1_0b","Pt_j1_0b",200,0,2000);
+	th5[32]=new TH1D("Pt_j0_1b","Pt_j0_1b",200,0,2000);
+	th5[33]=new TH1D("Pt_j1_1b","Pt_j1_1b",200,0,2000);
+	th5[34]=new TH1D("Pt_j0_2b","Pt_j0_2b",200,0,2000);
+	th5[35]=new TH1D("Pt_j1_2b","Pt_j1_2b",200,0,2000);
+	
+	th5[36]=new TH1D("Eta_j0_0b","Eta_j0_0b",60,-3,3);
+	th5[37]=new TH1D("Eta_j1_0b","Eta_j1_0b",60,-3,3);
+	th5[38]=new TH1D("Eta_j0_1b","Eta_j0_1b",60,-3,3);
+	th5[39]=new TH1D("Eta_j1_1b","Eta_j1_1b",60,-3,3);
+	th5[40]=new TH1D("Eta_j0_2b","Eta_j0_2b",60,-3,3);
+	th5[41]=new TH1D("Eta_j1_2b","Eta_j1_2b",60,-3,3);
+	
+	th5[42]=new TH1D("totalMass_0b","totalMass_0b",75,1000,4000);
+	th5[43]=new TH1D("totalMass_1b","totalMass_1b",75,1000,4000);
+	th5[44]=new TH1D("totalMass_2b","totalMass_2b",75,1000,4000);
+	
+	th5[45]=new TH1D("prMass_j0_0b","prMass_j0_0b",15,90,150);
+	th5[46]=new TH1D("prMass_j1_0b","prMass_j1_0b",15,90,150);
+	th5[47]=new TH1D("prMass_j0_1b","prMass_j0_1b",15,90,150);
+	th5[48]=new TH1D("prMass_j1_1b","prMass_j1_1b",15,90,150);
+	th5[49]=new TH1D("prMass_j0_2b","prMass_j0_2b",15,90,150);
+	th5[50]=new TH1D("prMass_j1_2b","prMass_j1_2b",15,90,150);
+	
+	TH1D * th6[51];
+	
+	th6[0]=new TH1D("Pt_j0_sj0_0bs","Pt_j0_sj0_0b",200,0,2000);
+	th6[1]=new TH1D("Pt_j0_sj1_0bs","Pt_j0_sj1_0b",200,0,2000);
+	th6[2]=new TH1D("Pt_j1_sj0_0bs","Pt_j1_sj0_0b",200,0,2000);
+	th6[3]=new TH1D("Pt_j1_sj1_0bs","Pt_j1_sj1_0b",200,0,2000);
+	
+	th6[4]=new TH1D("Pt_j0_sj0_1bs","Pt_j0_sj0_1b",200,0,2000);
+	th6[5]=new TH1D("Pt_j0_sj1_1bs","Pt_j0_sj1_1b",200,0,2000);
+	th6[6]=new TH1D("Pt_j1_sj0_1bs","Pt_j1_sj0_1b",200,0,2000);
+	th6[7]=new TH1D("Pt_j1_sj1_1bs","Pt_j1_sj1_1b",200,0,2000);
+	
+	th6[8]=new TH1D("Pt_j0_sj0_2bs","Pt_j0_sj0_2b",200,0,2000);
+	th6[9]=new TH1D("Pt_j0_sj1_2bs","Pt_j0_sj1_2b",200,0,2000);
+	th6[10]=new TH1D("Pt_j1_sj0_2bs","Pt_j1_sj0_2b",200,0,2000);
+	th6[11]=new TH1D("Pt_j1_sj1_2bs","Pt_j1_sj1_2b",200,0,2000);
+	
+	th6[12]=new TH1D("deltaR0_0bs","deltaR0_0b",20,0,1);
+	th6[13]=new TH1D("deltaR1_0bs","deltaR1_0b",20,0,1);
+	th6[14]=new TH1D("deltaR0_1bs","deltaR0_1b",20,0,1);
+	th6[15]=new TH1D("deltaR1_1bs","deltaR1_1b",20,0,1);
+	th6[16]=new TH1D("deltaR0_2bs","deltaR0_2b",20,0,1);
+	th6[17]=new TH1D("deltaR1_2bs","deltaR1_2b",20,0,1);
+	
+	th6[18]=new TH1D("Eta_j0_sj0_0bs","Eta_j0_sj0_0b",60,-3,3);
+	th6[19]=new TH1D("Eta_j0_sj1_0bs","Eta_j0_sj1_0b",60,-3,3);
+	th6[20]=new TH1D("Eta_j1_sj0_0bs","Eta_j1_sj0_0b",60,-3,3);
+	th6[21]=new TH1D("Eta_j1_sj1_0bs","Eta_j1_sj1_0b",60,-3,3);
+	
+	th6[22]=new TH1D("Eta_j0_sj0_1bs","Eta_j0_sj0_1b",60,-3,3);
+	th6[23]=new TH1D("Eta_j0_sj1_1bs","Eta_j0_sj1_1b",60,-3,3);
+	th6[24]=new TH1D("Eta_j1_sj0_1bs","Eta_j1_sj0_1b",60,-3,3);
+	th6[25]=new TH1D("Eta_j1_sj1_1bs","Eta_j1_sj1_1b",60,-3,3);
+	
+	th6[26]=new TH1D("Eta_j0_sj0_2bs","Eta_j0_sj0_2b",60,-3,3);
+	th6[27]=new TH1D("Eta_j0_sj1_2bs","Eta_j0_sj1_2b",60,-3,3);
+	th6[28]=new TH1D("Eta_j1_sj0_2bs","Eta_j1_sj0_2b",60,-3,3);
+	th6[29]=new TH1D("Eta_j1_sj1_2bs","Eta_j1_sj1_2b",60,-3,3);
+	
+	th6[30]=new TH1D("Pt_j0_0bs","Pt_j0_0b",200,0,2000);
+	th6[31]=new TH1D("Pt_j1_0bs","Pt_j1_0b",200,0,2000);
+	th6[32]=new TH1D("Pt_j0_1bs","Pt_j0_1b",200,0,2000);
+	th6[33]=new TH1D("Pt_j1_1bs","Pt_j1_1b",200,0,2000);
+	th6[34]=new TH1D("Pt_j0_2bs","Pt_j0_2b",200,0,2000);
+	th6[35]=new TH1D("Pt_j1_2bs","Pt_j1_2b",200,0,2000);
+	
+	th6[36]=new TH1D("Eta_j0_0bs","Eta_j0_0b",60,-3,3);
+	th6[37]=new TH1D("Eta_j1_0bs","Eta_j1_0b",60,-3,3);
+	th6[38]=new TH1D("Eta_j0_1bs","Eta_j0_1b",60,-3,3);
+	th6[39]=new TH1D("Eta_j1_1bs","Eta_j1_1b",60,-3,3);
+	th6[40]=new TH1D("Eta_j0_2bs","Eta_j0_2b",60,-3,3);
+	th6[41]=new TH1D("Eta_j1_2bs","Eta_j1_2b",60,-3,3);
+	
+	th6[42]=new TH1D("totalMass_0bs","totalMass_0b",75,1000,4000);
+	th6[43]=new TH1D("totalMass_1bs","totalMass_1b",75,1000,4000);
+	th6[44]=new TH1D("totalMass_2bs","totalMass_2b",75,1000,4000);
+	
+	th6[45]=new TH1D("prMass_j0_0bs","prMass_j0_0b",15,90,150);
+	th6[46]=new TH1D("prMass_j1_0bs","prMass_j1_0b",15,90,150);
+	th6[47]=new TH1D("prMass_j0_1bs","prMass_j0_1b",15,90,150);
+	th6[48]=new TH1D("prMass_j1_1bs","prMass_j1_1b",15,90,150);
+	th6[49]=new TH1D("prMass_j0_2bs","prMass_j0_2b",15,90,150);
+	th6[50]=new TH1D("prMass_j1_2bs","prMass_j1_2b",15,90,150);
 	
 	BTagCalibration calib("CSVv2L", "CSVv2.csv");
 	BTagCalibrationReader LF(&calib,               // calibration instance
@@ -208,21 +338,57 @@ void HHbbbbBtagEffBase(int wMs,int wM, string st,string st2,double Xsec,int name
 			//cout<<pt1<<","<<pt2<<","<<pt3<<","<<pt4<<endl;
 			//cout<<thisSub1->Eta()<<","<<thisSub2->Eta()<<","<<thatSub1->Eta()<<","<<thatSub2->Eta()<<endl;
 			
-			if(FATsubjetSDHadronFlavor[0][0]==5)sf1=HF.eval(BTagEntry::FLAV_B,thisSub1->Eta(),pt1); 
-			else if(FATsubjetSDHadronFlavor[0][0]==4)sf1=HF.eval(BTagEntry::FLAV_C,thisSub1->Eta(),pt1); 
-			else sf1=LF.eval(BTagEntry::FLAV_UDSG,thisSub1->Eta(),pt1); 
+			if(FATsubjetSDHadronFlavor[0][0]==5){
+				sf1=HF.eval(BTagEntry::FLAV_B,thisSub1->Eta(),pt1); 
+				th3[3]->Fill(pt1,sf1);
+			}
+			else if(FATsubjetSDHadronFlavor[0][0]==4){
+				sf1=HF.eval(BTagEntry::FLAV_C,thisSub1->Eta(),pt1); 
+				th3[4]->Fill(pt1,sf1);
+			}
+			else {
+				sf1=LF.eval(BTagEntry::FLAV_UDSG,thisSub1->Eta(),pt1); 
+				th3[5]->Fill(pt1,sf1);
+			}
 			
-			if(FATsubjetSDHadronFlavor[0][1]==5)sf2=HF.eval(BTagEntry::FLAV_B,thisSub2->Eta(),pt2); 
-			else if(FATsubjetSDHadronFlavor[0][1]==4)sf2=HF.eval(BTagEntry::FLAV_C,thisSub2->Eta(),pt2); 
-			else sf2=LF.eval(BTagEntry::FLAV_UDSG,thisSub2->Eta(),pt2); 
+			if(FATsubjetSDHadronFlavor[0][1]==5){
+				sf2=HF.eval(BTagEntry::FLAV_B,thisSub2->Eta(),pt2); 
+				th3[3]->Fill(pt2,sf2);
+			}
+			else if(FATsubjetSDHadronFlavor[0][1]==4){
+				sf2=HF.eval(BTagEntry::FLAV_C,thisSub2->Eta(),pt2); 
+				th3[4]->Fill(pt2,sf2);
+			}
+			else{
+				sf2=LF.eval(BTagEntry::FLAV_UDSG,thisSub2->Eta(),pt2); 
+				th3[5]->Fill(pt2,sf2);
+			} 
 			
-			if(FATsubjetSDHadronFlavor[1][0]==5)sf3=HF.eval(BTagEntry::FLAV_B,thatSub1->Eta(),pt3); 
-			else if(FATsubjetSDHadronFlavor[1][0]==4)sf3=HF.eval(BTagEntry::FLAV_C,thatSub1->Eta(),pt3); 
-			else sf3=LF.eval(BTagEntry::FLAV_UDSG,thatSub1->Eta(),pt3); 
+			if(FATsubjetSDHadronFlavor[1][0]==5){
+				sf3=HF.eval(BTagEntry::FLAV_B,thatSub1->Eta(),pt3); 
+				th3[3]->Fill(pt3,sf3);
+			}
+			else if(FATsubjetSDHadronFlavor[1][0]==4){
+				sf3=HF.eval(BTagEntry::FLAV_C,thatSub1->Eta(),pt3); 
+				th3[4]->Fill(pt3,sf3);
+			}
+			else {
+				sf3=LF.eval(BTagEntry::FLAV_UDSG,thatSub1->Eta(),pt3); 
+				th3[5]->Fill(pt3,sf3);
+			}
 			
-			if(FATsubjetSDHadronFlavor[1][1]==5)sf4=HF.eval(BTagEntry::FLAV_B,thatSub2->Eta(),pt4); 
-			else if(FATsubjetSDHadronFlavor[1][1]==4)sf4=HF.eval(BTagEntry::FLAV_C,thatSub2->Eta(),pt4); 
-			else sf4=LF.eval(BTagEntry::FLAV_UDSG,thatSub2->Eta(),pt4); 
+			if(FATsubjetSDHadronFlavor[1][1]==5){
+				sf4=HF.eval(BTagEntry::FLAV_B,thatSub2->Eta(),pt4); 
+				th3[3]->Fill(pt4,sf4);
+			}
+			else if(FATsubjetSDHadronFlavor[1][1]==4){
+				sf4=HF.eval(BTagEntry::FLAV_C,thatSub2->Eta(),pt4); 
+				th3[4]->Fill(pt4,sf4);
+			}
+			else {
+				sf4=LF.eval(BTagEntry::FLAV_UDSG,thatSub2->Eta(),pt4); 
+				th3[5]->Fill(pt4,sf4);
+			}
 			
 			if(sf1==0 && FATsubjetSDHadronFlavor[0][0]==5) cout<<"pt1="<<pt1<<endl;
 			
@@ -272,16 +438,12 @@ void HHbbbbBtagEffBase(int wMs,int wM, string st,string st2,double Xsec,int name
 			
 			if(subjetSDCSV[0][0]>0.605)th4[0]->Fill(sf1);
 			else th4[4]->Fill(sf1);
-			
 			if(subjetSDCSV[0][1]>0.605)th4[1]->Fill(sf1);
 			else th4[5]->Fill(sf1);
-			
 			if(subjetSDCSV[1][0]>0.605)th4[2]->Fill(sf1);
 			else th4[6]->Fill(sf1);
-			
 			if(subjetSDCSV[1][1]>0.605)th4[3]->Fill(sf1);
 			else th4[7]->Fill(sf1);
-			
 			th4[8]->Fill(scaleFactor);
 			
 			
@@ -291,9 +453,125 @@ void HHbbbbBtagEffBase(int wMs,int wM, string st,string st2,double Xsec,int name
 			if(subjetSDCSV[1][0]>0.605)nbtag++;
 			if(subjetSDCSV[1][1]>0.605)nbtag++;
 			
-			if(nbtag==0)nPassB[0]+=scaleFactor;
-			if(nbtag==1)nPassB[1]+=scaleFactor;
-			if(nbtag==2)nPassB[2]+=scaleFactor;
+			double dr1=thisSub1->DeltaR(*thisSub2),dr2=thatSub1->DeltaR(*thatSub2);
+			
+			if(nbtag==0){
+				th4[9]->Fill(scaleFactor);
+				nPassB[0]+=scaleFactor;
+				th5[0]->Fill(thisSub1->Pt());
+				th5[1]->Fill(thisSub2->Pt());
+				th5[2]->Fill(thatSub1->Pt());
+				th5[3]->Fill(thatSub2->Pt());
+				th5[18]->Fill(thisSub1->Eta());
+				th5[19]->Fill(thisSub2->Eta());
+				th5[20]->Fill(thatSub1->Eta());
+				th5[21]->Fill(thatSub2->Eta());
+				th5[12]->Fill(dr1);
+				th5[13]->Fill(dr2);
+				th5[30]->Fill((*thisSub1+*thisSub2).Pt());
+				th5[31]->Fill((*thatSub1+*thatSub2).Pt());
+				th5[36]->Fill((*thisSub1+*thisSub2).Eta());
+				th5[37]->Fill((*thatSub1+*thatSub2).Eta());
+				th5[42]->Fill((*thisJet+*thatJet).M());
+				th5[45]->Fill(fatjetPRmassL2L3Corr[0]);
+				th5[46]->Fill(fatjetPRmassL2L3Corr[1]);
+				
+				th6[0]->Fill(thisSub1->Pt(),scaleFactor);
+				th6[1]->Fill(thisSub2->Pt(),scaleFactor);
+				th6[2]->Fill(thatSub1->Pt(),scaleFactor);
+				th6[3]->Fill(thatSub2->Pt(),scaleFactor);
+				th6[18]->Fill(thisSub1->Eta(),scaleFactor);
+				th6[19]->Fill(thisSub2->Eta(),scaleFactor);
+				th6[20]->Fill(thatSub1->Eta(),scaleFactor);
+				th6[21]->Fill(thatSub2->Eta(),scaleFactor);
+				th6[12]->Fill(dr1,scaleFactor);
+				th6[13]->Fill(dr2,scaleFactor);
+				th6[30]->Fill((*thisSub1+*thisSub2).Pt(),scaleFactor);
+				th6[31]->Fill((*thatSub1+*thatSub2).Pt(),scaleFactor);
+				th6[36]->Fill((*thisSub1+*thisSub2).Eta(),scaleFactor);
+				th6[37]->Fill((*thatSub1+*thatSub2).Eta(),scaleFactor);
+				th6[42]->Fill((*thisJet+*thatJet).M(),scaleFactor);
+				th6[45]->Fill(fatjetPRmassL2L3Corr[0],scaleFactor);
+				th6[46]->Fill(fatjetPRmassL2L3Corr[1],scaleFactor);
+			}
+			if(nbtag==1){
+				th4[10]->Fill(scaleFactor);
+				nPassB[1]+=scaleFactor;
+				th5[4]->Fill(thisSub1->Pt());
+				th5[5]->Fill(thisSub2->Pt());
+				th5[6]->Fill(thatSub1->Pt());
+				th5[7]->Fill(thatSub2->Pt());
+				th5[22]->Fill(thisSub1->Eta());
+				th5[23]->Fill(thisSub2->Eta());
+				th5[24]->Fill(thatSub1->Eta());
+				th5[25]->Fill(thatSub2->Eta());
+				th5[14]->Fill(dr1);
+				th5[15]->Fill(dr2);
+				th5[32]->Fill((*thisSub1+*thisSub2).Pt());
+				th5[33]->Fill((*thatSub1+*thatSub2).Pt());
+				th5[38]->Fill((*thisSub1+*thisSub2).Eta());
+				th5[39]->Fill((*thatSub1+*thatSub2).Eta());
+				th5[43]->Fill((*thisJet+*thatJet).M());
+				th5[47]->Fill(fatjetPRmassL2L3Corr[0]);
+				th5[48]->Fill(fatjetPRmassL2L3Corr[1]);
+				
+				th6[4]->Fill(thisSub1->Pt(),scaleFactor);
+				th6[5]->Fill(thisSub2->Pt(),scaleFactor);
+				th6[6]->Fill(thatSub1->Pt(),scaleFactor);
+				th6[7]->Fill(thatSub2->Pt(),scaleFactor);
+				th6[22]->Fill(thisSub1->Eta(),scaleFactor);
+				th6[23]->Fill(thisSub2->Eta(),scaleFactor);
+				th6[24]->Fill(thatSub1->Eta(),scaleFactor);
+				th6[25]->Fill(thatSub2->Eta(),scaleFactor);
+				th6[14]->Fill(dr1,scaleFactor);
+				th6[15]->Fill(dr2,scaleFactor);
+				th6[32]->Fill((*thisSub1+*thisSub2).Pt(),scaleFactor);
+				th6[33]->Fill((*thatSub1+*thatSub2).Pt(),scaleFactor);
+				th6[38]->Fill((*thisSub1+*thisSub2).Eta(),scaleFactor);
+				th6[39]->Fill((*thatSub1+*thatSub2).Eta(),scaleFactor);
+				th6[43]->Fill((*thisJet+*thatJet).M(),scaleFactor);
+				th6[47]->Fill(fatjetPRmassL2L3Corr[0],scaleFactor);
+				th6[48]->Fill(fatjetPRmassL2L3Corr[1],scaleFactor);
+			}
+			if(nbtag==2){
+				th4[11]->Fill(scaleFactor);
+				nPassB[2]+=scaleFactor;
+				th5[8]->Fill(thisSub1->Pt());
+				th5[9]->Fill(thisSub2->Pt());
+				th5[10]->Fill(thatSub1->Pt());
+				th5[11]->Fill(thatSub2->Pt());
+				th5[26]->Fill(thisSub1->Eta());
+				th5[27]->Fill(thisSub2->Eta());
+				th5[28]->Fill(thatSub1->Eta());
+				th5[29]->Fill(thatSub2->Eta());
+				th5[16]->Fill(dr1);
+				th5[17]->Fill(dr2);
+				th5[34]->Fill((*thisSub1+*thisSub2).Pt());
+				th5[35]->Fill((*thatSub1+*thatSub2).Pt());
+				th5[40]->Fill((*thisSub1+*thisSub2).Eta());
+				th5[41]->Fill((*thatSub1+*thatSub2).Eta());
+				th5[44]->Fill((*thisJet+*thatJet).M());
+				th5[49]->Fill(fatjetPRmassL2L3Corr[0]);
+				th5[50]->Fill(fatjetPRmassL2L3Corr[1]);
+				
+				th6[8]->Fill(thisSub1->Pt(),scaleFactor);
+				th6[9]->Fill(thisSub2->Pt(),scaleFactor);
+				th6[10]->Fill(thatSub1->Pt(),scaleFactor);
+				th6[11]->Fill(thatSub2->Pt(),scaleFactor);
+				th6[26]->Fill(thisSub1->Eta(),scaleFactor);
+				th6[27]->Fill(thisSub2->Eta(),scaleFactor);
+				th6[28]->Fill(thatSub1->Eta(),scaleFactor);
+				th6[29]->Fill(thatSub2->Eta(),scaleFactor);
+				th6[16]->Fill(dr1,scaleFactor);
+				th6[17]->Fill(dr2,scaleFactor);
+				th6[34]->Fill((*thisSub1+*thisSub2).Pt(),scaleFactor);
+				th6[35]->Fill((*thatSub1+*thatSub2).Pt(),scaleFactor);
+				th6[40]->Fill((*thisSub1+*thisSub2).Eta(),scaleFactor);
+				th6[41]->Fill((*thatSub1+*thatSub2).Eta(),scaleFactor);
+				th6[44]->Fill((*thisJet+*thatJet).M(),scaleFactor);
+				th6[49]->Fill(fatjetPRmassL2L3Corr[0],scaleFactor);
+				th6[50]->Fill(fatjetPRmassL2L3Corr[1],scaleFactor);
+			}
 			if(nbtag==3)nPassB[3]+=scaleFactor;
 			if(nbtag==4)nPassB[4]+=scaleFactor;
 			
@@ -321,8 +599,18 @@ void HHbbbbBtagEffBase(int wMs,int wM, string st,string st2,double Xsec,int name
 	th2o->Write();
 	th2s->Scale(2245.87*Xsec/total);
 	th2s->Write();
-	for(int i=0;i<3;i++)th3[i]->Write();
-	for(int i=0;i<9;i++)th4[i]->Write();
+	for(int i=0;i<6;i++)th3[i]->Write();
+	for(int i=0;i<12;i++)th4[i]->Write();
+	if(nameRoot==0){
+		for(int i=0;i<51;i++){
+			th5[i]->Sumw2();
+			th5[i]->Scale(2245.87*Xsec/total);
+			th6[i]->Sumw2();
+			th6[i]->Scale(2245.87*Xsec/total);
+		}
+	}
+	for(int i=0;i<51;i++)th5[i]->Write();
+	for(int i=0;i<51;i++)th6[i]->Write();
 	outFile->Close();
 	
 }

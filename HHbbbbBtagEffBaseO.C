@@ -1,15 +1,13 @@
+
 void HHbbbbBtagEffBaseO(int wMs,int wM, string st,string st2,double Xsec,int nameRoot=0){	
 	TFile *f1;
 	if(nameRoot==2)f1=TFile::Open("root_files_btaggedEff/data.root");
 	else f1=TFile::Open(Form("root_files_btaggedEff/%s.root",st2.data()));
-	TH1D* th4[5];
+	TH1D* th4;
 	
 	
-	th4[0]=new TH1D("weight_0b","weight_0b",40,0,2);
-	th4[1]=new TH1D("weight_1b","weight_1b",40,0,2);
-	th4[2]=new TH1D("weight_2b","weight_2b",40,0,2);
-	th4[3]=new TH1D("weight_3b","weight_3b",40,0,2);
-	th4[4]=new TH1D("weight_4b","weight_4b",40,0,2);
+	th4=new TH1D("weight","weight",40,0,2);
+
 	
 	
 	BTagCalibration calib("CSVv2L", "CSVv2.csv");
@@ -185,47 +183,30 @@ void HHbbbbBtagEffBaseO(int wMs,int wM, string st,string st2,double Xsec,int nam
 			else if(FATsubjetSDHadronFlavor[1][1]==4)sf4=HF.eval(BTagEntry::FLAV_C,thatSub2->Eta(),pt4); 
 			else sf4=LF.eval(BTagEntry::FLAV_UDSG,thatSub2->Eta(),pt4); 
 			
+			double scaleFactor=1;
+			if(subjetSDCSV[0][0]>=0.605)scaleFactor*=sf1;
+			//else scaleFactor*=((1-eff1*sf1)/(1-eff1));
+			if(subjetSDCSV[0][1]>=0.605)scaleFactor*=sf2;
+			//else scaleFactor*=((1-eff2*sf2)/(1-eff2));
+			if(subjetSDCSV[1][0]>=0.605)scaleFactor*=sf3;
+			//else scaleFactor*=((1-eff3*sf3)/(1-eff3));
+			if(subjetSDCSV[1][1]>=0.605)scaleFactor*=sf4;
+			//else scaleFactor*=((1-eff4*sf4)/(1-eff4));
+			
+			th4->Fill(scaleFactor);
+			
 			int nbtag=0;
 			if(subjetSDCSV[0][0]>0.605)nbtag++;
 			if(subjetSDCSV[0][1]>0.605)nbtag++;
 			if(subjetSDCSV[1][0]>0.605)nbtag++;
 			if(subjetSDCSV[1][1]>0.605)nbtag++;
 			
-			if(nbtag==0){
-				nPassB[0]+=(1-sf1)*(1-sf2)*(1-sf3)*(1-sf4);
-				th4[0]->Fill((1-sf1)*(1-sf2)*(1-sf3)*(1-sf4));
-			}
-			if(nbtag==1){
-				double temp=(sf1)*(1-sf2)*(1-sf3)*(1-sf4)
-				+(1-sf1)*(sf2)*(1-sf3)*(1-sf4)
-				+(1-sf1)*(1-sf2)*(sf3)*(1-sf4)
-				+(1-sf1)*(1-sf2)*(1-sf3)*(sf4);
-				nPassB[1]+=temp;
-				th4[1]->Fill(temp);
-			}
-			if(nbtag==2){
-				double temp=(sf1)*(sf2)*(1-sf3)*(1-sf4)
-				+(sf1)*(1-sf2)*(sf3)*(1-sf4)
-				+(sf1)*(1-sf2)*(1-sf3)*(sf4)
-				+(1-sf1)*(sf2)*(sf3)*(1-sf4)
-				+(1-sf1)*(sf2)*(1-sf3)*(sf4)
-				+(1-sf1)*(1-sf2)*(sf3)*(sf4);
-				nPassB[2]+=temp;
-				th4[2]->Fill(temp);
-			}
-			if(nbtag==3){
-				double temp=(sf1)*(sf2)*(sf3)*(1-sf4)
-				+(sf1)*(sf2)*(1-sf3)*(sf4)
-				+(sf1)*(1-sf2)*(sf3)*(sf4)
-				+(1-sf1)*(sf2)*(sf3)*(sf4);
-				nPassB[3]+=temp;
-				th4[3]->Fill(temp);
-			}
-			if(nbtag==4){
-				double temp=(sf1)*(sf2)*(sf3)*(sf4);
-				nPassB[4]+=temp;
-				th4[4]->Fill(temp);
-			}
+			if(nbtag==0)nPassB[0]+=scaleFactor;
+			if(nbtag==1)nPassB[1]+=scaleFactor;
+			if(nbtag==2)nPassB[2]+=scaleFactor;
+			if(nbtag==3)nPassB[3]+=scaleFactor;
+			if(nbtag==4)nPassB[4]+=scaleFactor;
+			
 			
 		}
 	}	
@@ -251,7 +232,7 @@ void HHbbbbBtagEffBaseO(int wMs,int wM, string st,string st2,double Xsec,int nam
 	th2o->Write();
 	th2s->Scale(2245.87*Xsec/total);
 	th2s->Write();
-	for(int i=0;i<5;i++)th4[i]->Write();
+	th4->Write();
 	outFile->Close();
 	
 }

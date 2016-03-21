@@ -16,6 +16,17 @@ void HHbbbbBtagMakeEff(int wMs,int wM, string st,string st2,double Xsec,int name
 	th1[4]=new TH2D("effD_l","effD_l",200,0,2000,60,-3,3);
 	th1[5]=new TH2D("effN_l","effN_l",200,0,2000,60,-3,3);
 	
+	TH1D* th2[6];
+	
+	th2[0]=new TH1D("effD_b_1d","effD_b_1d",200,0,2000);
+	th2[1]=new TH1D("effN_b_1d","effN_b_1d",200,0,2000);
+	
+	th2[2]=new TH1D("effD_c_1d","effD_c_1d",200,0,2000);
+	th2[3]=new TH1D("effN_c_1d","effN_c_1d",200,0,2000);
+	
+	th2[4]=new TH1D("effD_l_1d","effD_l_1d",200,0,2000);
+	th2[5]=new TH1D("effN_l_1d","effN_l_1d",200,0,2000);
+	
 	
 	std::vector<TString> eventlist;                                                                                                                                            
 	if(nameRoot==2){
@@ -181,26 +192,58 @@ void HHbbbbBtagMakeEff(int wMs,int wM, string st,string st2,double Xsec,int name
 			//if(FATsubjetSDHadronFlavor[0][0]==5||FATsubjetSDHadronFlavor[0][0]==4)cout<<"Yes"<<endl;
 			//cout<<FATsubjetSDHadronFlavor[0][0]<<",";
 			
+			if(FATsubjetSDHadronFlavor[0][0]==5)th2[0]->Fill(thisSub1->Pt());
+			else if(FATsubjetSDHadronFlavor[0][0]==4)th2[2]->Fill(thisSub1->Pt());
+			else th2[4]->Fill(thisSub1->Pt());
+				
+			if(FATsubjetSDHadronFlavor[0][1]==5)th2[0]->Fill(thisSub2->Pt());
+			else if(FATsubjetSDHadronFlavor[0][1]==4)th2[2]->Fill(thisSub2->Pt());
+			else th2[4]->Fill(thisSub2->Pt());
+			
+			if(FATsubjetSDHadronFlavor[1][0]==5)th2[0]->Fill(thatSub1->Pt());
+			else if(FATsubjetSDHadronFlavor[1][0]==4)th2[2]->Fill(thatSub1->Pt());
+			else th2[4]->Fill(thatSub1->Pt());
+			
+			if(FATsubjetSDHadronFlavor[1][1]==5)th2[0]->Fill(thatSub2->Pt());
+			else if(FATsubjetSDHadronFlavor[1][1]==4)th2[2]->Fill(thatSub2->Pt());
+			else th2[4]->Fill(thatSub2->Pt());
+			
 			int nbtag=0;
 			if(subjetSDCSV[0][0]>0.605){
 				if(FATsubjetSDHadronFlavor[0][0]==5)th1[1]->Fill(thisSub1->Pt(),thisSub1->Eta());
 				else if(FATsubjetSDHadronFlavor[0][0]==4)th1[3]->Fill(thisSub1->Pt(),thisSub1->Eta());
 				else th1[5]->Fill(thisSub1->Pt(),thisSub1->Eta());
+				
+				if(FATsubjetSDHadronFlavor[0][0]==5)th2[1]->Fill(thisSub1->Pt());
+				else if(FATsubjetSDHadronFlavor[0][0]==4)th2[3]->Fill(thisSub1->Pt());
+				else th2[5]->Fill(thisSub1->Pt());
 			}
 			if(subjetSDCSV[0][1]>0.605){
 				if(FATsubjetSDHadronFlavor[0][1]==5)th1[1]->Fill(thisSub2->Pt(),thisSub2->Eta());
 				else if(FATsubjetSDHadronFlavor[0][1]==4)th1[3]->Fill(thisSub2->Pt(),thisSub2->Eta());
 				else th1[5]->Fill(thisSub2->Pt(),thisSub2->Eta());
+				
+				if(FATsubjetSDHadronFlavor[0][1]==5)th2[1]->Fill(thisSub2->Pt());
+				else if(FATsubjetSDHadronFlavor[0][1]==4)th2[3]->Fill(thisSub2->Pt());
+				else th2[5]->Fill(thisSub2->Pt());
 			}
 			if(subjetSDCSV[1][0]>0.605){
 				if(FATsubjetSDHadronFlavor[1][0]==5)th1[1]->Fill(thatSub1->Pt(),thatSub1->Eta());
 				else if(FATsubjetSDHadronFlavor[1][0]==4)th1[3]->Fill(thatSub1->Pt(),thatSub1->Eta());
 				else th1[5]->Fill(thatSub1->Pt(),thatSub1->Eta());
+				
+				if(FATsubjetSDHadronFlavor[1][0]==5)th2[1]->Fill(thatSub1->Pt());
+				else if(FATsubjetSDHadronFlavor[1][0]==4)th2[3]->Fill(thatSub1->Pt());
+				else th2[5]->Fill(thatSub1->Pt());
 			}
 			if(subjetSDCSV[1][1]>0.605){
 				if(FATsubjetSDHadronFlavor[1][1]==5)th1[1]->Fill(thatSub2->Pt(),thatSub2->Eta());
 				else if(FATsubjetSDHadronFlavor[1][1]==4)th1[3]->Fill(thatSub2->Pt(),thatSub2->Eta());
 				else th1[5]->Fill(thatSub2->Pt(),thatSub2->Eta());
+				
+				if(FATsubjetSDHadronFlavor[1][1]==5)th2[1]->Fill(thatSub2->Pt());
+				else if(FATsubjetSDHadronFlavor[1][1]==4)th2[3]->Fill(thatSub2->Pt());
+				else th2[5]->Fill(thatSub2->Pt());
 			}
 			
 			
@@ -215,6 +258,7 @@ void HHbbbbBtagMakeEff(int wMs,int wM, string st,string st2,double Xsec,int name
 	TFile* outFile = new TFile(Form("root_files_btaggedEff/%s.root",st2.data()),"recreate");
 	
 	for (int i=0;i<6;i++)th1[i]->Write();
+	for (int i=0;i<6;i++)th2[i]->Write();
 	outFile->Close();
 	
 }
