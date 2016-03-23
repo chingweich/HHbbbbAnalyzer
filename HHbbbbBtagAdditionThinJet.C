@@ -166,6 +166,8 @@ void HHbbbbBtagAdditionThinJet(int wMs,int wM, string st,string st2,double Xsec,
 				AddTHINnJet2++;
 				if(thisThinJet->DeltaR(*thisJet)<1)continue;
 				if(thisThinJet->DeltaR(*thatJet)<1)continue;
+				if(thisThinJet->Pt()<30)continue;
+				if(fabs(thisThinJet->Eta())<3)continue;
 				AddTHINnJet++;
 				//cout<<w<<",etr="<<jEntry<<","<<i<<","<<"1="<<thisThinJet->DeltaR(*thisJet)<<",2="<<thisThinJet->DeltaR(*thatJet)<<endl;
 			}
@@ -181,7 +183,7 @@ void HHbbbbBtagAdditionThinJet(int wMs,int wM, string st,string st2,double Xsec,
 	if(nameRoot==2)cout<<"dataPassingcsc="<<dataPassingcsc<<endl;
 	for(int i=0;i<14;i++)cout<<"nPass["<<i<<"]="<<nPass[i]<<endl;
 	
-	TFile* outFile = new TFile(Form("root_files_addThinJet/%s.root",st2.data()),"recreate");
+	TFile* outFile = new TFile(Form("root_files_addThinJet/%s_3.root",st2.data()),"recreate");
 	if(nameRoot==0){
 		for(int i=0;i<4;i++){
 			th1[i]->Sumw2();
