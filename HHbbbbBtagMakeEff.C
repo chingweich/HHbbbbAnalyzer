@@ -27,6 +27,12 @@ void HHbbbbBtagMakeEff(int wMs,int wM, string st,string st2,double Xsec,int name
 	th2[4]=new TH1D("effD_l_1d","effD_l_1d",200,0,2000);
 	th2[5]=new TH1D("effN_l_1d","effN_l_1d",200,0,2000);
 	
+	for(int i=0;i<6;i++){
+			th1[i]->Sumw2();
+			//th1[i]->Scale(2245.87*Xsec/total);
+			th2[i]->Sumw2();
+			//th2[i]->Scale(2245.87*Xsec/total);
+		}
 	
 	std::vector<TString> eventlist;                                                                                                                                            
 	if(nameRoot==2){
@@ -256,6 +262,14 @@ void HHbbbbBtagMakeEff(int wMs,int wM, string st,string st2,double Xsec,int name
 	for(int i=0;i<14;i++)cout<<"nPass["<<i<<"]="<<nPass[i]<<endl;
 	
 	TFile* outFile = new TFile(Form("root_files_btaggedEff/%s.root",st2.data()),"recreate");
+	if(nameRoot==0){
+		for(int i=0;i<6;i++){
+			//th1[i]->Sumw2();
+			th1[i]->Scale(2245.87*Xsec/total);
+			//th2[i]->Sumw2();
+			th2[i]->Scale(2245.87*Xsec/total);
+		}
+	}
 	
 	for (int i=0;i<6;i++)th1[i]->Write();
 	for (int i=0;i<6;i++)th2[i]->Write();

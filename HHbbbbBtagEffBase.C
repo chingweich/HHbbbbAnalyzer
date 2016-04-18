@@ -13,6 +13,7 @@ void HHbbbbBtagEffBase(int wMs,int wM, string st,string st2,double Xsec,int name
 	th1[1]->Divide(th1[0]);
 	th1[3]->Divide(th1[2]);
 	th1[5]->Divide(th1[4]);
+	for(int i=0;i<6;i++)th1[i]->Sumw2();
 	
 	TFile *f2;
 	f2=TFile::Open("root_files_btaggedEff/data.root");
@@ -27,6 +28,7 @@ void HHbbbbBtagEffBase(int wMs,int wM, string st,string st2,double Xsec,int name
 	th2[1]->Divide(th2[0]);
 	th2[3]->Divide(th2[2]);
 	th2[5]->Divide(th2[4]);
+	for(int i=0;i<6;i++)th2[i]->Sumw2();
 	
 	TH2D* th3[6];
 	
@@ -38,7 +40,8 @@ void HHbbbbBtagEffBase(int wMs,int wM, string st,string st2,double Xsec,int name
 	th3[4]=new TH2D("SF_vs_Pt_c","SF_vs_Pt_c",120,0,1200,40,0.8,1.2);
 	th3[5]=new TH2D("SF_vs_Pt_l","SF_vs_Pt_l",120,0,1200,40,0.8,1.2);
 
-	TH1D* th4[12];
+	for(int i=0;i<6;i++)th3[i]->Sumw2();
+	TH1D* th4[14];
 	
 	th4[0]=new TH1D("SF_jet0_sub0_pass","SF_jet0_sub0_pass",40,0.8,1.2);
 	th4[1]=new TH1D("SF_jet0_sub1_pass","SF_jet0_sub1_pass",40,0.8,1.2);
@@ -52,6 +55,9 @@ void HHbbbbBtagEffBase(int wMs,int wM, string st,string st2,double Xsec,int name
 	th4[9]=new TH1D("weight_0b","weight_0b",40,0,2);
 	th4[10]=new TH1D("weight_1b","weight_1b",40,0,2);
 	th4[11]=new TH1D("weight_2b","weight_2b",40,0,2);
+	th4[12]=new TH1D("weight_2b_ll","weight_2b_ll",40,0,2);
+	th4[13]=new TH1D("weight_2b_onel","weight_2b_onel",40,0,2);
+	for(int i=0;i<14;i++)th4[i]->Sumw2();
 	
 	TH1D * th5[51];
 	
@@ -180,6 +186,9 @@ void HHbbbbBtagEffBase(int wMs,int wM, string st,string st2,double Xsec,int name
 	th6[48]=new TH1D("prMass_j1_1bs","prMass_j1_1b",15,90,150);
 	th6[49]=new TH1D("prMass_j0_2bs","prMass_j0_2b",15,90,150);
 	th6[50]=new TH1D("prMass_j1_2bs","prMass_j1_2b",15,90,150);
+	
+	for(int i=0;i<51;i++)th5[i]->Sumw2();
+	for(int i=0;i<51;i++)th6[i]->Sumw2();
 	
 	BTagCalibration calib("CSVv2L", "CSVv2.csv");
 	BTagCalibrationReader LF(&calib,               // calibration instance
@@ -426,15 +435,42 @@ void HHbbbbBtagEffBase(int wMs,int wM, string st,string st2,double Xsec,int name
 			else if(FATsubjetSDHadronFlavor[1][1]==4)eff4=th1[3]->GetBinContent(ceil(thatSub2->Pt()/10),ceil(thatSub2->Eta()/0.1)+30);
 			else eff4=th1[5]->GetBinContent(ceil(thatSub2->Pt()/10),ceil(thatSub2->Eta()/0.1)+30);
 			
+			int nbtag=0;
+			if(subjetSDCSV[0][0]>0.605)nbtag++;
+			if(subjetSDCSV[0][1]>0.605)nbtag++;
+			if(subjetSDCSV[1][0]>0.605)nbtag++;
+			if(subjetSDCSV[1][1]>0.605)nbtag++;
+			
 			double scaleFactor=1;
 			if(subjetSDCSV[0][0]>=0.605)scaleFactor*=sf1;
 			else scaleFactor*=((1-eff1*sf1)/(1-eff1));
+			//if(nbtag==2)cout<<jEntry<<",SF="<<scaleFactor<<",CSV="<<subjetSDCSV[0][0]<<",eff="<<eff1<<",SD="<<FATsubjetSDHadronFlavor[0][0]<<",sf="<<sf1<<endl;
 			if(subjetSDCSV[0][1]>=0.605)scaleFactor*=sf2;
 			else scaleFactor*=((1-eff2*sf2)/(1-eff2));
+			//if(nbtag==2)cout<<jEntry<<",SF="<<scaleFactor<<",CSV="<<subjetSDCSV[0][1]<<",eff="<<eff2<<",SD="<<FATsubjetSDHadronFlavor[0][1]<<",sf="<<sf2<<endl;
 			if(subjetSDCSV[1][0]>=0.605)scaleFactor*=sf3;
 			else scaleFactor*=((1-eff3*sf3)/(1-eff3));
+			//if(nbtag==2)cout<<jEntry<<",SF="<<scaleFactor<<",CSV="<<subjetSDCSV[1][0]<<",eff="<<eff3<<",SD="<<FATsubjetSDHadronFlavor[1][0]<<",sf="<<sf3<<endl;
 			if(subjetSDCSV[1][1]>=0.605)scaleFactor*=sf4;
 			else scaleFactor*=((1-eff4*sf4)/(1-eff4));
+			//if(nbtag==2)cout<<jEntry<<",SF="<<scaleFactor<<",CSV="<<subjetSDCSV[1][1]<<",eff="<<eff4<<",SD="<<FATsubjetSDHadronFlavor[1][1]<<",sf="<<sf4<<endl;
+			
+			if(scaleFactor>1.3 && (nbtag==4||nbtag==3) ){
+				cout<<jEntry<<",SF="<<scaleFactor<<",CSV="<<subjetSDCSV[0][0]<<",eff="<<eff1<<",SD="<<FATsubjetSDHadronFlavor[0][0]<<",sf="<<sf1<<endl;
+				cout<<jEntry<<",SF="<<scaleFactor<<",CSV="<<subjetSDCSV[0][1]<<",eff="<<eff2<<",SD="<<FATsubjetSDHadronFlavor[0][1]<<",sf="<<sf2<<endl;
+				cout<<jEntry<<",SF="<<scaleFactor<<",CSV="<<subjetSDCSV[1][0]<<",eff="<<eff3<<",SD="<<FATsubjetSDHadronFlavor[1][0]<<",sf="<<sf3<<endl;
+				cout<<jEntry<<",SF="<<scaleFactor<<",CSV="<<subjetSDCSV[1][1]<<",eff="<<eff4<<",SD="<<FATsubjetSDHadronFlavor[1][1]<<",sf="<<sf4<<endl;
+				
+				
+			}
+			
+			int nbtag2=0;
+			if(subjetSDCSV[0][0]>0.605 &&FATsubjetSDHadronFlavor[0][0]==0)nbtag2++;
+			if(subjetSDCSV[0][1]>0.605 &&FATsubjetSDHadronFlavor[0][1]==0)nbtag2++;
+			if(subjetSDCSV[1][0]>0.605 &&FATsubjetSDHadronFlavor[1][0]==0)nbtag2++;
+			if(subjetSDCSV[1][1]>0.605 &&FATsubjetSDHadronFlavor[1][1]==0)nbtag2++;
+			
+			
 			
 			if(subjetSDCSV[0][0]>0.605)th4[0]->Fill(sf1);
 			else th4[4]->Fill(sf1);
@@ -446,12 +482,9 @@ void HHbbbbBtagEffBase(int wMs,int wM, string st,string st2,double Xsec,int name
 			else th4[7]->Fill(sf1);
 			th4[8]->Fill(scaleFactor);
 			
+			if(nbtag2==2 && nbtag==2)th4[12]->Fill(scaleFactor);
+			if(nbtag2==1 && nbtag==2)th4[13]->Fill(scaleFactor);
 			
-			int nbtag=0;
-			if(subjetSDCSV[0][0]>0.605)nbtag++;
-			if(subjetSDCSV[0][1]>0.605)nbtag++;
-			if(subjetSDCSV[1][0]>0.605)nbtag++;
-			if(subjetSDCSV[1][1]>0.605)nbtag++;
 			
 			double dr1=thisSub1->DeltaR(*thisSub2),dr2=thatSub1->DeltaR(*thatSub2);
 			
@@ -600,12 +633,12 @@ void HHbbbbBtagEffBase(int wMs,int wM, string st,string st2,double Xsec,int name
 	th2s->Scale(2245.87*Xsec/total);
 	th2s->Write();
 	for(int i=0;i<6;i++)th3[i]->Write();
-	for(int i=0;i<12;i++)th4[i]->Write();
+	for(int i=0;i<14;i++)th4[i]->Write();
 	if(nameRoot==0){
 		for(int i=0;i<51;i++){
-			th5[i]->Sumw2();
+			//th5[i]->Sumw2();
 			th5[i]->Scale(2245.87*Xsec/total);
-			th6[i]->Sumw2();
+			//th6[i]->Sumw2();
 			th6[i]->Scale(2245.87*Xsec/total);
 		}
 	}
