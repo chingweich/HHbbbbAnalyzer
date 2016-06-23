@@ -1,12 +1,18 @@
 
-void HHbbbbBtagMakeEff_76(int wMs,int wM, string st,string st2){	
+void HHbbbbBtagMakeEff_76(int wMs,int wM, string st,string st2,string option=""){	
 
 	//0=signal ,1=QCD ,2=data
 	int nameRoot=1;
 	if(st2.find("QCD")!= std::string::npos)nameRoot=0;
 	if(st2.find("data")!= std::string::npos)nameRoot=2;
 	cout<<"nameRoot = "<<nameRoot<<endl;
-
+	
+	//option-----------------------------------------------------------
+	int JESOption=0;
+	if(option.find("JESUp")!= std::string::npos)JESOption=1;
+	if(option.find("JESDown")!= std::string::npos)JESOption=2;
+	cout<<"JESOption = "<<JESOption<<endl;
+	
 	TFile *f;
 	TTree *tree;
 	int nPass[20]={0};
@@ -27,14 +33,19 @@ void HHbbbbBtagMakeEff_76(int wMs,int wM, string st,string st2){
 	th2[3]=new TH1D("effN_c_1d","effN_c_1d",200,0,2000);
 	th2[4]=new TH1D("effD_l_1d","effD_l_1d",200,0,2000);
 	th2[5]=new TH1D("effN_l_1d","effN_l_1d",200,0,2000);
+
+	TH1D* h_nvtx[4];
+	h_nvtx[0]= new TH1D("h_nvtx","",60,0,60);
+	h_nvtx[1]= new TH1D("h_nvtx2","",60,0,60);
+	h_nvtx[2]= new TH1D("h_nvtx3","",60,0,60);
+	h_nvtx[3]= new TH1D("h_nvtx4","",60,0,60);
 	
-	TH1D* th3[2];
-	th3[0]=new TH1D("ntrue","",100,0,100);
-	th3[1]=new TH1D("ntrueC","",100,0,100);
-	
-	TH1F* h_nvtx = new TH1F("h_nvtx","",100,0,100);
-	TH1F* h_nvtx2 = new TH1F("h_nvtx2","",100,0,100);
-	standalone_LumiReWeighting LumiWeights_central(0);
+	TH1D* h_ntrue[4];
+	h_ntrue[0]= new TH1D("h_ntrue","",60,0,60);
+	h_ntrue[1]= new TH1D("h_ntrue2","",60,0,60);
+	h_ntrue[2]= new TH1D("h_ntrue3","",60,0,60);
+	h_ntrue[3]= new TH1D("h_ntrue4","",60,0,60);
+	standalone_LumiReWeighting LumiWeights_central(0),LumiWeights_up(1),LumiWeights_down(-1);
 	
 	for(int i=0;i<6;i++){
 			th1[i]->Sumw2();
@@ -76,13 +87,25 @@ void HHbbbbBtagMakeEff_76(int wMs,int wM, string st,string st2){
 			
 			Float_t ntrue= data.GetFloat("pu_nTrueInt");
 			Int_t nVtx        = data.GetInt("nVtx");
-			h_nvtx->Fill(nVtx);
-			double PU_weight_central =1;
+		
+			h_ntrue[0]->Fill(ntrue);
+			double PU_weight_central =1, PU_weight_up =1, PU_weight_down =1;
 			if(nameRoot!=2){
-				PU_weight_central = LumiWeights_central.weight(ntrue);
+				if(ntrue<51){
+					PU_weight_central = LumiWeights_central.weight(ntrue);
+					PU_weight_up = LumiWeights_up.weight(ntrue);
+					PU_weight_down = LumiWeights_down.weight(ntrue);
+				}
+				else {
+					PU_weight_central = LumiWeights_central.weight(50);
+					PU_weight_up = LumiWeights_up.weight(50);
+					PU_weight_down = LumiWeights_down.weight(50);
+				}
+				cout<<LumiWeights_central.weight(51)<<endl;
 			}
-			h_nvtx2->Fill(nVtx,PU_weight_central);
-			th3[0]->Fill(ntrue);
+			h_ntrue[1]->Fill(ntrue,PU_weight_central);
+			h_ntrue[2]->Fill(ntrue,PU_weight_up);
+			h_ntrue[3]->Fill(ntrue,PU_weight_down);
 			
 			//0. has a good vertex
 			if(nVtx<1)continue;nPass[0]++;
@@ -114,11 +137,11 @@ void HHbbbbBtagMakeEff_76(int wMs,int wM, string st,string st2){
 			TClonesArray* fatjetP4 = (TClonesArray*) data.GetPtrTObject("FATjetP4");
 			Float_t*  fatjetTau1 = data.GetPtrFloat("FATjetTau1");
 			Float_t*  fatjetTau2 = data.GetPtrFloat("FATjetTau2");
-			Float_t*  fatjetCISVV2 = data.GetPtrFloat("FATjetCISVV2");
-			Float_t*  fatjetPRmass = data.GetPtrFloat("FATjetPRmass");
+			
+			
 			Float_t*  fatjetPRmassL2L3Corr = data.GetPtrFloat("FATjetPRmassL2L3Corr");
-			Float_t*  fatjetSDmass = data.GetPtrFloat("FATjetSDmass");
-			Int_t*   nSubSoftDropJet = data.GetPtrInt("FATnSubSDJet");
+			
+			
 			vector<float>   *subjetSDCSV =  data.GetPtrVectorFloat("FATsubjetSDCSV");
 			vector<float>   *subjetSDPx  =  data.GetPtrVectorFloat("FATsubjetSDPx", nFATJet);
 			vector<float>   *subjetSDPy  =  data.GetPtrVectorFloat("FATsubjetSDPy", nFATJet);
@@ -128,8 +151,25 @@ void HHbbbbBtagMakeEff_76(int wMs,int wM, string st,string st2){
 			vector<bool>    &FATjetPassIDTight = *((vector<bool>*) data.GetPtr("FATjetPassIDTight"));
 			//2.nJets
 			if(nJets<2)continue;nPass[2]++;
-			TLorentzVector* thisJet = (TLorentzVector*)fatjetP4->At(0);
-			TLorentzVector* thatJet = (TLorentzVector*)fatjetP4->At(1);
+			float*  FATjetCorrUncUp = data.GetPtrFloat("FATjetCorrUncUp"); 
+			float*  FATjetCorrUncDown = data.GetPtrFloat("FATjetCorrUncDown"); 
+			TLorentzVector* thisJet ,* thatJet;
+			if(JESOption==0){
+				thisJet= (TLorentzVector*)fatjetP4->At(0);
+				thatJet = (TLorentzVector*)fatjetP4->At(1);
+			}
+			else if (JESOption==1){
+				TLorentzVector test0= (*((TLorentzVector*)fatjetP4->At(0)))*(1+FATjetCorrUncUp[0] );
+				TLorentzVector test1= (*((TLorentzVector*)fatjetP4->At(1)))*(1+FATjetCorrUncUp[1] );
+				thisJet= &test0;
+				thatJet= &test1;
+			}
+			else if (JESOption==2){
+				TLorentzVector test0= (*((TLorentzVector*)fatjetP4->At(0)))*(1-FATjetCorrUncDown[0] );
+				TLorentzVector test1= (*((TLorentzVector*)fatjetP4->At(1)))*(1-FATjetCorrUncDown[1] );
+				thisJet= &test0;
+				thatJet= &test1;
+			}
 			//3. Pt 
 			if(thisJet->Pt()<300)continue;
 			if(thatJet->Pt()<300)continue;
@@ -181,6 +221,12 @@ void HHbbbbBtagMakeEff_76(int wMs,int wM, string st,string st2){
 				}                                                                              
 				dataPassingcsc++;
 			}
+			
+			h_nvtx[0]->Fill(nVtx);
+			h_nvtx[1]->Fill(nVtx,PU_weight_central);
+			h_nvtx[2]->Fill(nVtx,PU_weight_up);
+			h_nvtx[3]->Fill(nVtx,PU_weight_down);
+			
 			//10.btag
 			TLorentzVector* thisSub1=new TLorentzVector(0,0,0,0);
 			TLorentzVector* thisSub2=new TLorentzVector(0,0,0,0);
@@ -269,13 +315,18 @@ void HHbbbbBtagMakeEff_76(int wMs,int wM, string st,string st2){
 	cout<<"entries="<<total<<endl;	
 	if(nameRoot==2)cout<<"dataPassingcsc="<<dataPassingcsc<<endl;
 	for(int i=0;i<9;i++)cout<<"nPass["<<i<<"]="<<nPass[i]<<endl;
-	cout<<"vtx_check ="<<h_nvtx2->Integral()/h_nvtx->Integral()<<endl;
+	cout<<"vtx_check ="<<h_nvtx[1]->Integral()/h_nvtx[0]->Integral()<<endl;
 	if(nameRoot==2)cout<<"dataPassingcsc cut ="<<nPass[9]-dataPassingcsc<<endl;
 	
-	TFile* outFile = new TFile(Form("btagEffSource/%s.root",st2.data()),"recreate");
+	TFile* outFile ;
+	if(JESOption==0)outFile= new TFile(Form("btagEffSource/%s.root",st2.data()),"recreate");
+	else if(JESOption==1)outFile= new TFile(Form("btagEffSource/%s_JESUp.root",st2.data()),"recreate");
+	else if(JESOption==2)outFile= new TFile(Form("btagEffSource/%s_JESDown.root",st2.data()),"recreate");
+	
 	for (int i=0;i<6;i++)th1[i]->Write();
 	for (int i=0;i<6;i++)th2[i]->Write();
-	th3[0]->Write();
+	for(int i=0;i<4;i++)h_nvtx[i]->Write();
+	for(int i=0;i<4;i++)h_ntrue[i]->Write();
 	outFile->Close();
 	
 }

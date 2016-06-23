@@ -32,7 +32,7 @@
 //other including
 //#include "setNCUStyle.C"
 #include "untuplizer.h"
-//#include "jetEnergyScale.h"
+#include "jetEnergyScale.h"
 
 #include "standalone_LumiReWeighting.cc"
 #include "standalone_LumiReWeighting.h"
@@ -116,5 +116,13 @@ void HHbbbbBtagEff_76(int a){
 	}
 	if(a==35)HHbbbbBtagMakeEff_76(1501,1968,data3,"data5");	
 	if(a>=22 && a<=26)cout<<""<<endl;
-	else if(a<33)HHbbbbBtagEffBase_76(aa0[a],aa[a],st1[a],fileName[a]);
+	//else if(a<33)HHbbbbBtagMakeEff_76(aa0[a],aa[a],st1[a],fileName[a]);
+	else if(a<33){
+		//HHbbbbBtagMakeEff_76(aa0[a],aa[a],st1[a],fileName[a],"");
+		//HHbbbbBtagMakeEff_76(aa0[a],aa[a],st1[a],fileName[a],"JESUp");
+		//HHbbbbBtagMakeEff_76(aa0[a],aa[a],st1[a],fileName[a],"JESDown");
+		//HHbbbbBtagEffBase_76(aa0[a],aa[a],st1[a],fileName[a],"");
+		HHbbbbBtagEffBase_76(aa0[a],aa[a],st1[a],fileName[a],"BtagUp");
+		HHbbbbBtagEffBase_76(aa0[a],aa[a],st1[a],fileName[a],"BtagDown");
+	}
 }
