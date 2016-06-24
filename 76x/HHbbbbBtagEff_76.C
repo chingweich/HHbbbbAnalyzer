@@ -49,6 +49,7 @@ void HHbbbbBtagEff_76(int a){
 
 	string st1[40]={
 		/*0-11*/
+		/*
 		"/afs/cern.ch/work/c/chchen/public/CRAB/BulkGravTohhTohbbhbb_narrow_M-1000_13TeV-madgraph.root",
 		"/afs/cern.ch/work/c/chchen/public/CRAB/BulkGravTohhTohbbhbb_narrow_M-1200_13TeV-madgraph.root",
 		"/afs/cern.ch/work/c/chchen/public/CRAB/BulkGravTohhTohbbhbb_narrow_M-1400_13TeV-madgraph.root",
@@ -60,7 +61,20 @@ void HHbbbbBtagEff_76(int a){
 		"/afs/cern.ch/work/c/chchen/public/CRAB/BulkGravTohhTohbbhbb_narrow_M-3500_13TeV-madgraph.root",
 		"/afs/cern.ch/work/c/chchen/public/CRAB/BulkGravTohhTohbbhbb_narrow_M-4000_13TeV-madgraph.root",
 		"/afs/cern.ch/work/c/chchen/public/CRAB/BulkGravTohhTohbbhbb_narrow_M-4500_13TeV-madgraph.root",
+		*/
+		"/data7/gdeleoniii/cmssw764.2/BulkGravTohhTohbbhbb/BulkGravTohhTohbbhbb_narrow_M-1000_13TeV-madgraph.root",
+		"/data7/gdeleoniii/cmssw764.2/BulkGravTohhTohbbhbb/BulkGravTohhTohbbhbb_narrow_M-1200_13TeV-madgraph.root",
+		"/data7/gdeleoniii/cmssw764.2/BulkGravTohhTohbbhbb/BulkGravTohhTohbbhbb_narrow_M-1400_13TeV-madgraph.root",
+		"/data7/gdeleoniii/cmssw764.2/BulkGravTohhTohbbhbb/BulkGravTohhTohbbhbb_narrow_M-1600_13TeV-madgraph.root",
+		"/data7/gdeleoniii/cmssw764.2/BulkGravTohhTohbbhbb/BulkGravTohhTohbbhbb_narrow_M-1800_13TeV-madgraph.root",
+		"/data7/gdeleoniii/cmssw764.2/BulkGravTohhTohbbhbb/BulkGravTohhTohbbhbb_narrow_M-2000_13TeV-madgraph.root",
+		"/data7/gdeleoniii/cmssw764.2/BulkGravTohhTohbbhbb/BulkGravTohhTohbbhbb_narrow_M-2500_13TeV-madgraph.root",
+		"/data7/gdeleoniii/cmssw764.2/BulkGravTohhTohbbhbb/BulkGravTohhTohbbhbb_narrow_M-3000_13TeV-madgraph.root",
+		"/data7/gdeleoniii/cmssw764.2/BulkGravTohhTohbbhbb/BulkGravTohhTohbbhbb_narrow_M-3500_13TeV-madgraph.root",
+		"/data7/gdeleoniii/cmssw764.2/BulkGravTohhTohbbhbb/BulkGravTohhTohbbhbb_narrow_M-4000_13TeV-madgraph.root",
+		"/data7/gdeleoniii/cmssw764.2/BulkGravTohhTohbbhbb/BulkGravTohhTohbbhbb_narrow_M-4500_13TeV-madgraph.root",
 		/*12-21*/
+		/*
 		"/afs/cern.ch/work/c/chchen/public/CRAB/RadionTohhTohbbhbb_narrow_M-1000_13TeV-madgraph.root",
 		"/afs/cern.ch/work/c/chchen/public/CRAB/RadionTohhTohbbhbb_narrow_M-1200_13TeV-madgraph.root",
 		"/afs/cern.ch/work/c/chchen/public/CRAB/RadionTohhTohbbhbb_narrow_M-1400_13TeV-madgraph.root",
@@ -72,6 +86,18 @@ void HHbbbbBtagEff_76(int a){
 		"/afs/cern.ch/work/c/chchen/public/CRAB/RadionTohhTohbbhbb_narrow_M-3500_13TeV-madgraph.root",
 		"/afs/cern.ch/work/c/chchen/public/CRAB/RadionTohhTohbbhbb_narrow_M-4000_13TeV-madgraph.root",
 		"/afs/cern.ch/work/c/chchen/public/CRAB/RadionTohhTohbbhbb_narrow_M-4500_13TeV-madgraph.root",
+		*/
+		"/data7/chchen/0606/RadionTohhTohbbhbb_narrow_M/RadionTohhTohbbhbb_narrow_M-1000_13TeV-madgraph.root",
+		"/data7/chchen/0606/RadionTohhTohbbhbb_narrow_M/RadionTohhTohbbhbb_narrow_M-1200_13TeV-madgraph.root",
+		"/data7/chchen/0606/RadionTohhTohbbhbb_narrow_M/RadionTohhTohbbhbb_narrow_M-1400_13TeV-madgraph.root",
+		"/data7/chchen/0606/RadionTohhTohbbhbb_narrow_M/RadionTohhTohbbhbb_narrow_M-1600_13TeV-madgraph.root",
+		"/data7/chchen/0606/RadionTohhTohbbhbb_narrow_M/RadionTohhTohbbhbb_narrow_M-1800_13TeV-madgraph.root",
+		"/data7/chchen/0606/RadionTohhTohbbhbb_narrow_M/RadionTohhTohbbhbb_narrow_M-2000_13TeV-madgraph.root",
+		"/data7/chchen/0606/RadionTohhTohbbhbb_narrow_M/RadionTohhTohbbhbb_narrow_M-2500_13TeV-madgraph.root",
+		"/data7/chchen/0606/RadionTohhTohbbhbb_narrow_M/RadionTohhTohbbhbb_narrow_M-3000_13TeV-madgraph.root",
+		"/data7/chchen/0606/RadionTohhTohbbhbb_narrow_M/RadionTohhTohbbhbb_narrow_M-3500_13TeV-madgraph.root",
+		"/data7/chchen/0606/RadionTohhTohbbhbb_narrow_M/RadionTohhTohbbhbb_narrow_M-4000_13TeV-madgraph.root",
+		"/data7/chchen/0606/RadionTohhTohbbhbb_narrow_M/RadionTohhTohbbhbb_narrow_M-4500_13TeV-madgraph.root",
 		/*22-32*/
 		"/data7/syu/NCUGlobalTuples/76X_Fall15MiniAODv2/8a63398/QCD/QCD_HT100to200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/160404_104242/0000/NCUGlobalTuples_",
 		"/data7/syu/NCUGlobalTuples/76X_Fall15MiniAODv2/8a63398/QCD/QCD_HT100to200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/160404_104242/0001/NCUGlobalTuples_",
@@ -121,8 +147,8 @@ void HHbbbbBtagEff_76(int a){
 		//HHbbbbBtagMakeEff_76(aa0[a],aa[a],st1[a],fileName[a],"");
 		//HHbbbbBtagMakeEff_76(aa0[a],aa[a],st1[a],fileName[a],"JESUp");
 		//HHbbbbBtagMakeEff_76(aa0[a],aa[a],st1[a],fileName[a],"JESDown");
-		//HHbbbbBtagEffBase_76(aa0[a],aa[a],st1[a],fileName[a],"");
-		HHbbbbBtagEffBase_76(aa0[a],aa[a],st1[a],fileName[a],"BtagUp");
-		HHbbbbBtagEffBase_76(aa0[a],aa[a],st1[a],fileName[a],"BtagDown");
+		HHbbbbBtagEffBase_76(aa0[a],aa[a],st1[a],fileName[a],"");
+		//HHbbbbBtagEffBase_76(aa0[a],aa[a],st1[a],fileName[a],"tau21Up");
+		//HHbbbbBtagEffBase_76(aa0[a],aa[a],st1[a],fileName[a],"tau21Down");
 	}
 }

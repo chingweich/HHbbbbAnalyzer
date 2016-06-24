@@ -9,6 +9,8 @@ void HHbbbbBtagEffBase_76(int wMs,int wM, string st,string st2,string option="")
 	if(option.find("JESDown")!= std::string::npos)JESOption=2;
 	if(option.find("BtagUp")!= std::string::npos)JESOption=3;
 	if(option.find("BtagDown")!= std::string::npos)JESOption=4;
+	if(option.find("tau21Up")!= std::string::npos)JESOption=5;
+	if(option.find("tau21Down")!= std::string::npos)JESOption=6;
 	cout<<"JESOption = "<<JESOption<<endl;
 	//tuple tree and cutflow variables------------------------------------------------------------------------------------
 	TFile *f;
@@ -27,7 +29,7 @@ void HHbbbbBtagEffBase_76(int wMs,int wM, string st,string st2,string option="")
 	BTagCalibrationReader HF(&calib, BTagEntry::OP_LOOSE,  "mujets",btagsystematicsType);        
 	TFile *f1;
 	if(nameRoot==2)f1=TFile::Open("btagEffSource/data.root");
-	else if (nameRoot!=2 && (JESOption==0||JESOption==3||JESOption==4))f1=TFile::Open(Form("btagEffSource/%s.root",st2.data()));
+	else if (nameRoot!=2 && (JESOption==0||JESOption==3||JESOption==4||JESOption==5||JESOption==6))f1=TFile::Open(Form("btagEffSource/%s.root",st2.data()));
 	else if (nameRoot!=2 && JESOption==1)f1=TFile::Open(Form("btagEffSource/%s_JESUp.root",st2.data()));
 	else if (nameRoot!=2 && JESOption==2)f1=TFile::Open(Form("btagEffSource/%s_JESDown.root",st2.data()));
 	TH2D* th1[6];
@@ -77,13 +79,18 @@ void HHbbbbBtagEffBase_76(int wMs,int wM, string st,string st2,string option="")
 		th6[i]->Sumw2();
 	}
 	//pileup uncertainty----------------------------------------------------------------------------------------
-	TH1D* th7[4];
+	TH1D* th7[14];
 	th7[0]=new TH1D("totalMass","totalMass",200,1000,5000);
 	th7[1]=new TH1D("totalMass_pileup_up","totalMass_pileup_up",200,1000,5000);
 	th7[2]=new TH1D("totalMass_pileup_down","totalMass_pileup_down",200,1000,5000);
 	th7[3]=new TH1D("pileupEff","pileupEff",15,0.5,15.5);
 	double totalPileup[3]={0},passPileup[3]={0};
 	standalone_LumiReWeighting LumiWeights_central(0),LumiWeights_up(1),LumiWeights_down(-1);
+	//PDF uncertainty
+	th7[4]=new TH1D("PDFEff","PDFEff",101,0.5,101.5);
+	double passPDF[101]={0},totalPDF[101]={0};
+	//QCD uncertainty
+	for(int i=5;i<14;i++)th7[i]=new TH1D(Form("uns_QCD_%d",i-5),Form("uns_QCD_%d",i-5),200,1000,5000);
 	//data csc----------------------------------------------------------------------------------------
 	std::vector<TString> eventlist;                                                                                                                                            
 	if(nameRoot==2){
@@ -116,6 +123,7 @@ void HHbbbbBtagEffBase_76(int wMs,int wM, string st,string st2,string option="")
 			data.GetEntry(jEntry);
 			Int_t nVtx        = data.GetInt("nVtx");
 			Float_t ntrue= data.GetFloat("pu_nTrueInt");
+			Float_t*  pdfscaleSysWeights = data.GetPtrFloat("pdfscaleSysWeights");
 			double PU_weight[3]={1,1,1};
 			if(nameRoot!=2){
 				if(ntrue<51){
@@ -130,6 +138,7 @@ void HHbbbbBtagEffBase_76(int wMs,int wM, string st,string st2,string option="")
 				}
 			}
 			for(int i=0;i<3;i++)totalPileup[i]+=PU_weight[i];
+			for(int i=0;i<101;i++)totalPDF[i]+=PU_weight[0]*pdfscaleSysWeights[i+9];
 			//0. has a good vertex
 			if(nVtx<1)continue;nPass[0]++;
 			//1.trigger
@@ -139,8 +148,6 @@ void HHbbbbBtagEffBase_76(int wMs,int wM, string st,string st2,string option="")
 			for(int it=0; it< data.GetPtrStringSize(); it++){
 				std::string thisTrig= trigName[it];
 				bool results = trigResult[it];
-				//cout<<it<<"="<<thisTrig<<endl;
-				// std::cout << thisTrig << " : " << results << std::endl;
 				if( ((thisTrig.find("HLT_PFHT800")!= std::string::npos||
 						thisTrig.find("HLT_PFHT650")!= std::string::npos||
 						thisTrig.find("HLT_PFHT650_WideJetMJJ900DEtaJJ1p5_v")!= std::string::npos||
@@ -213,9 +220,13 @@ void HHbbbbBtagEffBase_76(int wMs,int wM, string st,string st2,string option="")
 			nPass[9]++;
 			bool isHPHP=0;
 			double tau21_SF=1.031*0.881;
+			if(JESOption==5)tau21_SF=(1.031+0.126)*(0.881+0.49);
+			if(JESOption==6)tau21_SF=(1.031-0.126)*(0.881-0.49);
 			if(tau21_1<0.6 && tau21_2<0.6 ){
 				isHPHP=1;
 				tau21_SF=1.031*1.031;
+				if(JESOption==5)tau21_SF=(1.031+0.126)*(1.031+0.126);
+				if(JESOption==6)tau21_SF=(1.031-0.126)*(1.031-0.126);
 			}
 			if(nameRoot==2){//data:csc2015
 				TString thisEvent;                                                   
@@ -285,11 +296,15 @@ void HHbbbbBtagEffBase_76(int wMs,int wM, string st,string st2,string option="")
 			if(nbtag2==2 && nbtag==2)th4[12]->Fill(btaggingscaleFactor);
 			if(nbtag2==1 && nbtag==2)th4[13]->Fill(btaggingscaleFactor);
 			
+			//uncertainty -------------------------------------
 			double scaleFactor=btaggingscaleFactor*PU_weight[0]*tau21_SF;
 			for(int i=0;i<3;i++){
 				passPileup[i]+=btaggingscaleFactor*PU_weight[i]*tau21_SF;
 				th7[i]->Fill(mjj,btaggingscaleFactor*PU_weight[i]*tau21_SF);
 			}
+			for(int i=0;i<101;i++)passPDF[i]+=btaggingscaleFactor*PU_weight[0]*tau21_SF*pdfscaleSysWeights[i+9];
+			for(int i=5;i<14;i++)th7[i]->Fill(mjj,btaggingscaleFactor*PU_weight[0]*tau21_SF*pdfscaleSysWeights[i-5]);
+			//--------------------------------------
 			for(int i=0;i<2;i++){
 				for(int j=0;j<2;j++){
 					for(int k=0;k<5;k++){
@@ -332,6 +347,7 @@ void HHbbbbBtagEffBase_76(int wMs,int wM, string st,string st2,string option="")
 	for(int i=0;i<16;i++)cout<<"nPass["<<i<<"]="<<nPass[i]<<endl;
 	
 	for(int i=0;i<3;i++)th7[3]->SetBinContent(i+1,passPileup[i]/totalPileup[i]);
+	for(int i=0;i<101;i++)th7[4]->SetBinContent(i+1,passPDF[i]/totalPDF[i]);
 	
 	TH1D * th2o=new TH1D("Nbtagjet","Nbtagjet",6,-0.5,5.5);
 	for (int i=0;i<6;i++){
@@ -349,6 +365,8 @@ void HHbbbbBtagEffBase_76(int wMs,int wM, string st,string st2,string option="")
 	else if(JESOption==2)outFile= new TFile(Form("sf/%s_JESDown.root",st2.data()),"recreate");
 	else if(JESOption==3)outFile= new TFile(Form("sf/%s_BtagUp.root",st2.data()),"recreate");
 	else if(JESOption==4)outFile= new TFile(Form("sf/%s_BtagDown.root",st2.data()),"recreate");
+	else if(JESOption==5)outFile= new TFile(Form("sf/%s_tau21Up.root",st2.data()),"recreate");
+	else if(JESOption==6)outFile= new TFile(Form("sf/%s_tau21Down.root",st2.data()),"recreate");
 	th2o->Write();
 	cutflow->Write();
 	for(int i=0;i<6;i++)th3[i]->Write();
@@ -357,6 +375,6 @@ void HHbbbbBtagEffBase_76(int wMs,int wM, string st,string st2,string option="")
 		th5[i]->Write();
 		th6[i]->Write();
 	}
-	for(int i=0;i<4;i++)th7[i]->Write();
+	for(int i=0;i<14;i++)th7[i]->Write();
 	outFile->Close();
 }
