@@ -55,12 +55,13 @@ void HHbbbbBtagEffBase_76(int wMs,int wM, string st,string st2,string option="")
 	for(int i=0;i<6;i++)th4[i+8]=new TH1D(Form("%s",weightName[i].data()),Form("%s",weightName[i].data()),40,0,2);
 	for(int i=0;i<14;i++)th4[i]->Sumw2();
 	//saving variables----------------------------------------------------------------------------------------
-	TH1D * th5[100],* th6[100];
+	TH1D * th5[150],* th6[150];
 	for(int i=0;i<2;i++){
 		for(int j=0;j<2;j++){
 			for(int k=0;k<5;k++){
 				th5[(i*2+j)*5+k]=new TH1D(Form("Pt_j%d_sj%d_%db",i,j,k),Form("Pt_j%d_sj%d_%db",i,j,k),200,0,2000);
 				th5[(i*2+j)*5+k+20]=new TH1D(Form("Eta_j%d_sj%d_%db",i,j,k),Form("Eta_j%d_sj%d_%db",i,j,k),60,-3,3);
+				th5[(i*2+j)*5+k+85]=new TH1D(Form("subCSV_j%d_sj%d_%db",i,j,k),Form("subCSV_j%d_sj%d_%db",i,j,k),20,0,1);
 			}
 		}
 		for(int k=0;k<5;k++){
@@ -68,12 +69,14 @@ void HHbbbbBtagEffBase_76(int wMs,int wM, string st,string st2,string option="")
 			th5[i*5+k+50]=new TH1D(Form("Pt_j%d_%db",i,k),Form("Pt_j%d_%db",i,k),200,0,2000);
 			th5[i*5+k+60]=new TH1D(Form("Eta_j%d_%db",i,k),Form("Eta_j%d_%db",i,k),60,-3,3);
 			th5[i*5+k+70]=new TH1D(Form("prMass_j%d_%db",i,k),Form("prMass_j%d_%db",i,k),15,90,150);
+			th5[i*5+k+105]=new TH1D(Form("tau21_j%d_%db",i,k),Form("tau21_j%d_%db",i,k),15,90,150);
 		}
 	}
 	for(int k=0;k<5;k++){
 		th5[k+80]=new TH1D(Form("totalMass_%db",k),Form("totalMass_%db",k),200,1000,5000);
+		th5[k+115]=new TH1D(Form("deltaEta_%db",k),Form("deltaEta_%db",k),200,1000,5000);
 	}
-	for(int i=0;i<85;i++){
+	for(int i=0;i<120;i++){
 		th6[i]=(TH1D* )th5[i]->Clone(Form("%ss",th5[i]->GetTitle()));
 		th5[i]->Sumw2();
 		th6[i]->Sumw2();
@@ -123,7 +126,8 @@ void HHbbbbBtagEffBase_76(int wMs,int wM, string st,string st2,string option="")
 			data.GetEntry(jEntry);
 			Int_t nVtx        = data.GetInt("nVtx");
 			Float_t ntrue= data.GetFloat("pu_nTrueInt");
-			Float_t*  pdfscaleSysWeights = data.GetPtrFloat("pdfscaleSysWeights");
+			Float_t*  pdfscaleSysWeights;
+			if(nameRoot==1)pdfscaleSysWeights= data.GetPtrFloat("pdfscaleSysWeights");
 			double PU_weight[3]={1,1,1};
 			if(nameRoot!=2){
 				if(ntrue<51){
@@ -138,7 +142,8 @@ void HHbbbbBtagEffBase_76(int wMs,int wM, string st,string st2,string option="")
 				}
 			}
 			for(int i=0;i<3;i++)totalPileup[i]+=PU_weight[i];
-			for(int i=0;i<101;i++)totalPDF[i]+=PU_weight[0]*pdfscaleSysWeights[i+9];
+			if(nameRoot==1)for(int i=0;i<101;i++)totalPDF[i]+=PU_weight[0]*pdfscaleSysWeights[i+9];
+			else for(int i=0;i<101;i++)totalPDF[i]+=PU_weight[0];
 			//0. has a good vertex
 			if(nVtx<1)continue;nPass[0]++;
 			//1.trigger
@@ -214,15 +219,16 @@ void HHbbbbBtagEffBase_76(int wMs,int wM, string st,string st2,string option="")
 			//9.-----------------------------------------
 			Float_t*  fatjetTau1 = data.GetPtrFloat("FATjetTau1");
 			Float_t*  fatjetTau2 = data.GetPtrFloat("FATjetTau2");
-			double tau21_1=(fatjetTau2[0]/fatjetTau1[0]),tau21_2=(fatjetTau2[1]/fatjetTau1[1]);
-			if(tau21_1>0.75||tau21_2>0.75)continue;
-			if(tau21_1>0.6 &&tau21_2>0.6) continue;
+			double tau21[2];
+			tau21[0]=(fatjetTau2[0]/fatjetTau1[0]),tau21[1]=(fatjetTau2[1]/fatjetTau1[1]);
+			if(tau21[0]>0.75||tau21[1]>0.75)continue;
+			if(tau21[0]>0.6 &&tau21[1]>0.6) continue;
 			nPass[9]++;
 			bool isHPHP=0;
 			double tau21_SF=1.031*0.881;
 			if(JESOption==5)tau21_SF=(1.031+0.126)*(0.881+0.49);
 			if(JESOption==6)tau21_SF=(1.031-0.126)*(0.881-0.49);
-			if(tau21_1<0.6 && tau21_2<0.6 ){
+			if(tau21[0]<0.6 && tau21[1]<0.6 ){
 				isHPHP=1;
 				tau21_SF=1.031*1.031;
 				if(JESOption==5)tau21_SF=(1.031+0.126)*(1.031+0.126);
@@ -302,8 +308,10 @@ void HHbbbbBtagEffBase_76(int wMs,int wM, string st,string st2,string option="")
 				passPileup[i]+=btaggingscaleFactor*PU_weight[i]*tau21_SF;
 				th7[i]->Fill(mjj,btaggingscaleFactor*PU_weight[i]*tau21_SF);
 			}
-			for(int i=0;i<101;i++)passPDF[i]+=btaggingscaleFactor*PU_weight[0]*tau21_SF*pdfscaleSysWeights[i+9];
-			for(int i=5;i<14;i++)th7[i]->Fill(mjj,btaggingscaleFactor*PU_weight[0]*tau21_SF*pdfscaleSysWeights[i-5]);
+			if(nameRoot==1)for(int i=0;i<101;i++)passPDF[i]+=btaggingscaleFactor*PU_weight[0]*tau21_SF*pdfscaleSysWeights[i+9];
+			else for(int i=0;i<101;i++)passPDF[i]+=btaggingscaleFactor*PU_weight[0]*tau21_SF;
+			if(nameRoot==1)for(int i=5;i<14;i++)th7[i]->Fill(mjj,btaggingscaleFactor*PU_weight[0]*tau21_SF*pdfscaleSysWeights[i-5]);
+			else for(int i=5;i<14;i++)th7[i]->Fill(mjj,btaggingscaleFactor*PU_weight[0]*tau21_SF);
 			//--------------------------------------
 			for(int i=0;i<2;i++){
 				for(int j=0;j<2;j++){
@@ -311,8 +319,10 @@ void HHbbbbBtagEffBase_76(int wMs,int wM, string st,string st2,string option="")
 						if(nbtag!=k)continue;
 						th5[(i*2+j)*5+k]->Fill(subjetPt[i][j]);
 						th5[(i*2+j)*5+k+20]->Fill(subjetEta[i][j]);
+						th5[(i*2+j)*5+k+85]->Fill(subjetSDCSV[i][j]);
 						th6[(i*2+j)*5+k]->Fill(subjetPt[i][j],scaleFactor);
 						th6[(i*2+j)*5+k+20]->Fill(subjetEta[i][j],scaleFactor);
+						th6[(i*2+j)*5+k]->Fill(subjetSDCSV[i][j],scaleFactor);
 					}
 				}
 				for(int k=0;k<5;k++){
@@ -321,16 +331,20 @@ void HHbbbbBtagEffBase_76(int wMs,int wM, string st,string st2,string option="")
 					th5[i*5+k+50]->Fill(pt[i]);
 					th5[i*5+k+60]->Fill(eta[i]);
 					th5[i*5+k+70]->Fill(fatjetPRmassL2L3Corr[i]);
+					th5[i*5+k+105]->Fill(tau21[i]);
 					th6[i*5+k+40]->Fill(dr[i],scaleFactor);
 					th6[i*5+k+50]->Fill(pt[i],scaleFactor);
 					th6[i*5+k+60]->Fill(eta[i],scaleFactor);
 					th6[i*5+k+70]->Fill(fatjetPRmassL2L3Corr[i],scaleFactor);
+					th6[i*5+k+105]->Fill(tau21[i],scaleFactor);
 				}
 			}
 			for(int k=0;k<5;k++){
 				if(nbtag!=k)continue;
 				th5[k+80]->Fill(mjj);
 				th6[k+80]->Fill(mjj,scaleFactor);
+				th5[k+80]->Fill(dEta);
+				th6[k+80]->Fill(dEta,scaleFactor);
 				nPassB[k]+=scaleFactor;
 				nPass[k+10]++;
 				if(k<3)th4[9+k]->Fill(btaggingscaleFactor);
@@ -351,7 +365,7 @@ void HHbbbbBtagEffBase_76(int wMs,int wM, string st,string st2,string option="")
 	
 	TH1D * th2o=new TH1D("Nbtagjet","Nbtagjet",6,-0.5,5.5);
 	for (int i=0;i<6;i++){
-		if(nameRoot==2)continue;
+		if(nameRoot==2 && i>2)continue;
 		th2o->SetBinContent(i+1,nPassB[i]);
 	}
 	TH1D * cutflow=new TH1D("cutflow","cutflow",15,0.5,15.5);
@@ -371,7 +385,7 @@ void HHbbbbBtagEffBase_76(int wMs,int wM, string st,string st2,string option="")
 	cutflow->Write();
 	for(int i=0;i<6;i++)th3[i]->Write();
 	for(int i=0;i<14;i++)th4[i]->Write();
-	for(int i=0;i<85;i++){
+	for(int i=0;i<120;i++){
 		th5[i]->Write();
 		th6[i]->Write();
 	}

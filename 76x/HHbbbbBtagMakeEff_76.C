@@ -101,7 +101,7 @@ void HHbbbbBtagMakeEff_76(int wMs,int wM, string st,string st2,string option="")
 					PU_weight_up = LumiWeights_up.weight(50);
 					PU_weight_down = LumiWeights_down.weight(50);
 				}
-				cout<<LumiWeights_central.weight(51)<<endl;
+				//cout<<LumiWeights_central.weight(51)<<endl;
 			}
 			h_ntrue[1]->Fill(ntrue,PU_weight_central);
 			h_ntrue[2]->Fill(ntrue,PU_weight_up);

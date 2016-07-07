@@ -133,22 +133,30 @@ void HHbbbbBtagEff_76(int a){
 	string data2="/data7/syu/NCUGlobalTuples/76X_data/1ff2146/JetHT-Run2015D-16Dec2015-v1/160422_131233/0000/NCUGlobalTuples_";
 	string data3="/data7/syu/NCUGlobalTuples/76X_data/1ff2146/JetHT-Run2015D-16Dec2015-v1/160422_131233/0001/NCUGlobalTuples_";
 	if(a==33){	
-	HHbbbbBtagMakeEff_76(1,501,data2,"data2");	
-	HHbbbbBtagMakeEff_76(501,1000,data2,"data3");	
+	HHbbbbBtagEffBase_76(1,501,data2,"data2");	
+	HHbbbbBtagEffBase_76(501,1000,data2,"data3");	
 	}
 	if(a==34){
-		HHbbbbBtagMakeEff_76(1,56,data1,"data1");	
-	    HHbbbbBtagMakeEff_76(1000,1500,data3,"data4");	
+		HHbbbbBtagEffBase_76(1,56,data1,"data1");	
+	    HHbbbbBtagEffBase_76(1000,1500,data3,"data4");	
 	}
-	if(a==35)HHbbbbBtagMakeEff_76(1501,1968,data3,"data5");	
+	if(a==35)HHbbbbBtagEffBase_76(1501,1968,data3,"data5");	
+	if (a==36){
+		for(int j=0;j<22;j++){
+			HHbbbbBtagMakeEff_76(aa0[j],aa[j],st1[j],fileName[j],"");
+			HHbbbbBtagEffBase_76(aa0[j],aa[j],st1[j],fileName[j],"");
+		}
+		
+	}
 	if(a>=22 && a<=26)cout<<""<<endl;
 	//else if(a<33)HHbbbbBtagMakeEff_76(aa0[a],aa[a],st1[a],fileName[a]);
 	else if(a<33){
-		//HHbbbbBtagMakeEff_76(aa0[a],aa[a],st1[a],fileName[a],"");
+		HHbbbbBtagMakeEff_76(aa0[a],aa[a],st1[a],fileName[a],"");
 		//HHbbbbBtagMakeEff_76(aa0[a],aa[a],st1[a],fileName[a],"JESUp");
 		//HHbbbbBtagMakeEff_76(aa0[a],aa[a],st1[a],fileName[a],"JESDown");
 		HHbbbbBtagEffBase_76(aa0[a],aa[a],st1[a],fileName[a],"");
 		//HHbbbbBtagEffBase_76(aa0[a],aa[a],st1[a],fileName[a],"tau21Up");
 		//HHbbbbBtagEffBase_76(aa0[a],aa[a],st1[a],fileName[a],"tau21Down");
 	}
+	
 }
