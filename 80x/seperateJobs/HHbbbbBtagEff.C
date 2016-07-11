@@ -31,14 +31,14 @@
 
 //other including
 //#include "setNCUStyle.C"
-#include "untuplizer.h"
+#include "../untuplizer.h"
 //#include "jetEnergyScale.h"
 
-#include "standalone_LumiReWeighting.cc"
-#include "standalone_LumiReWeighting.h"
+#include "../standalone_LumiReWeighting.cc"
+#include "../standalone_LumiReWeighting.h"
 #include "CondFormats/BTauObjects/interface/BTagCalibration.h"
 #include "CondFormats/BTauObjects/interface/BTagCalibrationReader.h"
-#include "HHbbbbBtagMakeEff_76.C"
+//#include "HHbbbbBtagMakeEff_76.C"
 #include "HHbbbbBtagEffBase_76.C"
 //#include "HHbbbbAnalyzerBaseC_76.C"
 
@@ -96,39 +96,39 @@ void HHbbbbBtagEff(int a){
 	string dataPath="/data7/chchen/80x/JetHT/NCUGlobalTuples_";
 	if(a==21){
 		for(int j=0;j<11;j++){
-			HHbbbbBtagMakeEff_76(1,2,st1[j],fileName[j],"");
+			//HHbbbbBtagMakeEff_76(1,2,st1[j],fileName[j],"");
 			HHbbbbBtagEffBase_76(1,2,st1[j],fileName[j],"");
 		}
 	}
 	else if(a==23){
-		HHbbbbBtagMakeEff_76(1,aa[a-22],st1[a],fileName[a],"");
-	}
-	else if(a==30){
-		HHbbbbBtagMakeEff_76(1,500,dataPath,"data1");	
-		//HHbbbbBtagEffBase_76(1,500,dataPath,"data1");	
+		//HHbbbbBtagMakeEff_76(1,aa[a-22],st1[a],fileName[a],"");
 	}
 	else if(a==35){
 		HHbbbbBtagEffBase_76(1,aa[1],st1[23],fileName[23],"");
 	}
+	else if(a==30){
+		//HHbbbbBtagMakeEff_76(1,500,dataPath,"data1");	
+		HHbbbbBtagEffBase_76(1,500,dataPath,"data1");	
+	}
 	else if(a==31){
-		HHbbbbBtagMakeEff_76(500,999,dataPath,"data2");	
-		//HHbbbbBtagEffBase_76(500,999,dataPath,"data2");	
+		//HHbbbbBtagMakeEff_76(500,999,dataPath,"data2");	
+		HHbbbbBtagEffBase_76(500,999,dataPath,"data2");	
 	}
 	else if(a==32){
-		HHbbbbBtagMakeEff_76(999,1498,dataPath,"data3");	
-		//HHbbbbBtagEffBase_76(999,1498,dataPath,"data3");	
+		//HHbbbbBtagMakeEff_76(999,1498,dataPath,"data3");	
+		HHbbbbBtagEffBase_76(999,1498,dataPath,"data3");	
 	}
 	else if(a==33){
-		HHbbbbBtagMakeEff_76(1498,1997,dataPath,"data4");	
-		//HHbbbbBtagEffBase_76(1498,1997,dataPath,"data4");	
+		//HHbbbbBtagMakeEff_76(1498,1997,dataPath,"data4");	
+		HHbbbbBtagEffBase_76(1498,1997,dataPath,"data4");	
 	}
 	else if(a==34){
-		HHbbbbBtagMakeEff_76(1997,2026,dataPath,"data5");	
-		//HHbbbbBtagEffBase_76(1997,2026,dataPath,"data5");	
+		//HHbbbbBtagMakeEff_76(1997,2026,dataPath,"data5");	
+		HHbbbbBtagEffBase_76(1997,2026,dataPath,"data5");	
 	}
 	else if (a>21){
-		HHbbbbBtagMakeEff_76(1,aa[a-22],st1[a],fileName[a],"");
-		//HHbbbbBtagEffBase_76(1,aa[a-22],st1[a],fileName[a],"");
+		//HHbbbbBtagMakeEff_76(1,aa[a-22],st1[a],fileName[a],"");
+		HHbbbbBtagEffBase_76(1,aa[a-22],st1[a],fileName[a],"");
 	}
 	/*
 	

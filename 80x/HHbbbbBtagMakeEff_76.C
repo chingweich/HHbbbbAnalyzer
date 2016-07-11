@@ -118,7 +118,7 @@ void HHbbbbBtagMakeEff_76(int wMs,int wM, string st,string st2,string option="")
 					break;
 				}
 			}
-			//if(!passTrigger)continue;nPass[1]++;
+			if(!passTrigger && nameRoot==2)continue;nPass[1]++;
 		
 			int nFATJet         = data.GetInt("FATnJet");
 			const int nJets=nFATJet;

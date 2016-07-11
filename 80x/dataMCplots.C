@@ -26,7 +26,7 @@ void myPlot(vector< TH1D*> h_Z,
   h_data->Reset();
   for(unsigned int i=0;i<v_data.size();i++)h_data->Add(v_data[i]);
   
-  TLegend *leg = new TLegend(0.73, 0.60, 0.90, 0.87);
+  TLegend *leg = new TLegend(0.81, 0.60, 0.92, 0.87);
   
   leg->SetBorderSize(0);
   leg->SetFillColor(0);
@@ -81,7 +81,8 @@ leg->AddEntry(h_Zjets, "Z+Jets", "f");
 	//if(isSetRange)h_stack->GetXaxis()->SetRangeUser(rangeUserDown,rangeUserUp);
 	//h_stack->GetXaxis()->SetRangeUser((bmin-0.5)*width+h_data->GetBinCenter(1),(bmax-0.5)*width+h_data->GetBinCenter(1));
 
-  if( h_data->GetMaximum() < h_stack->GetMaximum() ){
+  if( h_data->GetMaximum() < h_stack->GetMaximum() && isSetRange==0 ){
+	  h_stack->SetTitle(h_data->GetTitle());
 	h_stack->SetMaximum(h_data->GetMaximum()*1.3);
     h_stack->Draw("histe");
     h_stack->GetHistogram()->GetYaxis()->SetTitle("Event Numbers");
@@ -118,7 +119,7 @@ leg->AddEntry(h_Zjets, "Z+Jets", "f");
 
 }
 
-void myRatio(TH1D* h_data, TH1D *h_bkg){
+void myRatio(TH1D* h_data, TH1D *h_bkg,string xtitle="",int option=0){
 cout<<h_bkg->Integral()/h_data->Integral()<<endl;
   TH1D* h_ratio = (TH1D*)h_bkg->Clone("h_ratio");
 	
@@ -155,6 +156,7 @@ cout<<h_bkg->Integral()/h_data->Integral()<<endl;
   h_ratio->SetMarkerStyle(8);
   h_ratio->SetMarkerSize(1.5);
   h_ratio->SetTitle("");
+  h_ratio->SetXTitle(xtitle.data());
   h_ratio->GetYaxis()->SetTitle("Data/MC");
   h_ratio->GetYaxis()->SetTitleOffset(0.45);
   h_ratio->GetXaxis()->SetLabelSize(0.1);
@@ -165,13 +167,25 @@ cout<<h_bkg->Integral()/h_data->Integral()<<endl;
   h_ratio->GetYaxis()->SetTitleSize(0.1);
   h_ratio->GetYaxis()->SetNdivisions(505);
   h_ratio->GetYaxis()->SetRangeUser(0,2);
+  if(option==1){
+	  h_ratio->GetXaxis()->SetBinLabel(1,"0b");
+	  h_ratio->GetXaxis()->SetBinLabel(2,"1b");
+	  h_ratio->GetXaxis()->SetBinLabel(3,"2b");
+	  h_ratio->GetXaxis()->SetBinLabel(4,"3b");
+	  h_ratio->GetXaxis()->SetBinLabel(5,"4b");
+	  
+		h_ratio->GetXaxis()->SetBinLabel(6,"3bHPHP");
+  }
   h_ratio->Draw();
 
   Float_t x0 = h_bkg->GetXaxis()->GetXmin();
   Float_t x1 = h_bkg->GetXaxis()->GetXmax();
   Float_t y0 = 1.;
   Float_t y1 = 1.;
-
+if(isSetRange){
+	x0=rangeUserDown;
+	x1=rangeUserUp;
+}
   TLine* one = new TLine(x0,y0,x1,y1);
 
   one->SetLineColor(2);
@@ -227,18 +241,21 @@ void dataMCplots(){
 			h_name.push_back(Form("Eta_j%d_%db",i,k));  
 			h_name.push_back(Form("prMassL2L3_j%d_%db",i,k));  
 			h_name.push_back(Form("tau21_j%d_%db",i,k));  
-			h_name.push_back(Form("SDMassL2L3_j%d_%db",i,k));  
+			h_name.push_back(Form("PuppiSDmassL2L3_j%d_%db",i,k));  
 			h_name.push_back(Form("puppiTau21_j%d_%db",i,k));  
-		
+		h_name.push_back(Form("prMass_j%d_%db",i,k));  
+		h_name.push_back(Form("PuppiSDmass_j%d_%db",i,k));  
 		}
 	}
 	for(int k=0;k<5;k++){
 		h_name.push_back(Form("totalMass_%db",k));  
 		h_name.push_back(Form("deltaEta_%db",k));  
+		h_name.push_back(Form("logPt_%db",k));  
 	}
   
  // h_name.push_back("cutflow");  
 h_name.push_back("Nbtagjet");  
+
   for(unsigned int i = 0; i < h_name.size(); i++){
 	 
 	  
@@ -247,6 +264,7 @@ h_name.push_back("Nbtagjet");
 	for(int k=0;k<5;k++)th1[k]=(TH1D* )tf1[k]->FindObjectAny(Form("%s",h_name[i].data()));
 	if(h_name[i].find("3b")!= std::string::npos)continue;	
 	TString endfix;
+	endfix=gSystem->GetFromPipe(Form("file=%s; test=${file%%*_}; echo \"${test}\"",h_name[i].data()));
 	if(h_name[i].find("4b")!= std::string::npos){
 		endfix=gSystem->GetFromPipe(Form("file=%s; test=${file%%*_4b}; echo \"${test}\"",h_name[i].data()));
 		//cout<<endfix<<endl;
@@ -264,18 +282,29 @@ h_name.push_back("Nbtagjet");
 				th2=(TH1D* )tf1[j]->FindObjectAny(Form("%s_3b",endfix.Data()));
 				th1[j]->Add(th2);
 				//cout<<"4btest="<<th1[j]->Integral()<<endl;
+				
 		}
 	}
 	
-	
+	TH1D *h_bkg  = (TH1D* )th1[0]->Clone("h_bkg");
+	//TH1D *temp = (TH1D* )th1[0]->Clone("h_bkg");
 	
 	
     TH1D *h_data = (TH1D* )th1[0]->Clone("h_data");
-    TH1D *h_bkg  = (TH1D* )th1[0]->Clone("h_bkg");
-	TH1D *temp = (TH1D* )th1[0]->Clone("h_bkg");
+	h_data->SetTitle(Form("%s",endfix.Data()));
+	h_bkg->SetTitle(Form("%s",endfix.Data()));
+	c_up->SetTitle(Form("%s",endfix.Data()));
+	c.SetTitle(Form("%s",endfix.Data()));
 	 c_up->cd();
+	 
+	 if (h_name[i].find("Nbtagjet")!= std::string::npos)c_up->SetLogy();	
 	// if(h_name[i].find("cutflow")!= std::string::npos)c_up->SetLogy();	
-	  if(h_name[i].find("Pt")!= std::string::npos)isSetRange=1;	
+	 if(h_name[i].find("Pt")!= std::string::npos)isSetRange=1;	
+	 if(h_name[i].find("logPt")!= std::string::npos){
+		   isSetRange=0;	
+		   c_up->SetLogy(1);	
+	 }
+	  if(h_name[i].find("total")!= std::string::npos)isSetRange=1;	
 	vector<TH1D* > v2;
 	vector<TH1D* > vd;
 	double fixNumber=13445/22434.4;//7306/11857.3;
@@ -297,18 +326,40 @@ vd,
 
     c_up->RedrawAxis();
     c_dw->cd();
-
-    myRatio(h_data, h_bkg);
+	
+	if (h_name[i].find("total")!= std::string::npos)myRatio(h_data, h_bkg,"M_{jj}[GeV]");
+    else if(h_name[i].find("Pt")!= std::string::npos||
+	//h_name[i].find("total")!= std::string::npos||
+	h_name[i].find("ass")!= std::string::npos)myRatio(h_data, h_bkg,Form("%s[GeV]",endfix.Data()));
+	else if (h_name[i].find("Nbtagje")!= std::string::npos)myRatio(h_data, h_bkg,"Nbtagjet",1);
+	else myRatio(h_data, h_bkg,Form("%s",endfix.Data()));
+	
+	
 	
 	
 	if(h_name[i].find("Pt")!= std::string::npos)isSetRange=0;	
+	 if(h_name[i].find("total")!= std::string::npos)isSetRange=0;	
    // c.Draw();
+   /*
 	if(h_name[i].find("0b")!= std::string::npos)c.Print(Form("dataMC/0b/%s.pdf",h_name[i].data()));
 	else if(h_name[i].find("1b")!= std::string::npos)c.Print(Form("dataMC/1b/%s.pdf",h_name[i].data()));
 	else if(h_name[i].find("2b")!= std::string::npos)c.Print(Form("dataMC/2b/%s.pdf",h_name[i].data()));
     else if(h_name[i].find("4b")!= std::string::npos)c.Print(Form("dataMC/all/%s.pdf",endfix.Data()));
 	else c.Print(Form("dataMC/all/%s.pdf",h_name[i].data()));
+	*/
+	if(h_name[i].find("0b")!= std::string::npos)c.SaveAs(Form("dataMC/0b/%s.png",h_name[i].data()));
+	else if(h_name[i].find("1b")!= std::string::npos)c.SaveAs(Form("dataMC/1b/%s.png",h_name[i].data()));
+	else if(h_name[i].find("2b")!= std::string::npos)c.SaveAs(Form("dataMC/2b/%s.png",h_name[i].data()));
+    else if(h_name[i].find("4b")!= std::string::npos)c.SaveAs(Form("dataMC/all/%s.png",endfix.Data()));
+	else c.SaveAs(Form("dataMC/all/%s.png",h_name[i].data()));
+	
 	for(int k=0;k<4;k++)th1[k]->Scale(1/scaleTemp[k]);
+	
+	if(h_name[i].find("logPt")!= std::string::npos){
+		   isSetRange=0;	
+		   c_up->SetLogy(0);	
+	 }
   }
+  
 
 }

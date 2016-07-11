@@ -109,7 +109,7 @@ void draw(){
 	double Xsec[4]={6831,1207,119.9,25.24};
 	for(int i=0;i<4;i++){
 		ct[i]=(TH1D*)f[i+22]->FindObjectAny("cutflow");
-	//	ct[i]->Scale(4513.309419004*Xsec[i]/ct[i]->GetBinContent(1));
+		ct[i]->Scale(4513.309419004*Xsec[i]/ct[i]->GetBinContent(1));
 	}
 	ct[4]=(TH1D*)f[26]->FindObjectAny("cutflow");
 	myfile<<""<<endl;
