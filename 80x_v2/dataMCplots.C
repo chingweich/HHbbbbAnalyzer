@@ -26,7 +26,7 @@ void myPlot(vector< TH1D*> h_Z,
   h_data->Reset();
   for(unsigned int i=0;i<v_data.size();i++)h_data->Add(v_data[i]);
   
-  TLegend *leg = new TLegend(0.81, 0.60, 0.92, 0.87);
+  TLegend *leg = new TLegend(0.77, 0.60, 0.92, 0.87);
   
   leg->SetBorderSize(0);
   leg->SetFillColor(0);
@@ -115,7 +115,7 @@ leg->AddEntry(h_Zjets, "Z+Jets", "f");
   lar->SetTextSize(0.04);
   lar->SetLineWidth(5);
   //lar->DrawLatex(0.14, 0.94, "CMS #it{#bf{2015}}");
-  lar->DrawLatex(0.60, 0.94, "L = 4.513 fb^{-1} at #sqrt{s} = 13 TeV");
+  lar->DrawLatex(0.60, 0.94, "L = 4.328 fb^{-1} at #sqrt{s} = 13 TeV");
 
 }
 
@@ -246,15 +246,19 @@ void dataMCplots(){
 			h_name.push_back(Form("puppiTau21_j%d_%db",i,k));  
 		h_name.push_back(Form("prMass_j%d_%db",i,k));  
 		h_name.push_back(Form("PuppiSDmass_j%d_%db",i,k));  
+		h_name.push_back(Form("doubleSV_j%d_%db",i,k));  
 		}
 	}
 	for(int k=0;k<5;k++){
 		h_name.push_back(Form("totalMass_%db",k));  
+		h_name.push_back(Form("totalMassRed_%db",k));  
 		h_name.push_back(Form("deltaEta_%db",k));  
 		h_name.push_back(Form("logPt_%db",k));  
 	}
   
  // h_name.push_back("cutflow");  
+ h_name.push_back("h_nvtx");  
+ h_name.push_back("h_nvtx_cut");  
 h_name.push_back("Nbtagjet");  
 
   for(unsigned int i = 0; i < h_name.size(); i++){
@@ -262,7 +266,15 @@ h_name.push_back("Nbtagjet");
 	  
 	//cout<<h_name[i]<<endl;
 	TH1D *th1[10];
-	for(int k=0;k<5;k++)th1[k]=(TH1D* )tf1[k]->FindObjectAny(Form("%s",h_name[i].data()));
+	for(int k=0;k<5;k++){
+		if(k==4){
+			th1[k]=(TH1D* )tf1[k]->FindObjectAny(Form("%s",h_name[i].data()));
+		}
+		else  {
+			if (h_name[i].find("Nbtagjet")!= std::string::npos)th1[k]=(TH1D* )tf1[k]->FindObjectAny(Form("%s",h_name[i].data()));
+			else th1[k]=(TH1D* )tf1[k]->FindObjectAny(Form("%ss",h_name[i].data()));
+		}
+	}
 	if(h_name[i].find("3b")!= std::string::npos)continue;	
 	TString endfix;
 	endfix=gSystem->GetFromPipe(Form("file=%s; test=${file%%*_}; echo \"${test}\"",h_name[i].data()));
@@ -308,14 +320,14 @@ h_name.push_back("Nbtagjet");
 	  if(h_name[i].find("total")!= std::string::npos)isSetRange=1;	
 	vector<TH1D* > v2;
 	vector<TH1D* > vd;
-	double fixNumber=13445/22434.4;//7306/11857.3;
+	double fixNumber=7124/10475.7;//7306/11857.3;
 	double Xsec[4]={6831,1207,119.9,25.24};
 	double scaleTemp[4];
 	for(int k=0;k<4;k++){
 		TH1D *th2=(TH1D* )tf1[k]->FindObjectAny("cutflow");
 		
-		th1[k]->Scale(fixNumber*4513.309419004*Xsec[k]/th2->GetBinContent(1));
-		scaleTemp[k]=fixNumber*4513.309419004*Xsec[k]/th2->GetBinContent(1);
+		th1[k]->Scale(fixNumber* 4328.847854643*Xsec[k]/th2->GetBinContent(1));
+		scaleTemp[k]=fixNumber*4328.847854643*Xsec[k]/th2->GetBinContent(1);
 		v2.push_back(th1[k]);
 		
 	}	

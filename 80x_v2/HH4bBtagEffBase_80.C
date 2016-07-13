@@ -74,7 +74,7 @@ void HH4bBtagEffBase_80(int wMs,int wM, string st,string st2,string option=""){
 			th5[i*5+k+130]=new TH1D(Form("puppiTau21_j%d_%db",i,k),Form("puppiTau21_j%d_%db",i,k),25,0,1);
 			th5[i*5+k+140]=new TH1D(Form("prMass_j%d_%db",i,k),Form("prMass_j%d_%db",i,k),15,90,150);
 			th5[i*5+k+150]=new TH1D(Form("PuppiSDmass_j%d_%db",i,k),Form("PuppiSDmass_j%d_%db",i,k),15,90,150);
-			th5[i*5+k+170]=new TH1D(Form("doubleSV_j%d_%db",i,k),Form("doubleSV_j%d_%db",i,k),20,0,1);
+			th5[i*5+k+170]=new TH1D(Form("doubleSV_j%d_%db",i,k),Form("doubleSV_j%d_%db",i,k),40,-1,1);
 		}
 	}
 	for(int k=0;k<5;k++){
@@ -83,7 +83,12 @@ void HH4bBtagEffBase_80(int wMs,int wM, string st,string st2,string option=""){
 		th5[k+160]=new TH1D(Form("logPt_%db",k),Form("logPt_%db",k),70,0,7);
 		th5[k+165]=new TH1D(Form("totalMassRed_%db",k),Form("totalMassRed_%db",k),200,1000,5000);
 	}
-	for(int i=0;i<180;i++){
+	th5[180]= new TH1D("h_nvtx","h_nvtx",60,0,60);
+	th5[181]= new TH1D("h_ntrue","h_ntrue",60,0,60);
+	th5[182]= new TH1D("h_nvtx_cut","h_nvtx_cut",60,0,60);
+	th5[183]= new TH1D("h_ntrue_cut","h_ntrue_cut",60,0,60);
+	
+	for(int i=0;i<184;i++){
 		th6[i]=(TH1D* )th5[i]->Clone(Form("%ss",th5[i]->GetTitle()));
 		th5[i]->Sumw2();
 		th6[i]->Sumw2();
@@ -121,7 +126,8 @@ void HH4bBtagEffBase_80(int wMs,int wM, string st,string st2,string option=""){
 			Int_t nVtx        = data.GetInt("nVtx");
 			Float_t ntrue= data.GetFloat("pu_nTrueInt");
 			//Float_t*  pdfscaleSysWeights= data.GetPtrFloat("pdfscaleSysWeights");
-			
+			th5[180]->Fill(nVtx);
+			th5[181]->Fill(ntrue);
 			double PU_weight[3]={1,1,1};
 			
 			if(nameRoot!=2){
@@ -137,8 +143,10 @@ void HH4bBtagEffBase_80(int wMs,int wM, string st,string st2,string option=""){
 				}
 			}
 			
-			for(int i=0;i<3;i++)totalPileup[i]+=PU_weight[i];
+			th6[180]->Fill(nVtx,PU_weight[0]);
+			th6[181]->Fill(ntrue,PU_weight[0]);
 			
+			for(int i=0;i<3;i++)totalPileup[i]+=PU_weight[i];
 			for(int i=0;i<101;i++)totalPDF[i]+=PU_weight[0];
 			//0. has a good vertex
 			if(nVtx<1)continue;nPass[0]++;
@@ -365,6 +373,10 @@ void HH4bBtagEffBase_80(int wMs,int wM, string st,string st2,string option=""){
 				if(k<3)th4[9+k]->Fill(btaggingscaleFactor);
 			}
 			
+			th5[182]->Fill(nVtx);
+			th5[183]->Fill(ntrue);
+			th6[182]->Fill(nVtx,PU_weight[0]);
+			th6[183]->Fill(ntrue,PU_weight[0]);
 
 		}//end event loop----------------------------------------------------------------------------------------
 	}	//end ntuple loop----------------------------------------------------------------------------------------
@@ -403,7 +415,7 @@ void HH4bBtagEffBase_80(int wMs,int wM, string st,string st2,string option=""){
 	cutflow->Write();
 	for(int i=0;i<6;i++)th3[i]->Write();
 	for(int i=0;i<14;i++)th4[i]->Write();
-	for(int i=0;i<180;i++){
+	for(int i=0;i<184;i++){
 		th5[i]->Write();
 		th6[i]->Write();
 	}

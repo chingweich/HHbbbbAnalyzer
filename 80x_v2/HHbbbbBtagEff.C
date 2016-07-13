@@ -100,12 +100,6 @@ void HHbbbbBtagEff(int a){
 			HH4bBtagEffBase_80(1,2,st1[j],fileName[j],"");
 		}
 	}
-	else if(a==23){
-		//HHbbbbBtagMakeEff_76(1,aa[a-22],st1[a],fileName[a],"");
-	}
-	else if(a==35){
-		HH4bBtagEffBase_80(1,aa[1],st1[23],fileName[23],"");
-	}
 	else if(a==30){
 		//HHbbbbBtagMakeEff_76(1,500,dataPath,"data1");	
 		HH4bBtagEffBase_80(1,500,dataPath,"data1");	

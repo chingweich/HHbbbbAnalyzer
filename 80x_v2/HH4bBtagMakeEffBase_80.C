@@ -52,7 +52,8 @@ void HH4bBtagMakeEffBase_80(int wMs,int wM, string st,string st2,string option="
 			th2[i]->Sumw2();
 	}
 	
-	
+	for(int i=0;i<4;i++)h_nvtx[i]->Sumw2();
+	for(int i=0;i<4;i++)h_ntrue[i]->Sumw2();
 		
 	for (int w=wMs;w<wM;w++){
 		
