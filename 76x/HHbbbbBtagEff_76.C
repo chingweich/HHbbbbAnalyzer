@@ -140,7 +140,7 @@ void HHbbbbBtagEff_76(int a){
 		HHbbbbBtagEffBase_76(1,56,data1,"data1");	
 	    HHbbbbBtagEffBase_76(1000,1500,data3,"data4");	
 	}
-	if(a==35)HHbbbbBtagEffBase_76(1501,1968,data3,"data5");	
+	if(a==35)HHbbbbBtagEffBase_76(1500,1968,data3,"data5");	
 	if (a==36){
 		for(int j=0;j<22;j++){
 			HHbbbbBtagMakeEff_76(aa0[j],aa[j],st1[j],fileName[j],"");

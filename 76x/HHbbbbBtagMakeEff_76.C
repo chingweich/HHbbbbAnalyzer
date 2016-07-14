@@ -120,7 +120,7 @@ void HHbbbbBtagMakeEff_76(int wMs,int wM, string st,string st2,string option="")
 				//cout<<it<<"="<<thisTrig<<endl;
 				// std::cout << thisTrig << " : " << results << std::endl;
 				if( ((thisTrig.find("HLT_PFHT800")!= std::string::npos||
-						thisTrig.find("HLT_PFHT650")!= std::string::npos||
+						//thisTrig.find("HLT_PFHT650")!= std::string::npos||
 						thisTrig.find("HLT_PFHT650_WideJetMJJ900DEtaJJ1p5_v")!= std::string::npos||
 						thisTrig.find("HLT_PFHT650_WideJetMJJ950DEtaJJ1p5_v")!= std::string::npos||
 						thisTrig.find("HLT_AK8PFJet360_TrimMass30_v")!= std::string::npos||
@@ -171,8 +171,8 @@ void HHbbbbBtagMakeEff_76(int wMs,int wM, string st,string st2,string option="")
 				thatJet= &test1;
 			}
 			//3. Pt 
-			if(thisJet->Pt()<300)continue;
-			if(thatJet->Pt()<300)continue;
+			if(thisJet->Pt()<200)continue;
+			if(thatJet->Pt()<200)continue;
 			nPass[3]++;
 			//4tightId-----------------------------------------
 			if(FATjetPassIDTight[0]==0)continue;
@@ -194,7 +194,8 @@ void HHbbbbBtagMakeEff_76(int wMs,int wM, string st,string st2,string option="")
 			nPass[6]++;
 			//7. Mjj-----------------------------------------
 			float mjj = (*thisJet+*thatJet).M();
-			if(mjj<1000)continue;
+			float mjjRed = (*thisJet+*thatJet).M()+250-thisJet->M()-thatJet->M();
+			if(mjjRed<1000)continue;
 			nPass[7]++;
 			//8. fatjetPRmassL2L3Corr-----------------------------------------
 			if(fatjetPRmassL2L3Corr[0]<105||fatjetPRmassL2L3Corr[0]>135)continue;
@@ -202,8 +203,8 @@ void HHbbbbBtagMakeEff_76(int wMs,int wM, string st,string st2,string option="")
 			nPass[8]++;
 			//9.-----------------------------------------
 			double tau21_1=(fatjetTau2[0]/fatjetTau1[0]),tau21_2=(fatjetTau2[1]/fatjetTau1[1]);
-			if(tau21_1>0.75||tau21_2>0.75)continue;
-			if(tau21_1>0.6 &&tau21_2>0.6) continue;
+			//if(tau21_1>0.75||tau21_2>0.75)continue;
+			if(tau21_1>0.6 ||tau21_2>0.6) continue;
 			nPass[9]++;
 			bool isHPHP=0;
 			if(tau21_1<0.6 && tau21_2<0.6 )isHPHP=1;
