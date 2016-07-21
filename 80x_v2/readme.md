@@ -1,3 +1,16 @@
+
+HH Ana
+==============
+It includes dataMC, systematic uncertain, and some SF checking.
+--------------------
+**step1**
+using makeAna.sh to make btagging efficiency
+**step2**
+using makeAna2.sh to fill histogram and dataMCplots.C to draw them.
+
+**warning**
+Don't use cmsenv because bagCailbrtion is deprecated. 
+
 wget https://raw.githubusercontent.com/chingweich/HHbbbbAnalyzer/master/80x_v2/makeAna.sh<br>
 wget https://raw.githubusercontent.com/chingweich/HHbbbbAnalyzer/master/80x_v2/makeAna.csh<br>
 wget https://raw.githubusercontent.com/chingweich/HHbbbbAnalyzer/master/80x_v2/makeAna2.sh<br>
