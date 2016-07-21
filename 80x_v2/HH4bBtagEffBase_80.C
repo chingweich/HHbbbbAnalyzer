@@ -1,3 +1,4 @@
+
 void HH4bBtagEffBase_80(int wMs,int wM, string st,string st2,string option=""){	
 	//0=signal ,1=QCD ,2=data-----------------------------------------------------------
 	int nameRoot=1;
@@ -17,16 +18,22 @@ void HH4bBtagEffBase_80(int wMs,int wM, string st,string st2,string option=""){
 	TTree *tree;
 	int nPass[20]={0},total=0,dataPassingcsc=0;
 	double nPassB[6]={0};
+	double fixScaleNum=0;
 	//using for Btag Eff -----------------------------------------------------------------------------
 	string btagsystematicsType="central";
 	if(JESOption==3)btagsystematicsType="up";
 	else if(JESOption==4)btagsystematicsType="down";
-	BTagCalibration calib("CSVv2L", "CSVv2_76.csv");
-	BTagCalibrationReader LF(&calib,               // calibration instance
-                             BTagEntry::OP_LOOSE,  // operating point
-                             "incl",               // measurement type
-                             btagsystematicsType);           // systematics type
-	BTagCalibrationReader HF(&calib, BTagEntry::OP_LOOSE,  "mujets",btagsystematicsType);        
+	BTagCalibration calib("CSVv2L", "CSVv2_4invfb.csv");
+	BTagCalibrationReader LF(BTagEntry::OP_LOOSE,"central", {"up", "down"});  
+	BTagCalibrationReader HFC(BTagEntry::OP_LOOSE, "central", {"up", "down"});      // other sys types
+	BTagCalibrationReader HF(BTagEntry::OP_LOOSE,"central",{"up", "down"});      // other sys types
+	LF.load(calib, BTagEntry::FLAV_UDSG,    // btag flavour
+            "incl");               // measurement type
+	HFC.load(calib, BTagEntry::FLAV_C,    // btag flavour
+            "mujets");               // measurement type
+	HF.load(calib, BTagEntry::FLAV_B,    // btag flavour
+            "mujets");               // measurement type
+	
 	TFile *f1;
 	if(nameRoot==2)f1=TFile::Open("btagEffSource/data.root");
 	else if (nameRoot!=2 && (JESOption==0||JESOption==3||JESOption==4||JESOption==5||JESOption==6))f1=TFile::Open(Form("btagEffSource/%s.root",st2.data()));
@@ -55,13 +62,14 @@ void HH4bBtagEffBase_80(int wMs,int wM, string st,string st2,string option=""){
 	for(int i=0;i<6;i++)th4[i+8]=new TH1D(Form("%s",weightName[i].data()),Form("%s",weightName[i].data()),40,0,2);
 	for(int i=0;i<14;i++)th4[i]->Sumw2();
 	//saving variables----------------------------------------------------------------------------------------
-	TH1D * th5[200],* th6[200];
+	TH1D * th5[230],* th6[230];
 	for(int i=0;i<2;i++){
 		for(int j=0;j<2;j++){
 			for(int k=0;k<5;k++){
 				th5[(i*2+j)*5+k]=new TH1D(Form("Pt_j%d_sj%d_%db",i,j,k),Form("Pt_j%d_sj%d_%db",i,j,k),200,0,2000);
 				th5[(i*2+j)*5+k+20]=new TH1D(Form("Eta_j%d_sj%d_%db",i,j,k),Form("Eta_j%d_sj%d_%db",i,j,k),60,-3,3);
 				th5[(i*2+j)*5+k+85]=new TH1D(Form("subCSV_j%d_sj%d_%db",i,j,k),Form("subCSV_j%d_sj%d_%db",i,j,k),20,0,1);
+				th5[(i*2+j)*5+k+194]=new TH1D(Form("subCSVCut_j%d_sj%d_%db",i,j,k),Form("subCSVCut_j%d_sj%d_%db",i,j,k),20,0,1);
 			}
 		}
 		for(int k=0;k<5;k++){
@@ -75,6 +83,7 @@ void HH4bBtagEffBase_80(int wMs,int wM, string st,string st2,string option=""){
 			th5[i*5+k+140]=new TH1D(Form("prMass_j%d_%db",i,k),Form("prMass_j%d_%db",i,k),15,90,150);
 			th5[i*5+k+150]=new TH1D(Form("PuppiSDmass_j%d_%db",i,k),Form("PuppiSDmass_j%d_%db",i,k),15,90,150);
 			th5[i*5+k+170]=new TH1D(Form("doubleSV_j%d_%db",i,k),Form("doubleSV_j%d_%db",i,k),40,-1,1);
+			th5[i*5+k+184]=new TH1D(Form("FatSV_j%d_%db",i,k),Form("FatSV_j%d_%db",i,k),20,0,1);
 		}
 	}
 	for(int k=0;k<5;k++){
@@ -88,7 +97,7 @@ void HH4bBtagEffBase_80(int wMs,int wM, string st,string st2,string option=""){
 	th5[182]= new TH1D("h_nvtx_cut","h_nvtx_cut",60,0,60);
 	th5[183]= new TH1D("h_ntrue_cut","h_ntrue_cut",60,0,60);
 	
-	for(int i=0;i<184;i++){
+	for(int i=0;i<214;i++){
 		th6[i]=(TH1D* )th5[i]->Clone(Form("%ss",th5[i]->GetTitle()));
 		th5[i]->Sumw2();
 		th6[i]->Sumw2();
@@ -269,19 +278,22 @@ void HH4bBtagEffBase_80(int wMs,int wM, string st,string st2,string option=""){
 					else if(FATsubjetSDHadronFlavor[i][j]==4)eff[i][j]=th1[3]->GetBinContent(ceil(subjetPt[i][j]/10),ceil(subjetEta[i][j]/0.1)+30);
 					else eff[i][j]=th1[5]->GetBinContent(ceil(subjetPt[i][j]/10),ceil(subjetEta[i][j]/0.1)+30);
 					//check maxPt-------------------------------------------------------------
-					if(FATsubjetSDHadronFlavor[i][j]!=0 && subjetPt[i][j]>MaxBJetPt )subjetPt[i][j]=MaxBJetPt-0.1;
-					if(FATsubjetSDHadronFlavor[i][j]==0 && subjetPt[i][j]>MaxLJetPt )subjetPt[i][j]=MaxLJetPt-0.1;
+					//if(FATsubjetSDHadronFlavor[i][j]!=0 && subjetPt[i][j]>MaxBJetPt )subjetPt[i][j]=MaxBJetPt-0.1;
+					//if(FATsubjetSDHadronFlavor[i][j]==0 && subjetPt[i][j]>MaxLJetPt )subjetPt[i][j]=MaxLJetPt-0.1;
 					//Get SF from csv------------------------------------------------------------
 					if(FATsubjetSDHadronFlavor[i][j]==5){
-						sf[i][j]=HF.eval(BTagEntry::FLAV_B,subjetEta[i][j],subjetPt[i][j]); 
+						sf[i][j]=HF.eval_auto_bounds("central",BTagEntry::FLAV_B, subjetEta[i][j],subjetPt[i][j]); 
+						//sf[i][j]=HF.eval(BTagEntry::FLAV_B,subjetEta[i][j],subjetPt[i][j]); 
 						th3[3]->Fill(subjetPt[i][j],sf[i][j]);
 					}
 					else if(FATsubjetSDHadronFlavor[i][j]==4){
-						sf[i][j]=HF.eval(BTagEntry::FLAV_C,subjetEta[i][j],subjetPt[i][j]); 
+						sf[i][j]=HFC.eval_auto_bounds("central",BTagEntry::FLAV_C, subjetEta[i][j],subjetPt[i][j]); 
+						//sf[i][j]=HF.eval(BTagEntry::FLAV_C,subjetEta[i][j],subjetPt[i][j]); 
 						th3[4]->Fill(subjetPt[i][j],sf[i][j]);
 					}
 					else {
-						sf[i][j]=LF.eval(BTagEntry::FLAV_UDSG,subjetEta[i][j],subjetPt[i][j]); 
+						sf[i][j]=LF.eval_auto_bounds("central",BTagEntry::FLAV_UDSG, subjetEta[i][j],subjetPt[i][j]); 
+						//sf[i][j]=LF.eval(BTagEntry::FLAV_UDSG,subjetEta[i][j],subjetPt[i][j]); 
 						th3[5]->Fill(subjetPt[i][j],sf[i][j]);
 					}
 					//check zero ------------------------------------------------------------
@@ -297,7 +309,7 @@ void HH4bBtagEffBase_80(int wMs,int wM, string st,string st2,string option=""){
 					if(subjetSDCSV[i][j]>0.46 &&FATsubjetSDHadronFlavor[i][j]==0)nbtag2++;
 					if(subjetSDCSV[i][j]>0.46)th4[i*2+j]->Fill(sf[i][j]);
 					else th4[i*2+j+4]->Fill(sf[i][j]);
-					subjetPt[i][j]=subjetP4[i][j]->Pt();
+					//subjetPt[i][j]=subjetP4[i][j]->Pt();
 				}
 				dr[i]=subjetP4[i][0]->DeltaR(*subjetP4[i][1]);
 			}
@@ -307,19 +319,21 @@ void HH4bBtagEffBase_80(int wMs,int wM, string st,string st2,string option=""){
 			
 			//uncertainty -------------------------------------
 			//double scaleFactor=btaggingscaleFactor*PU_weight[0]*tau21_SF;
-			double scaleFactor=PU_weight[0];
+			double scaleFactor=PU_weight[0]*btaggingscaleFactor;
 			for(int i=0;i<3;i++){
 				passPileup[i]+=btaggingscaleFactor*PU_weight[i]*tau21_SF;
 				th7[i]->Fill(mjj,btaggingscaleFactor*PU_weight[i]*tau21_SF);
 			}
 			 for(int i=0;i<101;i++)passPDF[i]+=btaggingscaleFactor*PU_weight[0]*tau21_SF;
 			 for(int i=5;i<14;i++)th7[i]->Fill(mjj,btaggingscaleFactor*PU_weight[0]*tau21_SF);
+			 fixScaleNum+=PU_weight[0];
 			//--------------------------------------
 			pt[0]=thisJet->Pt();
 			pt[1]=thatJet->Pt();
 			eta[0]=thisJet->Eta();
 			eta[1]=thatJet->Eta();
 			Float_t*  FATjet_DoubleSV = data.GetPtrFloat("FATjet_DoubleSV");
+			Float_t*  FATjetCISVV2 = data.GetPtrFloat("FATjetCISVV2");
 			for(int i=0;i<2;i++){
 				for(int j=0;j<2;j++){
 					for(int k=0;k<5;k++){
@@ -329,7 +343,9 @@ void HH4bBtagEffBase_80(int wMs,int wM, string st,string st2,string option=""){
 						th5[(i*2+j)*5+k+85]->Fill(subjetSDCSV[i][j]);
 						th6[(i*2+j)*5+k]->Fill(subjetPt[i][j],scaleFactor);
 						th6[(i*2+j)*5+k+20]->Fill(subjetEta[i][j],scaleFactor);
-						th6[(i*2+j)*5+k]->Fill(subjetSDCSV[i][j],scaleFactor);
+						th6[(i*2+j)*5+k+85]->Fill(subjetSDCSV[i][j],scaleFactor);
+						if(subjetPt[i][j]>30 && fabs(subjetEta[i][j])<2.4)th5[(i*2+j)*5+k+194]->Fill(subjetSDCSV[i][j]);
+						if(subjetPt[i][j]>30 && fabs(subjetEta[i][j])<2.4)th6[(i*2+j)*5+k+194]->Fill(subjetSDCSV[i][j],scaleFactor);
 					}
 				}
 				for(int k=0;k<5;k++){
@@ -354,6 +370,9 @@ void HH4bBtagEffBase_80(int wMs,int wM, string st,string st2,string option=""){
 					th6[i*5+k+150]->Fill(FATjetPuppiSDmass[i],scaleFactor);
 					th5[i*5+k+170]->Fill(FATjet_DoubleSV[i]);
 					th6[i*5+k+170]->Fill(FATjet_DoubleSV[i],scaleFactor);
+					th5[i*5+k+184]->Fill(FATjetCISVV2[i]);
+					th6[i*5+k+184]->Fill(FATjetCISVV2[i],scaleFactor);
+					
 				}
 			}
 			for(int k=0;k<5;k++){
@@ -375,8 +394,8 @@ void HH4bBtagEffBase_80(int wMs,int wM, string st,string st2,string option=""){
 			
 			th5[182]->Fill(nVtx);
 			th5[183]->Fill(ntrue);
-			th6[182]->Fill(nVtx,PU_weight[0]);
-			th6[183]->Fill(ntrue,PU_weight[0]);
+			th6[182]->Fill(nVtx,scaleFactor);
+			th6[183]->Fill(ntrue,scaleFactor);
 
 		}//end event loop----------------------------------------------------------------------------------------
 	}	//end ntuple loop----------------------------------------------------------------------------------------
@@ -397,6 +416,10 @@ void HH4bBtagEffBase_80(int wMs,int wM, string st,string st2,string option=""){
 		if(nameRoot==2 && i>2)continue;
 		th2ob->SetBinContent(i+1,nPassB[i]);
 	}
+	
+	TH1D * fixScale=new TH1D("fixScale","fixScale",1,-0.5,0.5);
+	fixScale->SetBinContent(1,fixScaleNum);
+	
 	TH1D * cutflow=new TH1D("cutflow","cutflow",16,0.5,16.5);
 	cutflow->SetBinContent(1,total);
 	if(nameRoot==2)for(int ii=1;ii<14;ii++)cutflow->SetBinContent(ii+1,nPass[ii-1]);
@@ -412,10 +435,11 @@ void HH4bBtagEffBase_80(int wMs,int wM, string st,string st2,string option=""){
 	else if(JESOption==6)outFile= new TFile(Form("sf/%s_tau21Down.root",st2.data()),"recreate");
 	th2o->Write();
 	th2ob->Write();
+	fixScale->Write();
 	cutflow->Write();
 	for(int i=0;i<6;i++)th3[i]->Write();
 	for(int i=0;i<14;i++)th4[i]->Write();
-	for(int i=0;i<184;i++){
+	for(int i=0;i<214;i++){
 		th5[i]->Write();
 		th6[i]->Write();
 	}

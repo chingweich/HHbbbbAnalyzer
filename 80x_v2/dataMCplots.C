@@ -162,7 +162,7 @@ cout<<h_bkg->Integral()/h_data->Integral()<<endl;
   h_ratio->GetXaxis()->SetLabelSize(0.125);
   h_ratio->GetXaxis()->SetLabelOffset(0.005);
   h_ratio->GetXaxis()->SetTitleSize(0.125);
-  h_ratio->GetXaxis()->SetTitleOffset(0.8);
+  h_ratio->GetXaxis()->SetTitleOffset(0.92);
   h_ratio->GetYaxis()->SetLabelSize(0.1);
   h_ratio->GetYaxis()->SetTitleSize(0.1);
   h_ratio->GetYaxis()->SetNdivisions(505);
@@ -233,7 +233,7 @@ void dataMCplots(){
 				h_name.push_back(Form("Pt_j%d_sj%d_%db",i,j,k));  
 				h_name.push_back(Form("Eta_j%d_sj%d_%db",i,j,k));  
 				h_name.push_back(Form("subCSV_j%d_sj%d_%db",i,j,k));  
-				
+				h_name.push_back(Form("subCSVCut_j%d_sj%d_%db",i,j,k));  
 			}
 		}
 		for(int k=0;k<5;k++){
@@ -247,6 +247,7 @@ void dataMCplots(){
 		h_name.push_back(Form("prMass_j%d_%db",i,k));  
 		h_name.push_back(Form("PuppiSDmass_j%d_%db",i,k));  
 		h_name.push_back(Form("doubleSV_j%d_%db",i,k));  
+		h_name.push_back(Form("FatSV_j%d_%db",i,k));  
 		}
 	}
 	for(int k=0;k<5;k++){
@@ -271,7 +272,9 @@ h_name.push_back("Nbtagjet");
 			th1[k]=(TH1D* )tf1[k]->FindObjectAny(Form("%s",h_name[i].data()));
 		}
 		else  {
-			if (h_name[i].find("Nbtagjet")!= std::string::npos)th1[k]=(TH1D* )tf1[k]->FindObjectAny(Form("%s",h_name[i].data()));
+			if (h_name[i].find("Nbtagjet")!= std::string::npos
+			//||h_name[i].find("h_nvtx_cut")!= std::string::npos
+			)th1[k]=(TH1D* )tf1[k]->FindObjectAny(Form("%s",h_name[i].data()));
 			else th1[k]=(TH1D* )tf1[k]->FindObjectAny(Form("%ss",h_name[i].data()));
 		}
 	}
@@ -283,19 +286,24 @@ h_name.push_back("Nbtagjet");
 		//cout<<endfix<<endl;
 		for(int j=0;j<5;j++){
 				//cout<<th1[j]->Integral()<<endl;
-				TH1D *th2=(TH1D* )tf1[j]->FindObjectAny(Form("%s_0b",endfix.Data()));
+				TH1D *th2;
+				if(j==4)th2=(TH1D* )tf1[j]->FindObjectAny(Form("%s_0b",endfix.Data()));
+				else th2=(TH1D* )tf1[j]->FindObjectAny(Form("%s_0bs",endfix.Data()));
 				th1[j]->Add(th2);
 				//cout<<th1[j]->Integral()<<"1,"<<endl;
-				th2=(TH1D* )tf1[j]->FindObjectAny(Form("%s_1b",endfix.Data()));
+				if(j==4)th2=(TH1D* )tf1[j]->FindObjectAny(Form("%s_1b",endfix.Data()));
+				else th2=(TH1D* )tf1[j]->FindObjectAny(Form("%s_1bs",endfix.Data()));
 				th1[j]->Add(th2);
 				//cout<<th1[j]->Integral()<<"2,"<<endl;
-				th2=(TH1D* )tf1[j]->FindObjectAny(Form("%s_2b",endfix.Data()));
+				if(j==4)th2=(TH1D* )tf1[j]->FindObjectAny(Form("%s_2b",endfix.Data()));
+				else th2=(TH1D* )tf1[j]->FindObjectAny(Form("%s_2bs",endfix.Data()));
 				th1[j]->Add(th2);
 				//cout<<th1[j]->Integral()<<"3,"<<endl;
-				th2=(TH1D* )tf1[j]->FindObjectAny(Form("%s_3b",endfix.Data()));
+				if(j==4)th2=(TH1D* )tf1[j]->FindObjectAny(Form("%s_3b",endfix.Data()));
+				else th2=(TH1D* )tf1[j]->FindObjectAny(Form("%s_3bs",endfix.Data()));
 				th1[j]->Add(th2);
 				//cout<<"4btest="<<th1[j]->Integral()<<endl;
-				
+				//cout<<"j="<<j<<endl;
 		}
 	}
 	
