@@ -115,7 +115,7 @@ leg->AddEntry(h_Zjets, "Z+Jets", "f");
   lar->SetTextSize(0.04);
   lar->SetLineWidth(5);
   //lar->DrawLatex(0.14, 0.94, "CMS #it{#bf{2015}}");
-  lar->DrawLatex(0.60, 0.94, "L = 4.328 fb^{-1} at #sqrt{s} = 13 TeV");
+  lar->DrawLatex(0.60, 0.94, "L = 12.884 fb^{-1} at #sqrt{s} = 13 TeV");
 
 }
 
@@ -353,14 +353,14 @@ h_name.push_back("Nbtagjet");
 	  if(h_name[i].find("total")!= std::string::npos)isSetRange=1;	
 	vector<TH1D* > v2;
 	vector<TH1D* > vd;
-	double fixNumber=10438/14217.5;//7306/11857.3;
+	double fixNumber=20991/31075.1;//7306/11857.3;
 	double Xsec[4]={6831,1207,119.9,25.24};
 	double scaleTemp[4];
 	for(int k=0;k<4;k++){
 		TH1D *th2=(TH1D* )tf1[k]->FindObjectAny("cutflow");
 		
-		th1[k]->Scale(fixNumber* 5884.429253654*Xsec[k]/th2->GetBinContent(1));
-		scaleTemp[k]=fixNumber*5884.429253654*Xsec[k]/th2->GetBinContent(1);
+		th1[k]->Scale(fixNumber* 12883.846147301*Xsec[k]/th2->GetBinContent(1));
+		scaleTemp[k]=fixNumber*12883.846147301*Xsec[k]/th2->GetBinContent(1);
 		v2.push_back(th1[k]);
 		
 	}	
