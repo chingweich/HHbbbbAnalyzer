@@ -13,6 +13,7 @@ void HH4bBtagEffBase_80(int wMs,int wM, string st,string st2,string option=""){
 	if(option.find("tau21Up")!= std::string::npos)JESOption=5;
 	if(option.find("tau21Down")!= std::string::npos)JESOption=6;
 	cout<<"JESOption = "<<JESOption<<endl;
+	bool printHighPtSubjet=0;
 	//tuple tree and cutflow variables------------------------------------------------------------------------------------
 	TFile *f;
 	TTree *tree;
@@ -277,7 +278,7 @@ void HH4bBtagEffBase_80(int wMs,int wM, string st,string st2,string option=""){
 			for(int i=0;i<2;i++){
 				for(int j=0;j<2;j++){
 					
-					if(subjetPt[i][j]>2000){
+					if(subjetPt[i][j]>2000 && printHighPtSubjet){
 						TLorentzVector* tempTL;
 						if(i==0)tempTL=thisJet;
 						else tempTL=thatJet;
