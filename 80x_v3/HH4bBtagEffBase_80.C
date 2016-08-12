@@ -1,9 +1,20 @@
 
 void HH4bBtagEffBase_80(int wMs,int wM, string st,string st2,string option=""){	
-	//0=signal ,1=QCD ,2=data-----------------------------------------------------------
+	//1=signal ,0=QCD ,2=data-----------------------------------------------------------
 	int nameRoot=1;
 	if(st2.find("QCD")!= std::string::npos)nameRoot=0;
 	if(st2.find("data")!= std::string::npos)nameRoot=2;
+	//---------------------Thea correction
+	TFile *f3;
+	f3=TFile::Open("puppiCorr.root");
+	TF1 * puppisd_corrGEN,* puppisd_corrRECO_cen,* puppisd_corrRECO_for;
+	puppisd_corrGEN=(TF1 *) f3->FindObjectAny("puppiJECcorr_gen");
+	puppisd_corrRECO_cen=(TF1 *) f3->FindObjectAny("puppiJECcorr_reco_0eta1v3");
+	puppisd_corrRECO_for=(TF1 *) f3->FindObjectAny("puppiJECcorr_reco_1v3eta2v5");
+	TF1* tf1[3];
+	tf1[0]=puppisd_corrGEN;
+	tf1[1]=puppisd_corrRECO_cen;
+	tf1[2]=puppisd_corrRECO_for;
 	//option-----------------------------------------------------------
 	int JESOption=0;
 	if(option.find("JESUp")!= std::string::npos)JESOption=1;
@@ -14,6 +25,7 @@ void HH4bBtagEffBase_80(int wMs,int wM, string st,string st2,string option=""){
 	if(option.find("tau21Down")!= std::string::npos)JESOption=6;
 	cout<<"JESOption = "<<JESOption<<endl;
 	bool printHighPtSubjet=0;
+	bool isFast=1;
 	//tuple tree and cutflow variables------------------------------------------------------------------------------------
 	TFile *f;
 	TTree *tree;
@@ -85,6 +97,7 @@ void HH4bBtagEffBase_80(int wMs,int wM, string st,string st2,string option=""){
 			th5[i*5+k+150]=new TH1D(Form("PuppiSDMass_j%d_%db",i,k),Form("PuppiSDMass_j%d_%db",i,k),15,90,150);
 			th5[i*5+k+170]=new TH1D(Form("doubleSV_j%d_%db",i,k),Form("doubleSV_j%d_%db",i,k),40,-1,1);
 			th5[i*5+k+184]=new TH1D(Form("FatSV_j%d_%db",i,k),Form("FatSV_j%d_%db",i,k),20,0,1);
+			th5[i*5+k+250]=new TH1D(Form("PuppiSDMassThea_j%d_%db",i,k),Form("PuppiSDMassThea_j%d_%db",i,k),15,90,150);
 		}
 	}
 	for(int k=0;k<5;k++){
@@ -116,7 +129,15 @@ void HH4bBtagEffBase_80(int wMs,int wM, string st,string st2,string option=""){
 		th5[246+i*2]=new TH1D(Form("%s_j0_noTau21",tau21_no[i].data()),Form("%s_j0_noTau21",tau21_no[i].data()),25,0,1);
 		th5[247+i*2]=new TH1D(Form("%s_j1_noTau21",tau21_no[i].data()),Form("%s_j1_noTau21",tau21_no[i].data()),25,0,1);
 	}
-	for(int i=0;i<250;i++){
+	string flavor[4]={"b","c","udsg","g_bb"};
+	for (int i=0;i<4;i++){
+		th5[260+i]=new TH1D(Form("Pt_j0_0b_%s",flavor[i].data()),Form("Pt_j0_0b_%s",flavor[i].data()),200,0,2000);
+		th5[264+i]=new TH1D(Form("Pt_j0_1b_%s",flavor[i].data()),Form("Pt_j0_1b_%s",flavor[i].data()),200,0,2000);
+		th5[268+i]=new TH1D(Form("Pt_j0_2b_%s",flavor[i].data()),Form("Pt_j0_2b_%s",flavor[i].data()),200,0,2000);
+		th5[272+i]=new TH1D(Form("Pt_j0_DSV_%s",flavor[i].data()),Form("Pt_j0_DSV_%s",flavor[i].data()),200,0,2000);
+	}
+	
+	for(int i=0;i<276;i++){
 		th6[i]=(TH1D* )th5[i]->Clone(Form("%ss",th5[i]->GetTitle()));
 		th5[i]->Sumw2();
 		th6[i]->Sumw2();
@@ -135,6 +156,8 @@ void HH4bBtagEffBase_80(int wMs,int wM, string st,string st2,string option=""){
 	//QCD uncertainty
 	for(int i=5;i<14;i++)th7[i]=new TH1D(Form("uns_QCD_%d",i-5),Form("uns_QCD_%d",i-5),200,1000,5000);
 	
+	
+	
 	//NCUtuple loop----------------------------------------------------------------------------------------
 	for (int w=wMs;w<wM;w++){
 		if(w%20==0)cout<<w<<endl;
@@ -148,8 +171,15 @@ void HH4bBtagEffBase_80(int wMs,int wM, string st,string st2,string option=""){
 		dir->GetObject("treeMaker",tree);
 		TreeReader data(tree);
 		total+=data.GetEntriesFast();
+		
+		TFile* fileFast=TFile::Open(Form("fast/%s/%d.root",st2.data(),w));
+		TTree* treeFast=(TTree* )fileFast->Get("hh4bFast");
+		TreeReader dataFast(treeFast);
+		//if(isFast)dataFast=TreeReader(treeFast);
+		
 		for(Long64_t jEntry=0; jEntry<data.GetEntriesFast() ;jEntry++){//event loop----------------------------------------------------------------------------------------
 			data.GetEntry(jEntry);
+			if(isFast)dataFast.GetEntry(jEntry);
 			
 			Int_t nVtx        = data.GetInt("nVtx");
 			Float_t ntrue= data.GetFloat("pu_nTrueInt");
@@ -176,6 +206,11 @@ void HH4bBtagEffBase_80(int wMs,int wM, string st,string st2,string option=""){
 			fixScaleNum[0]+=PU_weight[0];
 			for(int i=0;i<3;i++)totalPileup[i]+=PU_weight[i];
 			for(int i=0;i<101;i++)totalPDF[i]+=PU_weight[0];
+			
+			Int_t nPassFast;  
+			if(isFast)nPassFast= dataFast.GetInt("nPassB");
+			//cout<<nPassFast<<endl;
+			if(isFast &&nPassFast<8)continue;
 			//0. has a good vertex
 			if(nVtx<1)continue;nPass[0]++;
 			//1.trigger
@@ -250,10 +285,7 @@ void HH4bBtagEffBase_80(int wMs,int wM, string st,string st2,string option=""){
 			Float_t*  FATjetPRmass = data.GetPtrFloat("FATjetPRmass");
 			Float_t*  FATjetPuppiSDmass = data.GetPtrFloat("FATjetPuppiSDmass");
 			
-			Float_t  pfMetCorrPt = data.GetFloat("pfMetCorrPt");
-			Long64_t  runId=data.GetLong64("runId");
-			Long64_t  lumiSection=data.GetLong64("lumiSection");
-			Long64_t  eventId=data.GetLong64("eventId");
+			
 			
 			vector<float>   *subjetSDCSV =  data.GetPtrVectorFloat("FATsubjetSDCSV");
 			vector<float>   *subjetSDPx  =  data.GetPtrVectorFloat("FATsubjetSDPx", nFATJet);
@@ -279,6 +311,10 @@ void HH4bBtagEffBase_80(int wMs,int wM, string st,string st2,string option=""){
 				for(int j=0;j<2;j++){
 					
 					if(subjetPt[i][j]>2000 && printHighPtSubjet){
+						Float_t  pfMetCorrPt = data.GetFloat("pfMetCorrPt");
+						Long64_t  runId=data.GetLong64("runId");
+						Long64_t  lumiSection=data.GetLong64("lumiSection");
+						Long64_t  eventId=data.GetLong64("eventId");
 						TLorentzVector* tempTL;
 						if(i==0)tempTL=thisJet;
 						else tempTL=thatJet;
@@ -440,6 +476,47 @@ void HH4bBtagEffBase_80(int wMs,int wM, string st,string st2,string option=""){
 				if(JESOption==6)tau21_SF=(1.031-0.126)*(1.031-0.126);
 			}
 			
+			Int_t* FATjetHadronFlavor        = data.GetPtrInt("FATjetHadronFlavor");
+			
+			if(subjetSDCSV[0][0]<0.605 && subjetSDCSV[0][1]<0.605){
+				if(FATjetHadronFlavor[0]==5)th5[260]->Fill(thisJet->Pt());
+				else if(FATjetHadronFlavor[0]==4)th5[261]->Fill(thisJet->Pt());
+				else if ((FATsubjetSDHadronFlavor[0][0]==4 || FATsubjetSDHadronFlavor[0][0]==5) && (FATsubjetSDHadronFlavor[0][1]==5 || FATsubjetSDHadronFlavor[0][1]==4 ))th5[263]->Fill(thisJet->Pt());
+				else th5[262]->Fill(thisJet->Pt());
+			}
+			else if (subjetSDCSV[0][0]>0.605 && subjetSDCSV[0][1]>0.605){
+				if(FATjetHadronFlavor[0]==5)th5[268]->Fill(thisJet->Pt());
+				else if(FATjetHadronFlavor[0]==4)th5[269]->Fill(thisJet->Pt());
+				else if ((FATsubjetSDHadronFlavor[0][0]==4 || FATsubjetSDHadronFlavor[0][0]==5) && (FATsubjetSDHadronFlavor[0][1]==5 || FATsubjetSDHadronFlavor[0][1]==4 ))th5[271]->Fill(thisJet->Pt());
+				else th5[270]->Fill(thisJet->Pt());
+			}
+			else {
+				if(FATjetHadronFlavor[0]==5)th5[264]->Fill(thisJet->Pt());
+				else if(FATjetHadronFlavor[0]==4)th5[265]->Fill(thisJet->Pt());
+				else if ((FATsubjetSDHadronFlavor[0][0]==4 || FATsubjetSDHadronFlavor[0][0]==5) && (FATsubjetSDHadronFlavor[0][1]==5 || FATsubjetSDHadronFlavor[0][1]==4 ))th5[267]->Fill(thisJet->Pt());
+				else th5[266]->Fill(thisJet->Pt());
+			}
+			
+			if(subjetSDCSV[0][0]<0.605 && subjetSDCSV[0][1]<0.605){
+				if(FATjetHadronFlavor[0]==5)th6[260]->Fill(thisJet->Pt(),scaleFactor);
+				else if(FATjetHadronFlavor[0]==4)th6[261]->Fill(thisJet->Pt(),scaleFactor);
+				else if ((FATsubjetSDHadronFlavor[0][0]==4 || FATsubjetSDHadronFlavor[0][0]==5) && (FATsubjetSDHadronFlavor[0][1]==5 || FATsubjetSDHadronFlavor[0][1]==4 ))th6[263]->Fill(thisJet->Pt(),scaleFactor);
+				else th6[262]->Fill(thisJet->Pt(),scaleFactor);
+			}
+			else if (subjetSDCSV[0][0]>0.605 && subjetSDCSV[0][1]>0.605){
+				if(FATjetHadronFlavor[0]==5)th6[268]->Fill(thisJet->Pt(),scaleFactor);
+				else if(FATjetHadronFlavor[0]==4)th6[269]->Fill(thisJet->Pt(),scaleFactor);
+				else if ((FATsubjetSDHadronFlavor[0][0]==4 || FATsubjetSDHadronFlavor[0][0]==5) && (FATsubjetSDHadronFlavor[0][1]==5 || FATsubjetSDHadronFlavor[0][1]==4 ))th6[271]->Fill(thisJet->Pt(),scaleFactor);
+				else th6[270]->Fill(thisJet->Pt(),scaleFactor);
+			}
+			else {
+				if(FATjetHadronFlavor[0]==5)th6[264]->Fill(thisJet->Pt(),scaleFactor);
+				else if(FATjetHadronFlavor[0]==4)th6[265]->Fill(thisJet->Pt(),scaleFactor);
+				else if ((FATsubjetSDHadronFlavor[0][0]==4 || FATsubjetSDHadronFlavor[0][0]==5) && (FATsubjetSDHadronFlavor[0][1]==5 || FATsubjetSDHadronFlavor[0][1]==4 ))th6[267]->Fill(thisJet->Pt(),scaleFactor);
+				else th6[266]->Fill(thisJet->Pt(),scaleFactor);
+			}
+			
+			
 			
 			
 			//10.btag
@@ -459,7 +536,9 @@ void HH4bBtagEffBase_80(int wMs,int wM, string st,string st2,string option=""){
 			 for(int i=5;i<14;i++)th7[i]->Fill(mjj,btaggingscaleFactor*PU_weight[0]*tau21_SF);
 			 fixScaleNum[1]+=PU_weight[0];
 			//--------------------------------------
-			
+			Float_t  FATjetPuppiSDmassThea[2] ={0};
+			FATjetPuppiSDmassThea[0]=FATjetPuppiSDmass[0]*getPUPPIweight(thisJet->Pt(),thisJet->Eta(),tf1);
+			FATjetPuppiSDmassThea[1]=FATjetPuppiSDmass[1]*getPUPPIweight(thatJet->Pt(),thatJet->Eta(),tf1);
 			eta[0]=thisJet->Eta();
 			eta[1]=thatJet->Eta();
 			//Float_t*  FATjet_DoubleSV = data.GetPtrFloat("FATjet_DoubleSV");
@@ -486,6 +565,21 @@ void HH4bBtagEffBase_80(int wMs,int wM, string st,string st2,string option=""){
 					break;
 				}
 				
+			}
+			
+			if(FATjet_DoubleSV[0]>0.3){
+				if(FATjetHadronFlavor[0]==5)th5[272]->Fill(thisJet->Pt());
+				else if(FATjetHadronFlavor[0]==4)th5[273]->Fill(thisJet->Pt());
+				else if ((FATsubjetSDHadronFlavor[0][0]==4 || FATsubjetSDHadronFlavor[0][0]==5) && (FATsubjetSDHadronFlavor[0][1]==5 || FATsubjetSDHadronFlavor[0][1]==4 ))th5[275]->Fill(thisJet->Pt());
+				else th5[274]->Fill(thisJet->Pt());
+			}
+			
+			
+			if(FATjet_DoubleSV[0]>0.3){
+				if(FATjetHadronFlavor[0]==5)th6[272]->Fill(thisJet->Pt(),scaleFactor);
+				else if(FATjetHadronFlavor[0]==4)th6[273]->Fill(thisJet->Pt(),scaleFactor);
+				else if ((FATsubjetSDHadronFlavor[0][0]==4 || FATsubjetSDHadronFlavor[0][0]==5) && (FATsubjetSDHadronFlavor[0][1]==5 || FATsubjetSDHadronFlavor[0][1]==4 ))th6[275]->Fill(thisJet->Pt(),scaleFactor);
+				else th6[274]->Fill(thisJet->Pt(),scaleFactor);
 			}
 			
 			Float_t*  FATjetCISVV2 = data.GetPtrFloat("FATjetCISVV2");
@@ -524,10 +618,11 @@ void HH4bBtagEffBase_80(int wMs,int wM, string st,string st2,string option=""){
 					th5[i*5+k+150]->Fill(FATjetPuppiSDmass[i]);
 					th6[i*5+k+150]->Fill(FATjetPuppiSDmass[i],scaleFactor);
 					th5[i*5+k+170]->Fill(FATjet_DoubleSV[i]);
-					th6[i*5+k+170]->Fill(FATjet_DoubleSV[i],scaleFactor);
+					th6[i*5+k+170]->Fill(FATjet_DoubleSV[i],PU_weight[0]);
 					th5[i*5+k+184]->Fill(FATjetCISVV2[i]);
 					th6[i*5+k+184]->Fill(FATjetCISVV2[i],scaleFactor);
-					
+					th5[i*5+k+250]->Fill(FATjetPuppiSDmassThea[i]);
+					th6[i*5+k+250]->Fill(FATjetPuppiSDmassThea[i],scaleFactor);
 				}
 			}
 			for(int k=0;k<5;k++){
@@ -594,7 +689,7 @@ void HH4bBtagEffBase_80(int wMs,int wM, string st,string st2,string option=""){
 	cutflow->Write();
 	for(int i=0;i<6;i++)th3[i]->Write();
 	for(int i=0;i<14;i++)th4[i]->Write();
-	for(int i=0;i<250;i++){
+	for(int i=0;i<276;i++){
 		th5[i]->Write();
 		th6[i]->Write();
 	}
