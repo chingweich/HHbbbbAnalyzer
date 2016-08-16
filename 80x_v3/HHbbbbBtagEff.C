@@ -92,9 +92,11 @@ void HHbbbbBtagEff(int a){
 	string dataPathC="/data7/chchen/80x_dsv/JetHT_runC/NCUGlobalTuples_";
 	string dataPathD="/data7/chchen/80x_dsv/JetHT_runD/NCUGlobalTuples_";
 	if(a==21)for(int j=0;j<11;j++)HH4bBtagEffBase_80(1,2,st1[j],fileName[j],"");
-	else if(a==30)HH4bBtagEffBase_80(1,500,dataPathB,"data1");	
-	else if(a==31)HH4bBtagEffBase_80(500,1048,dataPathB,"data2");	
-	else if(a==32)HH4bBtagEffBase_80(1,348,dataPathC,"data3");	
-	else if(a==33)HH4bBtagEffBase_80(1,584,dataPathD,"data4");	
+	else if(a==30)HH4bBtagEffBase_80(1,400,dataPathB,"data1");	
+	else if(a==31)HH4bBtagEffBase_80(400,800,dataPathB,"data2");	
+	else if(a==32)HH4bBtagEffBase_80(800,1048,dataPathB,"data3");	
+	else if(a==33)HH4bBtagEffBase_80(1,348,dataPathC,"data4");	
+	else if(a==34)HH4bBtagEffBase_80(1,300,dataPathD,"data5");	
+	else if(a==35)HH4bBtagEffBase_80(300,584,dataPathD,"data6");
 	else if(a>21)HH4bBtagEffBase_80(1,aa[a-22],st1[a],fileName[a],"");
 }
