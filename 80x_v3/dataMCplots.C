@@ -21,7 +21,7 @@ int isSetRange=0;
 
 void myPlot(vector< TH1D*> h_Z,
            vector< TH1D*> v_data,
-	    TH1D* h_data, TH1D* h_bkg){
+	    TH1D* h_data, TH1D* h_bkg,int option=0){
 
   h_data->Reset();
   for(unsigned int i=0;i<v_data.size();i++)h_data->Add(v_data[i]);
@@ -36,16 +36,27 @@ void myPlot(vector< TH1D*> h_Z,
    h_bkg->Reset();
     THStack *h_stack = new THStack("h_stack", "");
   for(unsigned int i=0;i<h_Z.size();i++){
-	  h_Z[i]->SetFillColor(97-3*i);
+	  h_Z[i]->SetFillColor(97-5*i);
 	  h_Z[i]->SetLineColor(kBlack);
 	  h_bkg->Add(h_Z[i]);
 	   h_stack->Add(h_Z[i]);
 	  
   }
-   leg->AddEntry(h_Z[0], "QCD700", "f");
+   
+   
+   if(option==1){
+	   leg->Clear();
+	   leg->AddEntry(h_Z[3], "udscg", "f");
+	leg->AddEntry(h_Z[2], "cc", "f");
+	leg->AddEntry(h_Z[1], "b", "f");
+	leg->AddEntry(h_Z[0], "bb", "f");
+	}
+	else{
+		leg->AddEntry(h_Z[0], "QCD700", "f");
    leg->AddEntry(h_Z[1], "QCD1000", "f");
    leg->AddEntry(h_Z[2], "QCD1500", "f");
    leg->AddEntry(h_Z[3], "QCD2000", "f");
+	}
   /*
 leg->AddEntry(h_Zjets, "Z+Jets", "f");
   leg->AddEntry(h_TT, "t#bar{t}", "f");
@@ -115,7 +126,7 @@ leg->AddEntry(h_Zjets, "Z+Jets", "f");
   lar->SetTextSize(0.04);
   lar->SetLineWidth(5);
   //lar->DrawLatex(0.14, 0.94, "CMS #it{#bf{2015}}");
-  lar->DrawLatex(0.60, 0.94, "L = 12.884 fb^{-1} at #sqrt{s} = 13 TeV");
+  lar->DrawLatex(0.60, 0.94, "L = 12.9 fb^{-1} at #sqrt{s} = 13 TeV");
 
 }
 
@@ -287,8 +298,8 @@ void dataMCplots(){
  h_name.push_back("h_nvtx_cut");  
 h_name.push_back("Nbtagjet");  
 
-  for(unsigned int i = 0; i < h_name.size(); i++){
-	 
+  //for(unsigned int i = 0; i < h_name.size(); i++){
+	 for(unsigned int i = 0; i < 1; i++){
 	  
 	//cout<<h_name[i]<<endl;
 	TH1D *th1[10];
@@ -407,5 +418,62 @@ vd,
 	 }
   }
   
+  TH1D* thh[5][4];
+  double fixNumber=20991/31075.1;//7306/11857.3;
+double Xsec[4]={6831,1207,119.9,25.24};
+  string categories[4]={"0b","1b","2b","DSV"};
+  string hadflv[4]={"bb","b","cc","udscg"};
+  
+  double fixNumber2[4]={0.97555,0.822533,0.956286,1.48902};
+  
+  
+  for(int k=0;k<4;k++){
+  
+  //cout<<"test"<<endl;
+  
+  for(int i=0;i<4;i++){
+	  for(int j=0;j<4;j++){
+		  TH1D *th2=(TH1D* )tf1[i]->FindObjectAny("cutflow");
+		
+	
+		  thh[i][j]=(TH1D*)tf1[i]->FindObjectAny(Form("Pt_j0_%s_%s",categories[k].data(),hadflv[j].data()));
+		  thh[i][j]->Scale(fixNumber*(1/fixNumber2[k])* 12883.846147301*Xsec[i]/th2->GetBinContent(1));
+	  }
+	  
+	  if(i==3){
+		  for(int j=0;j<4;j++)thh[i][j]->Add(thh[0][j]);
+		  for(int j=0;j<4;j++)thh[i][j]->Add(thh[1][j]);
+		  for(int j=0;j<4;j++)thh[i][j]->Add(thh[2][j]);
+	  }
+  }
+  isSetRange=1;
+  //cout<<"test2"<<endl;
+  
+    TH1D *h_bkg  = (TH1D* )thh[0][0]->Clone("h_bkg");
+	
+    TH1D *h_data = (TH1D* )thh[0][0]->Clone("h_data");
+    
+    vector<TH1D* > v2;
+	vector<TH1D* > vd;
+	thh[4][0]=(TH1D*)tf1[4]->FindObjectAny(Form("Pt_j0_%s_udscg",categories[k].data()));
+	
+	v2.push_back(thh[3][0]);
+	v2.push_back(thh[3][1]);
+	v2.push_back(thh[3][2]);
+	v2.push_back(thh[3][3]);
+	
+	vd.push_back(thh[4][0]);
+   c_up->cd();
+  myPlot(v2,
+vd,
+	   h_data, h_bkg,1);
 
+    c_up->RedrawAxis();
+    c_dw->cd();
+  
+   c_up->RedrawAxis();
+    c_dw->cd();
+myRatio(h_data, h_bkg,"Pt_j0[GeV]");
+c.SaveAs(Form("dataMC/Pt_j0_%s.png",categories[k].data()));
+  }
 }
