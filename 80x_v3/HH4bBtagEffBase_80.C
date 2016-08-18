@@ -550,7 +550,7 @@ void HH4bBtagEffBase_80(int wMs,int wM, string st,string st2,string option=""){
 				
 			}
 			
-			if(FATjet_DoubleSV[0]>0.3){
+			if(FATjet_DoubleSV[0]>0.6){
 				if(FATjetHadronFlavor[0]==5 && FATsubjetSDHadronFlavor[0][0]==5 && FATsubjetSDHadronFlavor[0][1]==5)th5[272]->Fill(thisJet->Pt());
 				else if(FATjetHadronFlavor[0]==5 && (FATsubjetSDHadronFlavor[0][0]==5 || FATsubjetSDHadronFlavor[0][1]==5))th5[273]->Fill(thisJet->Pt());
 				else if (FATjetHadronFlavor[0]==4 && FATsubjetSDHadronFlavor[0][0]==4 && FATsubjetSDHadronFlavor[0][1]==4)th5[274]->Fill(thisJet->Pt());
