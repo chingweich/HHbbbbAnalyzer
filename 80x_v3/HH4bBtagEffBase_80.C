@@ -478,13 +478,13 @@ void HH4bBtagEffBase_80(int wMs,int wM, string st,string st2,string option=""){
 			
 			Int_t* FATjetHadronFlavor        = data.GetPtrInt("FATjetHadronFlavor");
 			
-			if(subjetSDCSV[0][0]<0.605 && subjetSDCSV[0][1]<0.605){
+			if(subjetSDCSV[0][0]<0.605 && subjetSDCSV[0][1]<0.46){
 				if(FATjetHadronFlavor[0]==5 && FATsubjetSDHadronFlavor[0][0]==5 && FATsubjetSDHadronFlavor[0][1]==5)th5[260]->Fill(thisJet->Pt());
 				else if(FATjetHadronFlavor[0]==5 && (FATsubjetSDHadronFlavor[0][0]==5 || FATsubjetSDHadronFlavor[0][1]==5))th5[261]->Fill(thisJet->Pt());
 				else if(FATjetHadronFlavor[0]==4 && FATsubjetSDHadronFlavor[0][0]==4 && FATsubjetSDHadronFlavor[0][1]==4)th5[262]->Fill(thisJet->Pt());
 				else th5[263]->Fill(thisJet->Pt());
 			}
-			else if (subjetSDCSV[0][0]>0.605 && subjetSDCSV[0][1]>0.605){
+			else if (subjetSDCSV[0][0]>0.605 && subjetSDCSV[0][1]>0.46){
 				if(FATjetHadronFlavor[0]==5 && FATsubjetSDHadronFlavor[0][0]==5 && FATsubjetSDHadronFlavor[0][1]==5)th5[268]->Fill(thisJet->Pt());
 				else if(FATjetHadronFlavor[0]==5 && (FATsubjetSDHadronFlavor[0][0]==5 || FATsubjetSDHadronFlavor[0][1]==5))th5[269]->Fill(thisJet->Pt());
 				else if (FATjetHadronFlavor[0]==4 && FATsubjetSDHadronFlavor[0][0]==4 && FATsubjetSDHadronFlavor[0][1]==4)th5[270]->Fill(thisJet->Pt());
