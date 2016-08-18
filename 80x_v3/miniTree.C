@@ -34,6 +34,8 @@
 #include "untuplizer.h"
 //#include "jetEnergyScale.h"
 
+#include "standalone_LumiReWeighting.cc"
+#include "standalone_LumiReWeighting.h"
 
 
 void miniTreeBase(int wMs,int wM, string st,string st2,int option=0) {
@@ -45,48 +47,25 @@ void miniTreeBase(int wMs,int wM, string st,string st2,int option=0) {
 	
 	//not yet added
 	/*
-	Int_t SelectedEvent_bcno;                         hh4b->Branch("SelectedEvent_bcno",&SelectedEvent_bcno,"SelectedEvent_bcno/I");
-	Int_t SelectedEvent_time;                         hh4b->Branch("SelectedEvent_time",&SelectedEvent_time,"SelectedEvent_time/I");
-	
-	Double_t SelectedEvent_htHat;                     hh4b->Branch("SelectedEvent_htHat",&SelectedEvent_htHat,"SelectedEvent_htHat/D");
-	Double_t SelectedEvent_evtwt;                     hh4b->Branch("SelectedEvent_evtwt",&SelectedEvent_evtwt,"SelectedEvent_evtwt/D");
-	Double_t SelectedEvent_evtwtPV;                   hh4b->Branch("SelectedEvent_evtwtPV",&SelectedEvent_evtwtPV,"SelectedEvent_evtwtPV/D");
-	Double_t SelectedEvent_evtwtPVLow;                hh4b->Branch("SelectedEvent_evtwtPVLow",&SelectedEvent_evtwtPVLow,"SelectedEvent_evtwtPVLow/D");
-	Double_t SelectedEvent_evtwtPVHigh;               hh4b->Branch("SelectedEvent_evtwtPVHigh",&SelectedEvent_evtwtPVHigh,"SelectedEvent_evtwtPVHigh/D");
 	Double_t SelectedEvent_minv_leading2hjets;        hh4b->Branch("SelectedEvent_minv_leading2hjets",&SelectedEvent_minv_leading2hjets,"SelectedEvent_minv_leading2hjets/D");
 	Double_t SelectedEvent_minv_leading2hjets_subtr;  hh4b->Branch("SelectedEvent_minv_leading2hjets_subtr",&SelectedEvent_minv_leading2hjets_subtr,"SelectedEvent_minv_leading2hjets_subtr/D");
-	Double_t SelectedEvent_pt_leading2hjets;          hh4b->Branch("SelectedEvent_pt_leading2hjets",&SelectedEvent_pt_leading2hjets,"SelectedEvent_pt_leading2hjets/D");
-	Double_t SelectedEvent_eta_leading2hjets;         hh4b->Branch("SelectedEvent_eta_leading2hjets",&SelectedEvent_eta_leading2hjets,"SelectedEvent_eta_leading2hjets/D");
 	Double_t SelectedEvent_btagsf;                    hh4b->Branch("SelectedEvent_btagsf",&SelectedEvent_btagsf,"SelectedEvent_btagsf/D");
 	Double_t SelectedEvent_btagsf_bcUp;               hh4b->Branch("SelectedEvent_btagsf_bcUp",&SelectedEvent_btagsf_bcUp,"SelectedEvent_btagsf_bcUp/D");
 	Double_t SelectedEvent_btagsf_bcDown;             hh4b->Branch("SelectedEvent_btagsf_bcDown",&SelectedEvent_btagsf_bcDown,"SelectedEvent_btagsf_bcDown/D");
 	Double_t SelectedEvent_btagsf_lUp;                hh4b->Branch("SelectedEvent_btagsf_lUp",&SelectedEvent_btagsf_lUp,"SelectedEvent_btagsf_lUp/D");
 	Double_t SelectedEvent_btagsf_lDown;              hh4b->Branch("SelectedEvent_btagsf_lDown",&SelectedEvent_btagsf_lDown,"SelectedEvent_btagsf_lDown/D");
 	Double_t SelectedEvent_y_leading2hjets;           hh4b->Branch("SelectedEvent_y_leading2hjets",&SelectedEvent_y_leading2hjets,"SelectedEvent_y_leading2hjets/D");
-	Double_t SelectedEvent_phi_leading2hjets;         hh4b->Branch("SelectedEvent_phi_leading2hjets",&SelectedEvent_phi_leading2hjets,"SelectedEvent_phi_leading2hjets/D");
-	
 	Int_t HJets_Index[HJets_njets];                   hh4b->Branch("HJets_Index",&HJets_Index,"HJets_Index[HJets_njets]/I");
 	Int_t HJets_nconsts[HJets_njets];                 hh4b->Branch("HJets_nconsts",&HJets_nconsts,"HJets_nconsts[HJets_njets]/I");
-	Int_t HJets_nsubjets[HJets_njets];                hh4b->Branch("HJets_nsubjets",&HJets_nsubjets,"HJets_nsubjets[HJets_njets]/I");
 	Int_t HJets_nsubjetsBTaggedCSVL[HJets_njets];     hh4b->Branch("HJets_nsubjetsBTaggedCSVL",&HJets_nsubjetsBTaggedCSVL,"HJets_nsubjetsBTaggedCSVL[HJets_njets]/I");
-	
-	Double_t HJets_hadFlavour[HJets_njets];           hh4b->Branch("HJets_hadFlavour",&HJets_hadFlavour,"HJets_hadFlavour[HJets_njets]/D");
-	
-	Double_t HJets_nhf[HJets_njets];                  hh4b->Branch("HJets_nhf",&HJets_nhf,"HJets_nhf[HJets_njets]/D");
-	Double_t HJets_chf[HJets_njets];                  hh4b->Branch("HJets_chf",&HJets_chf,"HJets_chf[HJets_njets]/D");
-	Double_t HJets_emf[HJets_njets];                  hh4b->Branch("HJets_emf",&HJets_emf,"HJets_emf[HJets_njets]/D");
-	Double_t HJets_phf[HJets_njets];                  hh4b->Branch("HJets_phf",&HJets_phf,"HJets_phf[HJets_njets]/D");
-	Double_t HJets_muf[HJets_njets];                  hh4b->Branch("HJets_muf",&HJets_muf,"HJets_muf[HJets_njets]/D");
-	*/
-	
-	
-	/*
-  SelectedEvent_npuTrue               : Int_t
+ 
   SelectedEvent_lhewts_               : vector<pair<int,double> >
   SelectedEvent_lhewts.first          : pair<int,double>
   SelectedEvent_lhewts.second         : pair<int,double>
-  SelectedEvent_ht                    : Int_t
+ 
 	*/
+	
+	standalone_LumiReWeighting LumiWeights_central(0),LumiWeights_up(1),LumiWeights_down(-1);
 	
 	//NCUtuple loop----------------------------------------------------------------------------------------
 	for (int w=wMs;w<wM;w++){
@@ -110,8 +89,20 @@ void miniTreeBase(int wMs,int wM, string st,string st2,int option=0) {
 		Int_t SelectedEvent_nsubjetsBTaggedCSVL;          hh4b->Branch("SelectedEvent_nsubjetsBTaggedCSVL",&SelectedEvent_nsubjetsBTaggedCSVL,"SelectedEvent_nsubjetsBTaggedCSVL/I");
 		Int_t HJets_njets;                                hh4b->Branch("HJets_njets",&HJets_njets,"HJets_njets/I");
 		Int_t SelectedEvent_npv;                          hh4b->Branch("SelectedEvent_npv",&SelectedEvent_npv,"SelectedEvent_npv/I");
+		Int_t SelectedEvent_npuTrue;                      hh4b->Branch("SelectedEvent_npuTrue",&SelectedEvent_npuTrue,"SelectedEvent_npuTrue/I");
+		Int_t SelectedEvent_ht;                           hh4b->Branch("SelectedEvent_ht",&SelectedEvent_ht,"SelectedEvent_ht/I");
 		
+		Double_t SelectedEvent_htHat;                     hh4b->Branch("SelectedEvent_htHat",&SelectedEvent_htHat,"SelectedEvent_htHat/D");
 		Double_t SelectedEvent_deta_leading2hjets;        hh4b->Branch("SelectedEvent_deta_leading2hjets",&SelectedEvent_deta_leading2hjets,"SelectedEvent_deta_leading2hjets/D");
+		Double_t SelectedEvent_pt_leading2hjets;          hh4b->Branch("SelectedEvent_pt_leading2hjets",&SelectedEvent_pt_leading2hjets,"SelectedEvent_pt_leading2hjets/D");
+		Double_t SelectedEvent_eta_leading2hjets;         hh4b->Branch("SelectedEvent_eta_leading2hjets",&SelectedEvent_eta_leading2hjets,"SelectedEvent_eta_leading2hjets/D");
+		Double_t SelectedEvent_phi_leading2hjets;         hh4b->Branch("SelectedEvent_phi_leading2hjets",&SelectedEvent_phi_leading2hjets,"SelectedEvent_phi_leading2hjets/D");
+		Double_t SelectedEvent_evtwt;                     hh4b->Branch("SelectedEvent_evtwt",&SelectedEvent_evtwt,"SelectedEvent_evtwt/D");
+		Double_t SelectedEvent_evtwtPV;                   hh4b->Branch("SelectedEvent_evtwtPV",&SelectedEvent_evtwtPV,"SelectedEvent_evtwtPV/D");
+		Double_t SelectedEvent_evtwtPVLow;                hh4b->Branch("SelectedEvent_evtwtPVLow",&SelectedEvent_evtwtPVLow,"SelectedEvent_evtwtPVLow/D");
+		Double_t SelectedEvent_evtwtPVHigh;               hh4b->Branch("SelectedEvent_evtwtPVHigh",&SelectedEvent_evtwtPVHigh,"SelectedEvent_evtwtPVHigh/D");
+	
+		Int_t HJets_nsubjets[HJets_njets];                hh4b->Branch("HJets_nsubjets",&HJets_nsubjets,"HJets_nsubjets[HJets_njets]/I");
 	
 		Double_t HJets_Pt[HJets_njets];                   hh4b->Branch("HJets_Pt",&HJets_Pt,"HJets_Pt[HJets_njets]/D");
 		Double_t HJets_Eta[HJets_njets];                  hh4b->Branch("HJets_Eta",&HJets_Eta,"HJets_Eta[HJets_njets]/D");
@@ -132,6 +123,13 @@ void miniTreeBase(int wMs,int wM, string st,string st2,int option=0) {
 		Double_t HJets_csvSubjet0[HJets_njets];           hh4b->Branch("HJets_csvSubjet0",&HJets_csvSubjet0,"HJets_csvSubjet0[HJets_njets]/D");
 		Double_t HJets_csvSubjet1[HJets_njets];           hh4b->Branch("HJets_csvSubjet1",&HJets_csvSubjet1,"HJets_csvSubjet1[HJets_njets]/D");
 		Double_t HJets_groomedMassCorr[HJets_njets];      hh4b->Branch("HJets_groomedMassCorr",&HJets_groomedMassCorr,"HJets_groomedMassCorr[HJets_njets]/D");
+		Double_t HJets_nhf[HJets_njets];                  hh4b->Branch("HJets_nhf",&HJets_nhf,"HJets_nhf[HJets_njets]/D");
+		Double_t HJets_chf[HJets_njets];                  hh4b->Branch("HJets_chf",&HJets_chf,"HJets_chf[HJets_njets]/D");
+		Double_t HJets_emf[HJets_njets];                  hh4b->Branch("HJets_emf",&HJets_emf,"HJets_emf[HJets_njets]/D");
+		Double_t HJets_phf[HJets_njets];                  hh4b->Branch("HJets_phf",&HJets_phf,"HJets_phf[HJets_njets]/D");
+		Double_t HJets_muf[HJets_njets];                  hh4b->Branch("HJets_muf",&HJets_muf,"HJets_muf[HJets_njets]/D");
+		Double_t HJets_hadFlavour[HJets_njets];           hh4b->Branch("HJets_hadFlavour",&HJets_hadFlavour,"HJets_hadFlavour[HJets_njets]/D");
+	
 	
 	
 		for(Long64_t jEntry=0; jEntry<data.GetEntriesFast() ;jEntry++){//event loop----------------------------------------------------------------------------------------
@@ -224,6 +222,8 @@ void miniTreeBase(int wMs,int wM, string st,string st2,int option=0) {
 			vector<float>   *subjetSDE   =  data.GetPtrVectorFloat("FATsubjetSDE", nFATJet);
 			//vector<float>   *subjetSDCSV =  data.GetPtrVectorFloat("FATsubjetSDCSV");
 			Float_t*  FATjetCISVV2 = data.GetPtrFloat("FATjetCISVV2");
+			Int_t*  FATjetHadronFlavor = data.GetPtrInt("FATjetHadronFlavor");
+			Int_t*  FATnSubSDJet = data.GetPtrInt("FATnSubSDJet");
 			Float_t*  FATjetPuppiSDmassL2L3Corr = data.GetPtrFloat("FATjetPuppiSDmassL2L3Corr");
 			Float_t*  FATjetPRmass = data.GetPtrFloat("FATjetPRmass");
 			Float_t*  FATjetSDmass = data.GetPtrFloat("FATjetSDmass");
@@ -235,13 +235,48 @@ void miniTreeBase(int wMs,int wM, string st,string st2,int option=0) {
 					subjetP4[i][j]->SetPxPyPzE(subjetSDPx[i][j],subjetSDPy[i][j],subjetSDPz[i][j],subjetSDE[i][j]);
 				}
 			}
+			Float_t  ptHat = data.GetFloat("ptHat");
+			
+			
+			Float_t ntrue= data.GetFloat("pu_nTrueInt");
+			double PU_weight[3]={1,1,1};
+			
+			if(nameRoot!=2){
+				if(ntrue<51){
+					PU_weight[0] = LumiWeights_central.weight(ntrue);
+					PU_weight[1]= LumiWeights_up.weight(ntrue);
+					PU_weight[2] = LumiWeights_down.weight(ntrue);
+				}
+				else {
+					PU_weight[0] = LumiWeights_central.weight(50);
+					PU_weight[1] = LumiWeights_up.weight(50);
+					PU_weight[2]= LumiWeights_down.weight(50);
+				}
+			}
+			
+			SelectedEvent_npuTrue=(int)ntrue;
+			Float_t HT= data.GetFloat("HT");
+			SelectedEvent_ht=(int)HT;
+			SelectedEvent_pt_leading2hjets=(*thisJet+*thatJet).Pt();
+			SelectedEvent_eta_leading2hjets=(*thisJet+*thatJet).Eta();
+			SelectedEvent_phi_leading2hjets=(*thisJet+*thatJet).Phi();
+			SelectedEvent_htHat=ptHat;
 			SelectedEvent_npv=nVtx;
 			SelectedEvent_deta_leading2hjets=thisJet->Eta()-thatJet->Eta();
 			SelectedEvent_runno=runId;
 			SelectedEvent_lumisec=lumiSection;
 			SelectedEvent_evtno=eventId;
 			SelectedEvent_nsubjetsBTaggedCSVL=nbtag;
+			SelectedEvent_evtwt=mcWeight;
+			SelectedEvent_evtwtPV=PU_weight[0];
+			SelectedEvent_evtwtPVHigh=PU_weight[1];
+			SelectedEvent_evtwtPVLow=PU_weight[2];
+			
 			HJets_njets=2;
+			
+			Float_t*  FATjetCHadEF = data.GetPtrFloat("FATjetCHadEF");
+			Float_t*  FATjetPhoEF = data.GetPtrFloat("FATjetPhoEF");
+			Float_t*  FATjetNHadEF = data.GetPtrFloat("FATjetNHadEF");
 			
 			
 			for(int i=0;i<2;i++){
@@ -266,6 +301,13 @@ void miniTreeBase(int wMs,int wM, string st,string st2,int option=0) {
 				HJets_csvSubjet0[i]=subjetSDCSV[i][0];
 				HJets_csvSubjet1[i]=subjetSDCSV[i][1];
 				HJets_groomedMassCorr[i]=fatjetPRmassL2L3Corr[i];
+				HJets_muf[i]=FATjetMuEF[i];
+				HJets_emf[i]=FATjetCEmEF[i];
+				HJets_nhf[i]=FATjetNHadEF[i];
+				HJets_phf[i]=FATjetPhoEF[i];
+				HJets_chf[i]=FATjetCHadEF[i];
+				HJets_hadFlavour[i]=FATjetHadronFlavor[i];
+				HJets_nsubjets[i]=FATnSubSDJet[i];
 			}
 			
 			
