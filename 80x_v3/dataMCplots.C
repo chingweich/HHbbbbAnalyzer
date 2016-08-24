@@ -36,7 +36,7 @@ void myPlot(vector< TH1D*> h_Z,
    h_bkg->Reset();
     THStack *h_stack = new THStack("h_stack", "");
   for(unsigned int i=0;i<h_Z.size();i++){
-	  h_Z[i]->SetFillColor(97-5*i);
+	  h_Z[i]->SetFillColor(97-4*i);
 	  h_Z[i]->SetLineColor(kBlack);
 	  h_bkg->Add(h_Z[i]);
 	   h_stack->Add(h_Z[i]);
@@ -229,12 +229,16 @@ void dataMCplots(){
 
   // To get the name of histograms
   
-  TFile* tf1[7];
+  TFile* tf1[10];
   tf1[0]=TFile::Open("sf/QCD700.root");
   tf1[1]=TFile::Open("sf/QCD1000.root");
   tf1[2]=TFile::Open("sf/QCD1500.root");
   tf1[3]=TFile::Open("sf/QCD2000.root");
   tf1[4]=TFile::Open("sf/data.root");
+  tf1[5]=TFile::Open("sf/bGen700.root");
+  tf1[6]=TFile::Open("sf/bGen1000.root");
+  tf1[7]=TFile::Open("sf/bGen1500.root");
+  tf1[8]=TFile::Open("sf/bGen2000.root");
   
   vector<std::string> h_name;
   
@@ -424,7 +428,7 @@ double Xsec[4]={6831,1207,119.9,25.24};
   string categories[4]={"0b","1b","2b","DSV"};
   string hadflv[4]={"bb","b","cc","udscg"};
   
-  double fixNumber2[4]={0.97555,0.822533,0.956286,1.48902};
+  double fixNumber2[4]={1.00903,0.837634,0.849215,0.835277};
   
   
   for(int k=0;k<4;k++){
@@ -434,9 +438,10 @@ double Xsec[4]={6831,1207,119.9,25.24};
   for(int i=0;i<4;i++){
 	  for(int j=0;j<4;j++){
 		  TH1D *th2=(TH1D* )tf1[i]->FindObjectAny("cutflow");
-		
+		  
 	
 		  thh[i][j]=(TH1D*)tf1[i]->FindObjectAny(Form("Pt_j0_%s_%s",categories[k].data(),hadflv[j].data()));
+		  if(j>0)tf1[i+5]->FindObjectAny(Form("Pt_j0_%s_%s",categories[k].data(),hadflv[j].data()));
 		  thh[i][j]->Scale(fixNumber*(1/fixNumber2[k])* 12883.846147301*Xsec[i]/th2->GetBinContent(1));
 	  }
 	  
@@ -456,6 +461,10 @@ double Xsec[4]={6831,1207,119.9,25.24};
     vector<TH1D* > v2;
 	vector<TH1D* > vd;
 	thh[4][0]=(TH1D*)tf1[4]->FindObjectAny(Form("Pt_j0_%s_udscg",categories[k].data()));
+	
+	for(int i=0;i<4;i++)thh[3][i]->Rebin(2);
+	
+	thh[4][0]->Rebin(2);
 	
 	v2.push_back(thh[3][0]);
 	v2.push_back(thh[3][1]);

@@ -4,6 +4,8 @@ void HH4bBtagMakeEffBase_80(int wMs,int wM, string st,string st2,string option="
 	//1=signal ,0=QCD ,2=data
 	int nameRoot=1;
 	if(st2.find("QCD")!= std::string::npos)nameRoot=0;
+	if(st2.find("bGen")!= std::string::npos)nameRoot=0;
+	if(st2.find("bEnriched")!= std::string::npos)nameRoot=0;
 	if(st2.find("data")!= std::string::npos)nameRoot=2;
 	cout<<"nameRoot = "<<nameRoot<<endl;
 	
@@ -151,10 +153,10 @@ void HH4bBtagMakeEffBase_80(int wMs,int wM, string st,string st2,string option="
 			
 			//10.btag
 			vector<float>   *subjetSDCSV =  data.GetPtrVectorFloat("FATsubjetSDCSV");
-			vector<float>   *subjetSDPx  =  data.GetPtrVectorFloat("FATsubjetSDPx", nFATJet);
-			vector<float>   *subjetSDPy  =  data.GetPtrVectorFloat("FATsubjetSDPy", nFATJet);
-			vector<float>   *subjetSDPz  =  data.GetPtrVectorFloat("FATsubjetSDPz", nFATJet);
-			vector<float>   *subjetSDE   =  data.GetPtrVectorFloat("FATsubjetSDE", nFATJet);
+			vector<float>   *subjetSDPx  =  data.GetPtrVectorFloat("FATsubjetSDPx");
+			vector<float>   *subjetSDPy  =  data.GetPtrVectorFloat("FATsubjetSDPy");
+			vector<float>   *subjetSDPz  =  data.GetPtrVectorFloat("FATsubjetSDPz");
+			vector<float>   *subjetSDE   =  data.GetPtrVectorFloat("FATsubjetSDE");
 			vector<Int_t>   *FATsubjetSDHadronFlavor =  data.GetPtrVectorInt("FATsubjetSDHadronFlavor");
 			TLorentzVector* thisSub1=new TLorentzVector(0,0,0,0);
 			TLorentzVector* thisSub2=new TLorentzVector(0,0,0,0);

@@ -4,6 +4,8 @@ void HH4bBtagMakeFastBase_80(int wMs,int wM, string st,string st2,string option=
 	//1=signal ,0=QCD ,2=data
 	int nameRoot=1;
 	if(st2.find("QCD")!= std::string::npos)nameRoot=0;
+	if(st2.find("bGen")!= std::string::npos)nameRoot=0;
+	if(st2.find("bEnriched")!= std::string::npos)nameRoot=0;
 	if(st2.find("data")!= std::string::npos)nameRoot=2;
 	cout<<"nameRoot = "<<nameRoot<<endl;
 	

@@ -3,6 +3,8 @@ void HH4bBtagEffBase_80(int wMs,int wM, string st,string st2,string option=""){
 	//1=signal ,0=QCD ,2=data-----------------------------------------------------------
 	int nameRoot=1;
 	if(st2.find("QCD")!= std::string::npos)nameRoot=0;
+	if(st2.find("bGen")!= std::string::npos)nameRoot=0;
+	if(st2.find("bEnriched")!= std::string::npos)nameRoot=0;
 	if(st2.find("data")!= std::string::npos)nameRoot=2;
 	//---------------------Thea correction
 	TFile *f3;
@@ -30,7 +32,7 @@ void HH4bBtagEffBase_80(int wMs,int wM, string st,string st2,string option=""){
 	TFile *f;
 	TTree *tree;
 	int nPass[20]={0},total=0,dataPassingcsc=0;
-	double nPassB[6]={0};
+	double nPassB[6][5]={0};
 	double fixScaleNum[2]={0};
 	//using for Btag Eff -----------------------------------------------------------------------------
 	string btagsystematicsType="central";
@@ -129,7 +131,7 @@ void HH4bBtagEffBase_80(int wMs,int wM, string st,string st2,string option=""){
 		th5[246+i*2]=new TH1D(Form("%s_j0_noTau21",tau21_no[i].data()),Form("%s_j0_noTau21",tau21_no[i].data()),25,0,1);
 		th5[247+i*2]=new TH1D(Form("%s_j1_noTau21",tau21_no[i].data()),Form("%s_j1_noTau21",tau21_no[i].data()),25,0,1);
 	}
-	string flavor[4]={"bb","b","cc","udscg"};
+	string flavor[4]={"bb","b","cc","udcsg"};
 	for (int i=0;i<4;i++){
 		th5[260+i]=new TH1D(Form("Pt_j0_0b_%s",flavor[i].data()),Form("Pt_j0_0b_%s",flavor[i].data()),200,0,2000);
 		th5[264+i]=new TH1D(Form("Pt_j0_1b_%s",flavor[i].data()),Form("Pt_j0_1b_%s",flavor[i].data()),200,0,2000);
@@ -555,6 +557,14 @@ void HH4bBtagEffBase_80(int wMs,int wM, string st,string st2,string option=""){
 				else if(FATjetHadronFlavor[0]==5 && (FATsubjetSDHadronFlavor[0][0]==5 || FATsubjetSDHadronFlavor[0][1]==5))th5[273]->Fill(thisJet->Pt());
 				else if (FATjetHadronFlavor[0]==4 && FATsubjetSDHadronFlavor[0][0]==4 && FATsubjetSDHadronFlavor[0][1]==4)th5[274]->Fill(thisJet->Pt());
 				else th5[275]->Fill(thisJet->Pt());
+				if(FATjet_DoubleSV[1]>0.6){
+					nPassB[5][0]+=scaleFactor;
+				
+					if(FATjetHadronFlavor[0]==5 && FATsubjetSDHadronFlavor[0][0]==5 && FATsubjetSDHadronFlavor[0][1]==5)nPassB[5][1]+=PU_weight[0];
+					else if(FATjetHadronFlavor[0]==5 && (FATsubjetSDHadronFlavor[0][0]==5 || FATsubjetSDHadronFlavor[0][1]==5))nPassB[5][2]+=PU_weight[0];
+					else if (FATjetHadronFlavor[0]==4 && FATsubjetSDHadronFlavor[0][0]==4 && FATsubjetSDHadronFlavor[0][1]==4)nPassB[5][3]+=PU_weight[0];
+					else nPassB[5][4]+=PU_weight[0];
+				}
 			}
 			
 			
@@ -614,10 +624,17 @@ void HH4bBtagEffBase_80(int wMs,int wM, string st,string st2,string option=""){
 				th6[k+160]->Fill(log10(pt[1]),scaleFactor);
 				th5[k+165]->Fill(mjjRed);
 				th6[k+165]->Fill(mjjRed,scaleFactor);
-				nPassB[k]+=scaleFactor;
+				nPassB[k][0]+=scaleFactor;
+				
+				if(FATjetHadronFlavor[0]==5 && FATsubjetSDHadronFlavor[0][0]==5 && FATsubjetSDHadronFlavor[0][1]==5)nPassB[k][1]+=scaleFactor;
+				else if(FATjetHadronFlavor[0]==5 && (FATsubjetSDHadronFlavor[0][0]==5 || FATsubjetSDHadronFlavor[0][1]==5))nPassB[k][2]+=scaleFactor;
+				else if (FATjetHadronFlavor[0]==4 && FATsubjetSDHadronFlavor[0][0]==4 && FATsubjetSDHadronFlavor[0][1]==4)nPassB[k][3]+=scaleFactor;
+				else nPassB[k][4]+=scaleFactor;
+				
 				nPass[k+10]++;
 				if(k<3)th4[9+k]->Fill(btaggingscaleFactor);
 			}
+			
 			
 			th5[182]->Fill(nVtx);
 			th5[183]->Fill(ntrue);
@@ -638,10 +655,35 @@ void HH4bBtagEffBase_80(int wMs,int wM, string st,string st2,string option=""){
 		if(nameRoot==2 && i>2)continue;
 		th2o->SetBinContent(i+1,nPass[i+10]);
 	}
-	TH1D * th2ob=new TH1D("NbtagjetB","NbtagjetB",5,-0.5,4.5);
-	for (int i=0;i<5;i++){
+	TH1D * th2ob[5];
+	th2ob[0]=new TH1D("NbtagjetB","NbtagjetB",5,-0.5,4.5);
+	for (int i=0;i<6;i++){
 		if(nameRoot==2 && i>2)continue;
-		th2ob->SetBinContent(i+1,nPassB[i]);
+		th2ob[0]->SetBinContent(i+1,nPassB[i][0]);
+	}
+	
+	th2ob[1]=new TH1D("NbtagjetB_bb","NbtagjetB_bb",5,-0.5,4.5);
+	for (int i=0;i<6;i++){
+		if(nameRoot==2 && i>2)continue;
+		th2ob[1]->SetBinContent(i+1,nPassB[i][1]);
+	}
+	
+	th2ob[2]=new TH1D("NbtagjetB_b","NbtagjetB_b",5,-0.5,4.5);
+	for (int i=0;i<6;i++){
+		if(nameRoot==2 && i>2)continue;
+		th2ob[2]->SetBinContent(i+1,nPassB[i][2]);
+	}
+	
+	th2ob[3]=new TH1D("NbtagjetB_cc","NbtagjetB_cc",5,-0.5,4.5);
+	for (int i=0;i<6;i++){
+		if(nameRoot==2 && i>2)continue;
+		th2ob[3]->SetBinContent(i+1,nPassB[i][3]);
+	}
+	
+	th2ob[4]=new TH1D("NbtagjetB_udcsg","NbtagjetB_udcsg",5,-0.5,4.5);
+	for (int i=0;i<6;i++){
+		if(nameRoot==2 && i>2)continue;
+		th2ob[4]->SetBinContent(i+1,nPassB[i][4]);
 	}
 	
 	TH1D * fixScale=new TH1D("fixScale","fixScale",2,-0.5,1.5);
@@ -661,7 +703,7 @@ void HH4bBtagEffBase_80(int wMs,int wM, string st,string st2,string option=""){
 	else if(JESOption==5)outFile= new TFile(Form("sf/%s_tau21Up.root",st2.data()),"recreate");
 	else if(JESOption==6)outFile= new TFile(Form("sf/%s_tau21Down.root",st2.data()),"recreate");
 	th2o->Write();
-	th2ob->Write();
+	for(int i=0;i<5;i++)th2ob[i]->Write();
 	fixScale->Write();
 	cutflow->Write();
 	for(int i=0;i<6;i++)th3[i]->Write();
