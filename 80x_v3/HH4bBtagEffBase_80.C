@@ -31,7 +31,7 @@ void HH4bBtagEffBase_80(int wMs,int wM, string st,string st2,string option=""){
 	//tuple tree and cutflow variables------------------------------------------------------------------------------------
 	TFile *f;
 	TTree *tree;
-	int nPass[20]={0},total=0,dataPassingcsc=0;
+	double nPass[30]={0},total=0,dataPassingcsc=0;
 	double nPassB[6][5]={0};
 	double fixScaleNum[2]={0};
 	//using for Btag Eff -----------------------------------------------------------------------------
@@ -212,9 +212,9 @@ void HH4bBtagEffBase_80(int wMs,int wM, string st,string st2,string option=""){
 			Int_t nPassFast;  
 			if(isFast)nPassFast= dataFast.GetInt("nPassB");
 			//cout<<nPassFast<<endl;
-			if(isFast &&nPassFast<8)continue;
+			//if(isFast &&nPassFast<8)continue;
 			//0. has a good vertex
-			if(nVtx<1)continue;nPass[0]++;
+			if(nVtx<1)continue;nPass[0]+=PU_weight[0];
 			//1.trigger
 			std::string* trigName = data.GetPtrString("hlt_trigName");
 		 	vector<bool> &trigResult = *((vector<bool>*) data.GetPtr("hlt_trigResult"));
@@ -233,7 +233,7 @@ void HH4bBtagEffBase_80(int wMs,int wM, string st,string st2,string option=""){
 					break;
 				}
 			}
-			if(!passTrigger && nameRoot==2)continue;nPass[1]++;
+			if(!passTrigger && nameRoot==2)continue;nPass[1]+=PU_weight[0];
 			
 			int nFATJet         = data.GetInt("FATnJet");
 			TClonesArray* fatjetP4 = (TClonesArray*) data.GetPtrTObject("FATjetP4");
@@ -241,7 +241,7 @@ void HH4bBtagEffBase_80(int wMs,int wM, string st,string st2,string option=""){
 			float*  FATjetCorrUncDown = data.GetPtrFloat("FATjetCorrUncDown"); 
 			vector<bool>    &FATjetPassIDTight = *((vector<bool>*) data.GetPtr("FATjetPassIDTight"));
 			//2.nJets
-			if(nFATJet<2)continue;nPass[2]++;
+			if(nFATJet<2)continue;nPass[2]+=PU_weight[0];
 			TLorentzVector* thisJet ,* thatJet;
 			if (JESOption==1){
 				TLorentzVector test0= (*((TLorentzVector*)fatjetP4->At(0)))*(1+FATjetCorrUncUp[0] );
@@ -261,26 +261,26 @@ void HH4bBtagEffBase_80(int wMs,int wM, string st,string st2,string option=""){
 			}
 			//3. Pt 
 			if(thisJet->Pt()<200||thatJet->Pt()<200)continue;
-			nPass[3]++;
+			nPass[3]+=PU_weight[0];
 			//4tightId-----------------------------------------
 			if(FATjetPassIDTight[0]==0||FATjetPassIDTight[1]==0)continue;
 			Float_t*  FATjetCEmEF = data.GetPtrFloat("FATjetCEmEF");
 			Float_t*  FATjetMuEF = data.GetPtrFloat("FATjetMuEF");
 			if(FATjetMuEF[0]>0.8||FATjetMuEF[1]>0.8)continue;
 			if(FATjetCEmEF[0]>0.9||FATjetCEmEF[1]>0.9)continue;
-			nPass[4]++;
+			nPass[4]+=PU_weight[0];
 			//5. Eta-----------------------------------------
 			if(fabs(thisJet->Eta())>2.4||fabs(thatJet->Eta())>2.4)continue;
-			nPass[5]++;
+			nPass[5]+=PU_weight[0];
 			//6. DEta-----------------------------------------
 			float dEta = fabs(thisJet->Eta()-thatJet->Eta());
 			if(dEta>1.3)continue;
-			nPass[6]++;
+			nPass[6]+=PU_weight[0];
 			//7. Mjj-----------------------------------------
 			float mjj = (*thisJet+*thatJet).M();
 			float mjjRed = (*thisJet+*thatJet).M()+250-thisJet->M()-thatJet->M();
 			if(mjjRed<1000)continue;
-			nPass[7]++;
+			nPass[7]+=PU_weight[0];
 			//8. fatjetPRmassL2L3Corr-----------------------------------------
 			Float_t*  fatjetPRmassL2L3Corr = data.GetPtrFloat("FATjetPRmassL2L3Corr");
 			Float_t*  FATjetPuppiSDmassL2L3Corr = data.GetPtrFloat("FATjetPuppiSDmassL2L3Corr");
@@ -449,7 +449,7 @@ void HH4bBtagEffBase_80(int wMs,int wM, string st,string st2,string option=""){
 			
 			if(fatjetPRmassL2L3Corr[0]<105||fatjetPRmassL2L3Corr[0]>135)continue;
 			if(fatjetPRmassL2L3Corr[1]<105||fatjetPRmassL2L3Corr[1]>135)continue;
-			nPass[8]++;
+			nPass[8]+=PU_weight[0];
 			for (int i=0;i<2;i++){
 				th5[230+i]->Fill(FATjetPRmass[i]);
 				th5[232+i]->Fill(fatjetPRmassL2L3Corr[i]);
@@ -468,7 +468,7 @@ void HH4bBtagEffBase_80(int wMs,int wM, string st,string st2,string option=""){
 			
 			//9.-----------------------------------------
 			if(tau21[0]>0.6 || tau21[1]>0.6) continue;
-			nPass[9]++;
+			nPass[9]+=PU_weight[0];
 			double tau21_SF=1.031*0.881;
 			if(JESOption==5)tau21_SF=(1.031+0.126)*(0.881+0.49);
 			if(JESOption==6)tau21_SF=(1.031-0.126)*(0.881-0.49);
@@ -567,7 +567,7 @@ void HH4bBtagEffBase_80(int wMs,int wM, string st,string st2,string option=""){
 				}
 			}
 			
-			
+			if(nameRoot==2)btaggingscaleFactor=1;
 			
 			Float_t*  FATjetCISVV2 = data.GetPtrFloat("FATjetCISVV2");
 			for(int i=0;i<2;i++){
@@ -631,9 +631,26 @@ void HH4bBtagEffBase_80(int wMs,int wM, string st,string st2,string option=""){
 				else if (FATjetHadronFlavor[0]==4 && FATsubjetSDHadronFlavor[0][0]==4 && FATsubjetSDHadronFlavor[0][1]==4)nPassB[k][3]+=scaleFactor;
 				else nPassB[k][4]+=scaleFactor;
 				
-				nPass[k+10]++;
+				nPass[k+10]+=PU_weight[0]*btaggingscaleFactor;
 				if(k<3)th4[9+k]->Fill(btaggingscaleFactor);
 			}
+			
+			int nDoubleSV=0;
+			if(FATjet_DoubleSV[0]>0.6)nDoubleSV++;
+			if(FATjet_DoubleSV[1]>0.6)nDoubleSV++;
+			
+			if(nDoubleSV==0)nPass[15]+=PU_weight[0];
+			else if(nDoubleSV==2)nPass[17]+=PU_weight[0];
+			else {
+				nPass[16]+=PU_weight[0];
+				if((FATjet_DoubleSV[0]>0.6 && subjetSDCSV[1][0]<0.46 && subjetSDCSV[1][1]<0.46) ||
+				     (FATjet_DoubleSV[1]>0.6 && subjetSDCSV[0][0]<0.46 && subjetSDCSV[0][1]<0.46))nPass[18]+=PU_weight[0];
+				else if((FATjet_DoubleSV[0]>0.6 && subjetSDCSV[1][0]>0.46 && subjetSDCSV[1][1]>0.46) ||
+				               (FATjet_DoubleSV[1]>0.6 && subjetSDCSV[0][0]>0.46 && subjetSDCSV[0][1]>0.46))nPass[20]+=PU_weight[0];
+				else nPass[19]+=PU_weight[0];
+			}
+			
+			
 			
 			
 			th5[182]->Fill(nVtx);
@@ -645,7 +662,7 @@ void HH4bBtagEffBase_80(int wMs,int wM, string st,string st2,string option=""){
 	}	//end ntuple loop----------------------------------------------------------------------------------------
 	cout<<"entries="<<total<<endl;	
 	for(int i=0;i<6;i++)cout<<"nPassB["<<i<<"]="<<nPassB[i]<<endl;
-	for(int i=0;i<16;i++)cout<<"nPass["<<i<<"]="<<nPass[i]<<endl;
+	for(int i=0;i<22;i++)cout<<"nPass["<<i<<"]="<<nPass[i]<<endl;
 	
 	for(int i=0;i<3;i++)th7[3]->SetBinContent(i+1,passPileup[i]/totalPileup[i]);
 	for(int i=0;i<101;i++)th7[4]->SetBinContent(i+1,passPDF[i]/totalPDF[i]);
@@ -689,9 +706,9 @@ void HH4bBtagEffBase_80(int wMs,int wM, string st,string st2,string option=""){
 	TH1D * fixScale=new TH1D("fixScale","fixScale",2,-0.5,1.5);
 	fixScale->SetBinContent(1,fixScaleNum[0]);
 	fixScale->SetBinContent(2,fixScaleNum[1]);
-	TH1D * cutflow=new TH1D("cutflow","cutflow",16,0.5,16.5);
-	cutflow->SetBinContent(1,total);
-	if(nameRoot==2)for(int ii=1;ii<14;ii++)cutflow->SetBinContent(ii+1,nPass[ii-1]);
+	TH1D * cutflow=new TH1D("cutflow","cutflow",21,0.5,21.5);
+	cutflow->SetBinContent(1,fixScaleNum[0]);
+	if(nameRoot!=2)for(int ii=1;ii<22;ii++)cutflow->SetBinContent(ii+1,nPass[ii-1]);
 	else for(int ii=1;ii<16;ii++)cutflow->SetBinContent(ii+1,nPass[ii-1]);
 	
 	TFile* outFile ;

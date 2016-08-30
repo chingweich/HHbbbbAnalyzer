@@ -45,29 +45,29 @@ void HH4bBtagMakeEff_80(int a){
 
 	string st1[40]={
 		/*0-11*/
-		"/data7/chchen/80x/BulkGravTohhTohbbhbb_narrow_M/BulkGravTohhTohbbhbb_narrow_M-1000_13TeV-madgraph.root",
-		"/data7/chchen/80x/BulkGravTohhTohbbhbb_narrow_M/BulkGravTohhTohbbhbb_narrow_M-1200_13TeV-madgraph.root",
-		"/data7/chchen/80x/BulkGravTohhTohbbhbb_narrow_M/BulkGravTohhTohbbhbb_narrow_M-1400_13TeV-madgraph.root",
-		"/data7/chchen/80x/BulkGravTohhTohbbhbb_narrow_M/BulkGravTohhTohbbhbb_narrow_M-1600_13TeV-madgraph.root",
-		"/data7/chchen/80x/BulkGravTohhTohbbhbb_narrow_M/BulkGravTohhTohbbhbb_narrow_M-1800_13TeV-madgraph.root",
-		"/data7/chchen/80x/BulkGravTohhTohbbhbb_narrow_M/BulkGravTohhTohbbhbb_narrow_M-2000_13TeV-madgraph.root",
-		"/data7/chchen/80x/BulkGravTohhTohbbhbb_narrow_M/BulkGravTohhTohbbhbb_narrow_M-2500_13TeV-madgraph.root",
-		"/data7/chchen/80x/BulkGravTohhTohbbhbb_narrow_M/BulkGravTohhTohbbhbb_narrow_M-3000_13TeV-madgraph.root",
-		"/data7/chchen/80x/BulkGravTohhTohbbhbb_narrow_M/BulkGravTohhTohbbhbb_narrow_M-3500_13TeV-madgraph.root",
-		"/data7/chchen/80x/BulkGravTohhTohbbhbb_narrow_M/BulkGravTohhTohbbhbb_narrow_M-4000_13TeV-madgraph.root",
-		"/data7/chchen/80x/BulkGravTohhTohbbhbb_narrow_M/BulkGravTohhTohbbhbb_narrow_M-4500_13TeV-madgraph.root",
+		"/data7/chchen/80x_dsv/B/B1000.root",
+		"/data7/chchen/80x_dsv/B/B1200.root",
+		"/data7/chchen/80x_dsv/B/B1400.root",
+		"/data7/chchen/80x_dsv/B/B1600.root",
+		"/data7/chchen/80x_dsv/B/B1800.root",
+		"/data7/chchen/80x_dsv/B/B2000.root",
+		"/data7/chchen/80x_dsv/B/B2500.root",
+		"/data7/chchen/80x_dsv/B/B3000.root",
+		"/data7/chchen/80x_dsv/B/B3500.root",
+		"/data7/chchen/80x_dsv/B/B4000.root",
+		"/data7/chchen/80x_dsv/B/B4500.root",
 		/*12-21*/
-		"/data7/chchen/0606/RadionTohhTohbbhbb_narrow_M/RadionTohhTohbbhbb_narrow_M-1000_13TeV-madgraph.root",
-		"/data7/chchen/0606/RadionTohhTohbbhbb_narrow_M/RadionTohhTohbbhbb_narrow_M-1200_13TeV-madgraph.root",
-		"/data7/chchen/0606/RadionTohhTohbbhbb_narrow_M/RadionTohhTohbbhbb_narrow_M-1400_13TeV-madgraph.root",
-		"/data7/chchen/0606/RadionTohhTohbbhbb_narrow_M/RadionTohhTohbbhbb_narrow_M-1600_13TeV-madgraph.root",
-		"/data7/chchen/0606/RadionTohhTohbbhbb_narrow_M/RadionTohhTohbbhbb_narrow_M-1800_13TeV-madgraph.root",
-		"/data7/chchen/0606/RadionTohhTohbbhbb_narrow_M/RadionTohhTohbbhbb_narrow_M-2000_13TeV-madgraph.root",
-		"/data7/chchen/0606/RadionTohhTohbbhbb_narrow_M/RadionTohhTohbbhbb_narrow_M-2500_13TeV-madgraph.root",
-		"/data7/chchen/0606/RadionTohhTohbbhbb_narrow_M/RadionTohhTohbbhbb_narrow_M-3000_13TeV-madgraph.root",
-		"/data7/chchen/0606/RadionTohhTohbbhbb_narrow_M/RadionTohhTohbbhbb_narrow_M-3500_13TeV-madgraph.root",
-		"/data7/chchen/0606/RadionTohhTohbbhbb_narrow_M/RadionTohhTohbbhbb_narrow_M-4000_13TeV-madgraph.root",
-		"/data7/chchen/0606/RadionTohhTohbbhbb_narrow_M/RadionTohhTohbbhbb_narrow_M-4500_13TeV-madgraph.root",
+		"/data7/chchen/80x_dsv/R/R1000.root",
+		"/data7/chchen/80x_dsv/R/R1200.root",
+		"/data7/chchen/80x_dsv/R/R1400.root",
+		"/data7/chchen/80x_dsv/R/R1600.root",
+		"/data7/chchen/80x_dsv/R/R1800.root",
+		"/data7/chchen/80x_dsv/R/R2000.root",
+		"/data7/chchen/80x_dsv/R/R2500.root",
+		"/data7/chchen/80x_dsv/R/R3000.root",
+		"/data7/chchen/80x_dsv/R/R3500.root",
+		"/data7/chchen/80x_dsv/R/R4000.root",
+		"/data7/chchen/80x_dsv/R/R4500.root",
 		/*22-32*/
 		"/data7/chchen/80x_dsv/QCD/700/NCUGlobalTuples_",
 		"/data7/chchen/80x_dsv/QCD/700_1/NCUGlobalTuples_",
@@ -96,6 +96,6 @@ void HH4bBtagMakeEff_80(int a){
 	"bEnriched700","bEnriched1000","bEnriched1500","bEnriched2000",
 	};
 	int aa[40]={119,225,40,80,31,62,17,33,27,12,5,3,9,3,2,3};
-	if(a==21)for(int j=0;j<11;j++)HH4bBtagMakeEffBase_80(1,2,st1[j],fileName[j],"");
+	if(a==21)for(int j=0;j<22;j++)HH4bBtagMakeEffBase_80(1,2,st1[j],fileName[j],"");
 	else if (a>21)HH4bBtagMakeEffBase_80(1,aa[a-22],st1[a],fileName[a],"");
 }

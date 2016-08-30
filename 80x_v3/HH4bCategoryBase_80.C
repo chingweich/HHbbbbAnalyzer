@@ -14,21 +14,51 @@ void HH4bCategoryBase_80(int wMs,int wM, string st,string st2,string option=""){
 	if(option.find("JESDown")!= std::string::npos)JESOption=2;
 	cout<<"JESOption = "<<JESOption<<endl;
 	
+	
+	//using for Btag Eff -----------------------------------------------------------------------------
+	string btagsystematicsType="central";
+	if(JESOption==3)btagsystematicsType="up";
+	else if(JESOption==4)btagsystematicsType="down";
+	BTagCalibration calib("CSVv2L", "subjet_CSVv2_ichep.csv");
+	BTagCalibrationReader LF(BTagEntry::OP_LOOSE,"central", {"up", "down"});  
+	BTagCalibrationReader HFC(BTagEntry::OP_LOOSE, "central", {"up", "down"});      // other sys types
+	BTagCalibrationReader HF(BTagEntry::OP_LOOSE,"central",{"up", "down"});      // other sys types
+	LF.load(calib, BTagEntry::FLAV_UDSG,    // btag flavour
+            "incl");               // measurement type
+	HFC.load(calib, BTagEntry::FLAV_C,    // btag flavour
+            "lt");               // measurement type
+	HF.load(calib, BTagEntry::FLAV_B,    // btag flavour
+            "lt");               // measurement type
+	
+	TFile *f1;
+	if(nameRoot==2)f1=TFile::Open("btagEffSource/data.root");
+	else if (nameRoot!=2 && (JESOption==0||JESOption==3||JESOption==4||JESOption==5||JESOption==6))f1=TFile::Open(Form("btagEffSource/%s.root",st2.data()));
+	else if (nameRoot!=2 && JESOption==1)f1=TFile::Open(Form("btagEffSource/%s_JESUp.root",st2.data()));
+	else if (nameRoot!=2 && JESOption==2)f1=TFile::Open(Form("btagEffSource/%s_JESDown.root",st2.data()));
+	TH1D* th1[6];
+	string btaggingEff[6]={"effD_b","effN_b","effD_c","effN_c","effD_l","effN_l"};
+	for(int i=0;i<6;i++){
+		th1[i]=(TH1D*)f1->FindObjectAny(Form("%s_1d",btaggingEff[i].data()));
+		if(i==1||i==3||i==5)th1[i]->Divide(th1[i-1]);
+	}
+	
+	standalone_LumiReWeighting LumiWeights_central(0),LumiWeights_up(1),LumiWeights_down(-1);
+	
 	TFile *f;
 	TTree *tree;
 	int nPass[20]={0};
 	int total=0;
-	
+	double fixScaleNum[2]={0};
 	double xBinsForHeavyFlavor[5]={30,140,180,240,3000};
 	double xBinsForLightFlavor[11]={20,100,200,300,400,500,600,700,800,900,3000};
 	
-	TH1D* th1[3];
-	th1[0]=new TH1D("cat0","cat0",4000,1000,5000);
-	th1[1]=new TH1D("cat1","cat1",4000,1000,5000);
-	th1[2]=new TH1D("cat2","cat2",4000,1000,5000);
+	TH1D* th5[3];
+	th5[0]=new TH1D("cat0","cat0",4000,1000,5000);
+	th5[1]=new TH1D("cat1","cat1",4000,1000,5000);
+	th5[2]=new TH1D("cat2","cat2",4000,1000,5000);
 
 	for(int i=0;i<3;i++){
-		th1[i]->Sumw2();
+		th5[i]->Sumw2();
 	}
 	
 	//---------------------------------
@@ -49,6 +79,24 @@ void HH4bCategoryBase_80(int wMs,int wM, string st,string st2,string option=""){
 		total+=data.GetEntriesFast();
 		for(Long64_t jEntry=0; jEntry<data.GetEntriesFast() ;jEntry++){
 			data.GetEntry(jEntry);
+			
+			
+			double PU_weight[3]={1,1,1};
+			Float_t ntrue= data.GetFloat("pu_nTrueInt");
+			if(nameRoot!=2){
+				if(ntrue<51){
+					PU_weight[0] = LumiWeights_central.weight(ntrue);
+					PU_weight[1]= LumiWeights_up.weight(ntrue);
+					PU_weight[2] = LumiWeights_down.weight(ntrue);
+				}
+				else {
+					PU_weight[0] = LumiWeights_central.weight(50);
+					PU_weight[1] = LumiWeights_up.weight(50);
+					PU_weight[2]= LumiWeights_down.weight(50);
+				}
+			}
+			fixScaleNum[0]+=PU_weight[0];
+			
 			Int_t nVtx        = data.GetInt("nVtx");
 			//0. has a good vertex
 			if(nVtx<1)continue;
@@ -142,16 +190,76 @@ void HH4bCategoryBase_80(int wMs,int wM, string st,string st2,string option=""){
 			if(subjetSDCSV[1][0]>0.46)nbtag++;
 			if(subjetSDCSV[1][1]>0.46)nbtag++;
 			
-			if(tau21_1>0.75 || tau21_2>0.75) continue;
+			vector<float>   *subjetSDPx  =  data.GetPtrVectorFloat("FATsubjetSDPx");
+			vector<float>   *subjetSDPy  =  data.GetPtrVectorFloat("FATsubjetSDPy");
+			vector<float>   *subjetSDPz  =  data.GetPtrVectorFloat("FATsubjetSDPz");
+			vector<float>   *subjetSDE   =  data.GetPtrVectorFloat("FATsubjetSDE");
+			vector<Int_t>   *FATsubjetSDHadronFlavor =  data.GetPtrVectorInt("FATsubjetSDHadronFlavor");
 			
-			if(nbtag==3 && ((tau21_1>0.6 && tau21_2<0.6)||(tau21_1<0.6 && tau21_2>0.6)))th1[2]->Fill(mjjRed);
+			double sf[2][2],subjetPt[2][2],subjetEta[2][2],eff[2][2],btaggingscaleFactor=1;
+			TLorentzVector* subjetP4[2][2];
+			for(int i=0;i<2;i++){
+				for(int j=0;j<2;j++){
+					sf[i][j]=1;
+					subjetP4[i][j]=new TLorentzVector(0,0,0,0);
+					subjetP4[i][j]->SetPxPyPzE(subjetSDPx[i][j],subjetSDPy[i][j],subjetSDPz[i][j],subjetSDE[i][j]);
+					subjetPt[i][j]=subjetP4[i][j]->Pt();
+					subjetEta[i][j]=subjetP4[i][j]->Eta();
+				}
+			}
+			for(int i=0;i<2;i++){
+				for(int j=0;j<2;j++){
+					
+					//get btagging eff------------------------------------------------------------
+					int getPtBin=1;
+					if(subjetPt[i][j]<140)getPtBin=1;
+					else if (140<=subjetPt[i][j] && subjetPt[i][j]<180)getPtBin=2;
+					else if (180<=subjetPt[i][j] && subjetPt[i][j]<240)getPtBin=3;
+					else getPtBin=4;
+					if(FATsubjetSDHadronFlavor[i][j]==5)eff[i][j]=th1[1]->GetBinContent(getPtBin);
+					else if(FATsubjetSDHadronFlavor[i][j]==4)eff[i][j]=th1[3]->GetBinContent(getPtBin);
+					else {
+						int temp=0;
+						if(subjetPt[i][j]>=900)temp=10;
+						else temp=ceil(subjetPt[i][j]/100);
+						
+						bool checkBinContentIfZero=0;
+						while(checkBinContentIfZero==0){
+							if(th1[4]->GetBinContent(temp)==0){
+								temp--;
+							}
+							else checkBinContentIfZero=1;
+						}
+						eff[i][j]=th1[5]->GetBinContent(temp);
+					}
+					//Get SF from csv------------------------------------------------------------
+					if(FATsubjetSDHadronFlavor[i][j]==5){
+						sf[i][j]=HF.eval_auto_bounds("central",BTagEntry::FLAV_B, subjetEta[i][j],subjetPt[i][j]); 
+					}
+					else if(FATsubjetSDHadronFlavor[i][j]==4){
+						sf[i][j]=HFC.eval_auto_bounds("central",BTagEntry::FLAV_C, subjetEta[i][j],subjetPt[i][j]); 
+					}
+					else {
+						sf[i][j]=LF.eval_auto_bounds("central",BTagEntry::FLAV_UDSG, subjetEta[i][j],subjetPt[i][j]); 
+					}
+					//get tot. btagging SF
+					if(subjetSDCSV[i][j]>=0.46)btaggingscaleFactor*=sf[i][j];
+					else btaggingscaleFactor*=((1-eff[i][j]*sf[i][j])/(1-eff[i][j]));
+					
+				}
+			}
+			
+			//if(tau21_1>0.75 || tau21_2>0.75) continue;
+			
+			//if(nbtag==3 && ((tau21_1>0.6 && tau21_2<0.6)||(tau21_1<0.6 && tau21_2>0.6)))th1[2]->Fill(mjjRed);
 			
 			if(tau21_1>0.6 || tau21_2>0.6) continue;
-			if(nbtag==4)th1[0]->Fill(mjjRed);
-			if(nbtag==3)th1[1]->Fill(mjjRed);
+			if(nbtag==4)th5[0]->Fill(mjjRed,btaggingscaleFactor*PU_weight[0]);
+			if(nbtag==3)th5[1]->Fill(mjjRed,btaggingscaleFactor*PU_weight[0]);
+			if(nbtag==2)th5[2]->Fill(mjjRed,btaggingscaleFactor*PU_weight[0]);
 			nPass[9]++;
 			
-		
+			 fixScaleNum[1]+=PU_weight[0];
 			
 			
 			
@@ -160,13 +268,18 @@ void HH4bCategoryBase_80(int wMs,int wM, string st,string st2,string option=""){
 	cout<<"entries="<<total<<endl;	
 	for(int i=0;i<9;i++)cout<<"nPass["<<i<<"]="<<nPass[i]<<endl;
 	
+	
+	TH1D * fixScale=new TH1D("fixScale","fixScale",2,-0.5,1.5);
+	fixScale->SetBinContent(1,fixScaleNum[0]);
+	fixScale->SetBinContent(2,fixScaleNum[1]);
+	
 	TFile* outFile ;
 	if(JESOption==0)outFile= new TFile(Form("category/%s.root",st2.data()),"recreate");
 	else if(JESOption==1)outFile= new TFile(Form("category/%s_JESUp.root",st2.data()),"recreate");
 	else if(JESOption==2)outFile= new TFile(Form("category/%s_JESDown.root",st2.data()),"recreate");
-	
+	fixScale->Write();
 	for(int i=0;i<3;i++){
-		th1[i]->Write();
+		th5[i]->Write();
 	}
 	outFile->Close();
 }
