@@ -41,7 +41,7 @@
 #include "BTagCalibrationStandalone.h"
 #include "BTagCalibrationStandalone.cpp"
 //#include "HHbbbbBtagMakeEff_76.C"
-#include "HH4bBtagEffBase_80.C"
+#include "HH4bBtagEffBase_80_v2.C"
 
 using namespace std;
 
@@ -104,12 +104,12 @@ void HHbbbbBtagEff(int a){
 	string dataPathB="/data7/chchen/80x_dsv/JetHT_runB/NCUGlobalTuples_";
 	string dataPathC="/data7/chchen/80x_dsv/JetHT_runC/NCUGlobalTuples_";
 	string dataPathD="/data7/chchen/80x_dsv/JetHT_runD/NCUGlobalTuples_";
-	if(a==21)for(int j=0;j<22;j++)HH4bBtagEffBase_80(1,2,st1[j],fileName[j],"");
-	else if(a==38)HH4bBtagEffBase_80(1,400,dataPathB,"data1");	
-	else if(a==39)HH4bBtagEffBase_80(400,800,dataPathB,"data2");	
-	else if(a==40)HH4bBtagEffBase_80(800,1048,dataPathB,"data3");	
-	else if(a==41)HH4bBtagEffBase_80(1,348,dataPathC,"data4");	
-	else if(a==42)HH4bBtagEffBase_80(1,300,dataPathD,"data5");	
-	else if(a==43)HH4bBtagEffBase_80(300,584,dataPathD,"data6");
-	else if(a>21)HH4bBtagEffBase_80(1,aa[a-22],st1[a],fileName[a],"");
+	if(a==38)HH4bBtagEffBase_80_v2(1,400,dataPathB,"data1");	
+	else if(a==39)HH4bBtagEffBase_80_v2(400,800,dataPathB,"data2");	
+	else if(a==40)HH4bBtagEffBase_80_v2(800,1048,dataPathB,"data3");	
+	else if(a==41)HH4bBtagEffBase_80_v2(1,348,dataPathC,"data4");	
+	else if(a==42)HH4bBtagEffBase_80_v2(1,300,dataPathD,"data5");	
+	else if(a==43)HH4bBtagEffBase_80_v2(300,584,dataPathD,"data6");
+	else if(a>21)HH4bBtagEffBase_80_v2(1,aa[a-22],st1[a],fileName[a],"");
+	else HH4bBtagEffBase_80_v2(1,2,st1[a],fileName[a],"");
 }

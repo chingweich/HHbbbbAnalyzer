@@ -26,7 +26,7 @@ void myPlot(vector< TH1D*> h_Z,
   h_data->Reset();
   for(unsigned int i=0;i<v_data.size();i++)h_data->Add(v_data[i]);
   
-  TLegend *leg = new TLegend(0.77, 0.60, 0.92, 0.87);
+  TLegend *leg = new TLegend(0.84, 0.68, 0.92, 0.87);
   
   leg->SetBorderSize(0);
   leg->SetFillColor(0);
@@ -240,6 +240,12 @@ void dataMCplots_v2(){
   tf1[7]=TFile::Open("sf2/bGen1500.root");
   tf1[8]=TFile::Open("sf2/bGen2000.root");
   
+  TFile* tf2[10];
+   tf2[0]=TFile::Open("sf2/B1400.root");
+   tf2[1]=TFile::Open("sf2/B1800.root");
+   tf2[2]=TFile::Open("sf2/B2500.root");
+   tf2[3]=TFile::Open("sf2/R1800.root");
+   
   vector<std::string> h_name;
   
   for(int i=0;i<2;i++){
@@ -315,6 +321,8 @@ h_name.push_back("Nbtagjet");
 	if(h_name[i].find("2b")!= std::string::npos)continue;	
 	if(h_name[i].find("1b")!= std::string::npos)continue;	
 	if(h_name[i].find("0b")!= std::string::npos)continue;	
+	//if(h_name[i].find("4b")!= std::string::npos)continue;	
+	bool drawSignal=1;
 	
 	//---------
 	 TH1D* thh[5][4];
@@ -360,7 +368,7 @@ double Xsec[4]={6831,1207,119.9,25.24};
 		  if(h_name[i].find("4b")!= std::string::npos){
 			  endfix=gSystem->GetFromPipe(Form("file=%s; test=${file%%*_4b}; echo \"${test}\"",h_name[i].data()));
 			  TH1D *th2;
-			  cout<<endfix<<endl;
+			  //cout<<endfix<<endl;
 			  th2=(TH1D* )tf1[k]->FindObjectAny(Form("%s_0b_%s",endfix.Data(),hadflv[j].data()));
  			  thh[k][j]->Add(th2);
 			  th2=(TH1D* )tf1[k]->FindObjectAny(Form("%s_1b_%s",endfix.Data(),hadflv[j].data()));
@@ -371,7 +379,7 @@ double Xsec[4]={6831,1207,119.9,25.24};
  			  thh[k][j]->Add(th2);
 		  }
 		  thh[k][j]->Scale(fixNumber* 12883.846147301*Xsec[k]/th2->GetBinContent(1));
-		  cout<<k<<","<<j<<","<<Form("%s_%s",h_name[i].data(),hadflv[j].data())<<","<<thh[k][j]->Integral()<<endl;
+		 // cout<<k<<","<<j<<","<<Form("%s_%s",h_name[i].data(),hadflv[j].data())<<","<<thh[k][j]->Integral()<<endl;
 	  }
 	  
 	  if(k==3){
@@ -409,7 +417,7 @@ vector<TH1D* > v2;
 	}
 	
 	for(int i=0;i<4;i++){
-		thh[3][i]->Scale(thh[4][0]->Integral()/temp_scale);
+	//	thh[3][i]->Scale(thh[4][0]->Integral()/temp_scale);
 	}
 	
 	vd.push_back(thh[4][0]);
@@ -458,6 +466,66 @@ vd,
 	   h_data, h_bkg,1);
 
     c_up->RedrawAxis();
+    
+    
+    
+    
+    if(drawSignal){
+	    int colorNum[4]={kRed,kBlue,kOrange+2,kViolet};
+	    double xsec2[4]={1.9,0.155,0.0158,17.3};
+		TH1D* th_signal[4];
+		
+		TLegend *leg = new TLegend(0.63, 0.68, 0.78, 0.87);
+  string legendS[4]={"M_G=1.4TeV","M_G=1.8TeV","M_G=2.5TeV","M_R=1.8TeV"};
+  
+  leg->SetBorderSize(0);
+  leg->SetFillColor(0);
+  leg->SetFillStyle(0);
+  leg->SetTextSize(0.04);
+		for(int k=0;k<4;k++){
+			
+	    th_signal[k]=(TH1D*)tf2[k]->FindObjectAny(Form("%s",h_name[i].data()));
+	    leg->AddEntry(th_signal[k],Form("%s",legendS[k].data()));
+	    th_signal[k]->SetLineColor(colorNum[k]);
+	    th_signal[k]->SetLineWidth(2);
+	   // th_signal[k]->SetLineStyle(k+1);
+	    
+	    
+	     TString endfix;
+		  if(h_name[i].find("4b")!= std::string::npos){
+		  endfix=gSystem->GetFromPipe(Form("file=%s; test=${file%%*_4b}; echo \"${test}\"",h_name[i].data()));
+			  TH1D *th2;
+			
+			  th2=(TH1D* )tf2[k]->FindObjectAny(Form("%s_0b",endfix.Data()));
+ 			   th_signal[k]->Add(th2);
+			  th2=(TH1D* )tf2[k]->FindObjectAny(Form("%s_1b",endfix.Data()));
+ 			   th_signal[k]->Add(th2);
+			  th2=(TH1D* )tf2[k]->FindObjectAny(Form("%s_2b",endfix.Data()));
+ 			   th_signal[k]->Add(th2);
+			   th2=(TH1D* )tf2[k]->FindObjectAny(Form("%s_3b",endfix.Data()));
+ 			   th_signal[k]->Add(th2);
+		  }
+	    
+	     TH1D *th3=(TH1D* )tf2[k]->FindObjectAny("cutflow");
+	     //cout<<"k="<<k<<","<<th2->GetBinContent(1)<<","<<12.883846147301*xsec2[k]*200/th2->GetBinContent(1)<<endl;
+	     th_signal[k]->Scale(thh[4][0]->Integral()/(th_signal[k]->Integral()*2));
+	    //if(k<3)th_signal[k]->Scale(10);
+	     cout<<th_signal[k]->Integral()<<",";
+	     th_signal[k]->Draw("same hist c");
+		}
+		leg->Draw("same");
+		
+    }
+    
+    
+    
+    
+     
+		  
+	
+		
+		  
+    
     c_dw->cd();
 	
 	if (h_name[i].find("total")!= std::string::npos)myRatio(h_data, h_bkg,"M_{jj}[GeV]");
