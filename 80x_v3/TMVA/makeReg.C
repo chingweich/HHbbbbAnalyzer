@@ -45,7 +45,7 @@ void makeReg(){
 	
 	TH1D* th1[4];
 	
-	TLegend *leg = new TLegend(0.68, 0.65, 0.94, 0.90);
+	TLegend *leg = new TLegend(0.68, 0.55, 0.94, 0.90);
   
   leg->SetBorderSize(0);
   leg->SetFillColor(0);
@@ -90,18 +90,22 @@ void makeReg(){
 		leg->AddEntry(th1[2],"uncorrected pruned");
 		//leg->AddEntry((TObject*)0,Form("rms/mean=%f",th1[2]->GetRMS()/th1[2]->GetMean()));
 		leg->AddEntry((TObject*)0,Form("#sigma/mean=%f",tf1[2]->GetParameter(2)/tf1[2]->GetParameter(1)));
+		leg->AddEntry((TObject*)0,Form("rms/mean=%f",th1[2]->GetRMS()/tf1[2]->GetParameter(1)));
 		
 		leg->AddEntry(th1[0],"regression");
 		//leg->AddEntry((TObject*)0,Form("rms/mean=%f",th1[0]->GetRMS()/th1[0]->GetMean()));
 		leg->AddEntry((TObject*)0,Form("#sigma/mean=%f",tf1[0]->GetParameter(2)/tf1[0]->GetParameter(1)));
+		leg->AddEntry((TObject*)0,Form("rms/mean=%f",th1[0]->GetRMS()/tf1[0]->GetParameter(1)));
 		leg->AddEntry(th1[1],"L2L3 pruned");
 		
 		//leg->AddEntry((TObject*)0,Form("rms/mean=%f",th1[1]->GetRMS()/th1[1]->GetMean()));
 		leg->AddEntry((TObject*)0,Form("#sigma/mean=%f",tf1[1]->GetParameter(2)/tf1[1]->GetParameter(1)));
+		leg->AddEntry((TObject*)0,Form("rms/mean=%f",th1[1]->GetRMS()/tf1[1]->GetParameter(1)));
 		
 		leg->AddEntry(th1[3],"regression with L2L3pruned");
 		//leg->AddEntry((TObject*)0,Form("rms/mean=%f",th1[2]->GetRMS()/th1[2]->GetMean()));
 		leg->AddEntry((TObject*)0,Form("#sigma/mean=%f",tf1[3]->GetParameter(2)/tf1[3]->GetParameter(1)));
+		leg->AddEntry((TObject*)0,Form("rms/mean=%f",th1[3]->GetRMS()/tf1[3]->GetParameter(1)));
 		
 		
 		th1[1]->SetLineWidth(3);

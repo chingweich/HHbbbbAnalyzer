@@ -251,19 +251,19 @@ void TMVARegressionApplication( int wMs,int wM, string st,string st2,string opti
 		th5[i]->Sumw2();
 	}
 	
-		
+	TH2D* th2d=new TH2D("","",90,70,160,90,70,160);	
 		
 		TH1D* th6[10];
-		th6[0]= new TH1D("regMass_j0","",60,90,150);
-		th6[1]= new TH1D("regMass_j1","",60,90,150);
-		th6[2]= new TH1D("prMass_j0","",60,90,150);
-		th6[3]= new TH1D("prMass_j1","",60,90,150);
-		th6[6]= new TH1D("unprMass_j0","",60,90,150);
-		th6[7]= new TH1D("unprMass_j1","",60,90,150);
-		th6[4]= new TH1D("regMjj","",60,90,150);
-		th6[5]= new TH1D("prMjj","",60,90,150);
-		th6[8]= new TH1D("reg2Mass_j0","",60,90,150);
-		th6[9]= new TH1D("reg2Mass_j1","",60,90,150);
+		th6[0]= new TH1D("regMass_j0","",90,70,160);
+		th6[1]= new TH1D("regMass_j1","",90,70,160);
+		th6[2]= new TH1D("prMass_j0","",90,70,160);
+		th6[3]= new TH1D("prMass_j1","",90,70,160);
+		th6[6]= new TH1D("unprMass_j0","",90,70,160);
+		th6[7]= new TH1D("unprMass_j1","",90,70,160);
+		th6[4]= new TH1D("regMjj","",90,70,160);
+		th6[5]= new TH1D("prMjj","",90,70,160);
+		th6[8]= new TH1D("reg2Mass_j0","",90,70,160);
+		th6[9]= new TH1D("reg2Mass_j1","",90,70,160);
    
 for(int i=0;i<10;i++){
 		th6[i]->Sumw2();
@@ -381,8 +381,8 @@ for(int i=0;i<10;i++){
 			nPass[7]++;
 			//8. fatjetPRmassL2L3Corr-----------------------------------------
 			Float_t*  fatjetPRmassL2L3Corr = data.GetPtrFloat("FATjetPRmassL2L3Corr");
-			if(fatjetPRmassL2L3Corr[0]<90||fatjetPRmassL2L3Corr[0]>150)continue;
-			if(fatjetPRmassL2L3Corr[1]<90||fatjetPRmassL2L3Corr[1]>150)continue;
+			//if(fatjetPRmassL2L3Corr[0]<90||fatjetPRmassL2L3Corr[0]>150)continue;
+			//if(fatjetPRmassL2L3Corr[1]<90||fatjetPRmassL2L3Corr[1]>150)continue;
 			nPass[8]++;
 			//9.-----------------------------------------
 			Float_t*  fatjetTau1 = data.GetPtrFloat("FATjetTau1");
@@ -550,6 +550,8 @@ for(int i=0;i<10;i++){
 	   //cout<<val<<endl;
       }
 	
+	th2d->Fill(fatjetPRmassL2L3Corr[0]*varTemp[0],fatjetPRmassL2L3Corr[1]*varTemp[1]);
+	
 			if(fatjetPRmassL2L3Corr[0]<105||fatjetPRmassL2L3Corr[0]>135)continue;
 			if(fatjetPRmassL2L3Corr[1]<105||fatjetPRmassL2L3Corr[1]>135)continue;
 			th6[4]->Fill(mjjRed);
@@ -695,7 +697,7 @@ for(int i=0;i<10;i++){
 		}
 	}	
    
-   
+   cout<<th2d->GetCorrelationFactor()<<endl;
   
 
  
