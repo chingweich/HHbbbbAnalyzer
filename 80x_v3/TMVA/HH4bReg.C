@@ -253,15 +253,19 @@ void TMVARegressionApplication( int wMs,int wM, string st,string st2,string opti
 	
 		
 		
-		TH1D* th6[6];
+		TH1D* th6[10];
 		th6[0]= new TH1D("regMass_j0","",60,90,150);
 		th6[1]= new TH1D("regMass_j1","",60,90,150);
 		th6[2]= new TH1D("prMass_j0","",60,90,150);
 		th6[3]= new TH1D("prMass_j1","",60,90,150);
+		th6[6]= new TH1D("unprMass_j0","",60,90,150);
+		th6[7]= new TH1D("unprMass_j1","",60,90,150);
 		th6[4]= new TH1D("regMjj","",60,90,150);
 		th6[5]= new TH1D("prMjj","",60,90,150);
+		th6[8]= new TH1D("reg2Mass_j0","",60,90,150);
+		th6[9]= new TH1D("reg2Mass_j1","",60,90,150);
    
-for(int i=0;i<6;i++){
+for(int i=0;i<10;i++){
 		th6[i]->Sumw2();
 	}
    
@@ -386,6 +390,107 @@ for(int i=0;i<6;i++){
 			double tau21_1=(fatjetTau2[0]/fatjetTau1[0]),tau21_2=(fatjetTau2[1]/fatjetTau1[1]);
 			
 			
+			//matching
+			Int_t nGenPar        = data.GetInt("nGenPar");
+    Int_t* genParId      = data.GetPtrInt("genParId");
+    Int_t* genParSt      = data.GetPtrInt("genParSt");
+    Int_t* genMomParId   = data.GetPtrInt("genMomParId");
+    Int_t* genDa1      = data.GetPtrInt("genDa1");
+    Int_t* genDa2      = data.GetPtrInt("genDa2");
+
+    int genHIndex[2]={-1,-1};
+    int genbIndex[2][2]={{-1,-1},
+			 {-1,-1}};		       
+
+    for(int ig=0; ig < nGenPar; ig++){
+
+      if(genParId[ig]!=25)continue;
+
+      if(genHIndex[0]<0)
+	{
+	  genHIndex[0]=ig;
+	  genbIndex[0][0]=genDa1[ig];
+	  genbIndex[0][1]=genDa2[ig];
+	}
+
+      else if(genHIndex[1]<0)
+	{
+	  genHIndex[1]=ig;
+	  genbIndex[1][0]=genDa1[ig];
+	  genbIndex[1][1]=genDa2[ig];
+	}
+
+    }    
+
+    if(genHIndex[0]<0 || genHIndex[1]<0)continue;
+    if(genbIndex[0][0]<0 || genbIndex[0][1]<0)continue;
+    if(genbIndex[1][0]<0 || genbIndex[1][1]<0)continue;
+     if(genHIndex[0]==genHIndex[1])continue;
+     
+     TLorentzVector genH_l4[2];
+    TLorentzVector genb_l4[2][2];
+    TClonesArray* genParP4 = (TClonesArray*) data.GetPtrTObject("genParP4");
+
+    for(int ih=0; ih<2; ih++)
+      {
+	genH_l4[ih] = *((TLorentzVector*)genParP4->At(genHIndex[ih]));
+	for(int ib=0; ib<2; ib++)
+	  {
+	    genb_l4[ih][ib] = *((TLorentzVector*)genParP4->At(genbIndex[ih][ib]));
+	  }
+      }
+
+    
+    bool findAMatch=false;
+    const float dRMax=0.4;
+    const float dRbMax=0.8;
+    int matchedHJetIndex[2]={-1,-1};
+    bool matchb=true;
+    
+    for(int ij=0; ij<nFATJet; ij++)
+      {
+	TLorentzVector* thisJet = (TLorentzVector*)fatjetP4->At(ij);
+
+	for(int jj=0; jj<nFATJet; jj++)
+	  {
+
+	    if(ij==jj)continue;
+	    TLorentzVector* thatJet = (TLorentzVector*)fatjetP4->At(jj);
+	    
+	    if(thisJet->DeltaR(genH_l4[0])<dRMax && 
+	       (!matchb || (matchb && 
+			    thisJet->DeltaR(genb_l4[0][0])<dRbMax && 
+			    thisJet->DeltaR(genb_l4[0][1])<dRbMax)) &&
+	       thatJet->DeltaR(genH_l4[1])<dRMax &&
+	       (!matchb || (matchb &&
+			    thatJet->DeltaR(genb_l4[1][0])<dRbMax &&
+			    thatJet->DeltaR(genb_l4[1][1])<dRbMax)))
+	      {
+		
+		if(ij<jj){
+		  matchedHJetIndex[0]=ij;
+		  matchedHJetIndex[1]=jj;
+		}
+		else
+		  {
+		    matchedHJetIndex[0]=jj;
+		    matchedHJetIndex[1]=ij;
+		  }
+		findAMatch=true;
+		break;
+	      }
+
+	    if(findAMatch)break;
+
+	  }	
+
+	if(findAMatch)break;
+
+      }
+
+    if(!findAMatch)continue;
+    
+			
 		
 	   Int_t* FATjet_nSV=data.GetPtrInt("FATjet_nSV");
 	   vector<float>   *FATjet_SVMass  =  data.GetPtrVectorFloat("FATjet_SVMass");
@@ -415,7 +520,9 @@ for(int i=0;i<6;i++){
          Float_t val = (reader->EvaluateRegression( title ))[0];
          hists[ih]->Fill( val );   
 	   th6[0]->Fill(FATjetPRmass[0]*val);
+	   th6[6]->Fill(FATjetPRmass[0]);
 	   th6[2]->Fill(fatjetPRmassL2L3Corr[0]);
+	   th6[8]->Fill(fatjetPRmassL2L3Corr[0]*val);
 	   varTemp[0]=val;
 	 //  cout<<val<<endl;
       }
@@ -436,7 +543,9 @@ for(int i=0;i<6;i++){
          Float_t val = (reader->EvaluateRegression( title ))[0];
          hists[ih]->Fill( val );   
 	   th6[1]->Fill(FATjetPRmass[1]*val);
+	   th6[7]->Fill(FATjetPRmass[1]);
 	   th6[3]->Fill(fatjetPRmassL2L3Corr[1]);
+	   th6[9]->Fill(fatjetPRmassL2L3Corr[1]*val);
 	   varTemp[1]=val;
 	   //cout<<val<<endl;
       }
@@ -603,7 +712,7 @@ for(int i=0;i<6;i++){
 	for(int i=0;i<20;i++){
 		th5[i]->Write();
 	}
-	for(int i=0;i<6;i++){
+	for(int i=0;i<10;i++){
 		th6[i]->Write();
 	}
 	outFile->Close();
