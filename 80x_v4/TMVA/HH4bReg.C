@@ -224,13 +224,13 @@ void TMVARegressionApplication( int wMs,int wM, string st,string st2,string opti
 	double xBinsForLightFlavor[11]={20,100,200,300,400,500,600,700,800,900,3000};
 	
 	TH1D* th2d[6];
-	th2d[0]=new TH1D("unpr","unpr",4000,1000,5000);	
-	th2d[1]=new TH1D("pr","pr",4000,1000,5000);	
-	th2d[2]=new TH1D("sd","sd",4000,1000,5000);	
+	th2d[0]=new TH1D("pr","pr",4000,1000,5000);	
+	th2d[1]=new TH1D("sd1","sd1",4000,1000,5000);	
+	th2d[2]=new TH1D("sd2","sd2",4000,1000,5000);	
 	
-	th2d[3]=new TH1D("unprTM","unprTM",4000,1000,5000);	
-	th2d[4]=new TH1D("prTM","prTM",4000,1000,5000);	
-	th2d[5]=new TH1D("sdTM","sdTM",4000,1000,5000);	
+	th2d[3]=new TH1D("prTM","prTM",4000,1000,5000);	
+	th2d[4]=new TH1D("sd1TM","sd1TM",4000,1000,5000);	
+	th2d[5]=new TH1D("sd2TM","sd2TM",4000,1000,5000);	
 	
 		
 	
@@ -466,14 +466,30 @@ void TMVARegressionApplication( int wMs,int wM, string st,string st2,string opti
 	
 	
 	TClonesArray* FATjetPuppiP4 = (TClonesArray*) data.GetPtrTObject("FATjetPuppiP4");
-	thisJet=(TLorentzVector*)FATjetPuppiP4->At(0);
-	thatJet=(TLorentzVector*)FATjetPuppiP4->At(1);
+	TLorentzVector* thisPUPPIJet ,* thatPUPPIJet;
+	thisPUPPIJet=(TLorentzVector*)FATjetPuppiP4->At(0);
+	thatPUPPIJet=(TLorentzVector*)FATjetPuppiP4->At(1);
 	Float_t*  FATjetPuppiSDmass = data.GetPtrFloat("FATjetPuppiSDmass");
 	Float_t  FATjetPuppiSDmassThea[2] ={0};
-			FATjetPuppiSDmassThea[0]=FATjetPuppiSDmass[0]*getPUPPIweight(thisJet->Pt(),thisJet->Eta(),tf1);
-			FATjetPuppiSDmassThea[1]=FATjetPuppiSDmass[1]*getPUPPIweight(thatJet->Pt(),thatJet->Eta(),tf1);
+	double PUPPIweight[2]={0};
+	PUPPIweight[0]=getPUPPIweight(thisPUPPIJet->Pt(),thisPUPPIJet->Eta(),tf1);
+	PUPPIweight[1]=getPUPPIweight(thatPUPPIJet->Pt(),thatPUPPIJet->Eta(),tf1);
+			FATjetPuppiSDmassThea[0]=FATjetPuppiSDmass[0]*PUPPIweight[0];
+			FATjetPuppiSDmassThea[1]=FATjetPuppiSDmass[1]*PUPPIweight[1];
 			
-			//cout<<thisJet->Pt()<<","<<thisJet->Eta()<<endl;
+			TLorentzVector* thisPUPPISDJet ,* thatPUPPISDJet;
+			TClonesArray* FATjetPuppiSDRawP4 = (TClonesArray*) data.GetPtrTObject("FATjetPuppiSDRawP4");
+	thisPUPPISDJet=(TLorentzVector*)FATjetPuppiSDRawP4->At(0);
+	thatPUPPISDJet=(TLorentzVector*)FATjetPuppiSDRawP4->At(1);
+	
+	TLorentzVector  thisPUPPISDJetCorrected, thatPUPPISDJetCorrected;
+	thisPUPPISDJetCorrected=(*thisPUPPISDJet)*PUPPIweight[0];
+	thatPUPPISDJetCorrected=(*thatPUPPISDJet)*PUPPIweight[1];
+	
+	double Mjjcase3= (thisPUPPISDJetCorrected+thatPUPPISDJetCorrected).M()+250
+	-(thisPUPPISDJetCorrected).M()
+	-(thatPUPPISDJetCorrected).M();
+	//cout<<thisJet->Pt()<<","<<thisJet->Eta()<<endl;
 			
 			//th6[4]->Fill(mjjRed);
 			//th6[4]->Fill((*thisJet+*thatJet).M()+250-thisJet->M()-thatJet->M());
@@ -499,11 +515,11 @@ void TMVARegressionApplication( int wMs,int wM, string st,string st2,string opti
 					
 					if(fatjetPRmassL2L3Corr[0]*varTemp[0]>bmin[j] && fatjetPRmassL2L3Corr[0]*varTemp[0]<width[i]+bmin[j]
 					&&fatjetPRmassL2L3Corr[1]*varTemp[1]>bmin[j] && fatjetPRmassL2L3Corr[1]*varTemp[1]<width[i]+bmin[j]  && nDSVTight==2)
-					th3d[1][i][j]->Fill((*thisJet+*thatJet).M()+250-thisJet->M()-thatJet->M(),PU_weight[0]);
+					th3d[1][i][j]->Fill((*thisPUPPIJet+*thatPUPPIJet).M()+250-thisPUPPIJet->M()-thatPUPPIJet->M(),PU_weight[0]);
 					
 					if(FATjetPuppiSDmassThea[0]>bmin[j]&& FATjetPuppiSDmassThea[0]<width[i]+bmin[j]
 					&&FATjetPuppiSDmassThea[1]>bmin[j]&& FATjetPuppiSDmassThea[1]<width[i]+bmin[j] && nDSVTight==2)  
-					th3d[2][i][j]->Fill((*thisJet+*thatJet).M()+250-thisJet->M()-thatJet->M(),PU_weight[0]);
+					th3d[2][i][j]->Fill(Mjjcase3,PU_weight[0]);
 					
 					if(fatjetPRmassL2L3Corr[0]>bmin[j] && fatjetPRmassL2L3Corr[0]<width[i]+bmin[j]
 					&&fatjetPRmassL2L3Corr[1]>bmin[j] && fatjetPRmassL2L3Corr[1]<width[i]+bmin[j] && (nDSVTight==1 && nDSVMed==1)) 
@@ -511,11 +527,11 @@ void TMVARegressionApplication( int wMs,int wM, string st,string st2,string opti
 					
 					if(fatjetPRmassL2L3Corr[0]*varTemp[0]>bmin[j] && fatjetPRmassL2L3Corr[0]*varTemp[0]<width[i]+bmin[j]
 					&&fatjetPRmassL2L3Corr[1]*varTemp[1]>bmin[j]&& fatjetPRmassL2L3Corr[1]*varTemp[1]<width[i]+bmin[j]  && (nDSVTight==1 && nDSVMed==1))
-					th3d[4][i][j]->Fill((*thisJet+*thatJet).M()+250-thisJet->M()-thatJet->M(),PU_weight[0]);
+					th3d[4][i][j]->Fill((*thisPUPPIJet+*thatPUPPIJet).M()+250-thisPUPPIJet->M()-thatPUPPIJet->M(),PU_weight[0]);
 					
 					if(FATjetPuppiSDmassThea[0]>bmin[j]&& FATjetPuppiSDmassThea[0]<width[i]+bmin[j]
 					&&FATjetPuppiSDmassThea[1]>bmin[j]&& FATjetPuppiSDmassThea[1]<width[i]+bmin[j] && (nDSVTight==1 && nDSVMed==1))  
-					th3d[5][i][j]->Fill((*thisJet+*thatJet).M()+250-thisJet->M()-thatJet->M(),PU_weight[0]);
+					th3d[5][i][j]->Fill(Mjjcase3,PU_weight[0]);
 					
 				}
 			}
