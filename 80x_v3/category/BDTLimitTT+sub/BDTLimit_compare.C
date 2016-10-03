@@ -1,0 +1,73 @@
+#include <TLegend.h>
+#include <vector>
+#include <iostream>
+#include <algorithm>
+#include <TH1D.h>
+#include <TH2D.h>
+#include <TRandom.h>
+#include <TLorentzVector.h>
+#include <TFile.h>
+#include <TGraph.h>
+#include <TGraphErrors.h>
+#include <TGraphAsymmErrors.h>
+#include <TH1F.h>
+#include <TH1.h>
+#include <TCanvas.h>
+#include <TROOT.h>
+#include "TImage.h"
+#include "TSystem.h"
+#include "TStyle.h"
+#include <TClonesArray.h>
+#include <fstream>
+#include <cmath>
+#include <TSystem.h>
+#include <string>
+#include <sstream>
+#include"../../setNCUStyle.C"
+
+TCanvas* c1;
+
+void BDTLimit_compare(){
+	setNCUStyle(true);
+	c1 = new TCanvas("c1","",1360,768);
+	TFile *f[40];
+	f[0]=TFile::Open("Graviton_subtrTMe.root");
+	f[1]=TFile::Open("Graviton_subtrTLe.root");
+	f[2]=TFile::Open("../BDTLimitTT/Graviton_subtrDBTTL.root");
+	f[3]=TFile::Open("../BDTLimitTT/Graviton_subtrDBTTL1.root");
+	
+	
+	f[4]=TFile::Open("../BDTLimit/Graviton_subtr_4btag_cat0TT.root");
+	f[5]=TFile::Open("../BDTLimitTT/Graviton_subtrcsv.root");
+	
+	TGraphAsymmErrors* tg1[8];
+	
+	TLegend *leg = new TLegend(0.65, 0.58, 0.96, 0.92);
+  
+  leg->SetBorderSize(0);
+  leg->SetFillColor(0);
+  leg->SetFillStyle(0);
+  leg->SetTextSize(0.04);
+
+string st[7]={"TM","TL","T(DBT),L(subCSV)","T(DBT),L(subCSV)>=1","TT","3b+4b"};
+  
+	for(int i=0;i<6;i++){
+		if(i==1 || i==2)continue;
+		tg1[i]=(TGraphAsymmErrors*)f[i]->Get("LimitExpectedCLs");
+		if(i<1)tg1[i]->SetLineColor(i+1);
+		else tg1[i]->SetLineColor(i-1);
+		tg1[i]->SetLineWidth(2);
+		tg1[i]->SetLineStyle(1);
+		tg1[i]->SetFillColor(0);
+		tg1[i]->SetMinimum(2);
+		tg1[i]->SetMaximum(10);
+		tg1[i]->GetYaxis()->SetTitle("95% CLs on #sigma(X#rightarrowHH)#timesBR(HH#rightarrowb#bar{b}b#bar{b})[fb]");
+		if(i==0)tg1[i]->Draw("APL");
+		else tg1[i]->Draw("PL same");
+		leg->AddEntry(tg1[i],Form("%s",st[i].data()));
+	}
+	leg->Draw("same");
+	
+	//c1->SetLogy();
+	c1->Print("BDTLimitcompare.pdf");
+}
