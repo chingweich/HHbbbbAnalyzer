@@ -45,43 +45,51 @@ void Limit(){
   leg->SetFillStyle(0);
   leg->SetTextSize(0.04);
 	
-	for(int k=1;k<nWidth;k++){
+	for(int k=2;k<nWidth;k++){
 		 for(int m=0;m<nBmin;m++){
 			 
 			 if(width[k]+bmin[m]>166)continue;
 			 
 			  if( 
-			 //(k==4 && m==6)||
-			  (k==4 && m==5)||
-			  (k==4 && m==4)||
-			  (k==4 && m==3)||
-			  (k==4 && m==2)||
-			  
-			  (k==4 && m==0)||
+			 // //(k==4 && m==6)||
+			   (k==4 && m==5)||
+			   (k==4 && m==4)||
+			   (k==4 && m==3)||
+			   (k==4 && m==2)||
+			  (k==4 && m==1)||
+			   (k==4 && m==0)||
 			 
-			 // (k==3 && m==7)||
-			 // (k==3 && m==6)||
-			  (k==3 && m==5)||
-			  (k==3 && m==4)||
-			  (k==3 && m==3)||
-			  (k==3 && m==2)||
-			  (k==3 && m==1)||
-			  (k==3 && m==0)||
+			 // // (k==3 && m==7)||
+			 // // (k==3 && m==6)||
+			   (k==3 && m==5)||
+			   (k==3 && m==4)||
+			   (k==3 && m==3)||
+			   (k==3 && m==2)||
+			  // (k==3 && m==1)||
+			   (k==3 && m==0)||
 			 
-			  (k==2 && m==0)||
-			  (k==2 && m==1)||
-			  (k==2 && m==2)||
-			  (k==2 && m==4)||
-			  (k==2 && m==5)||
-			 // (k==2 && m==6)||
+			   (k==2 && m==0)||
+			   (k==2 && m==1)||
+			  // (k==2 && m==2)||
+			  (k==2 && m==3)||
+			   (k==2 && m==4)||
+			   (k==2 && m==5)||
+			 // // (k==2 && m==6)||
 			 
-			  (k==1 && m==0)||
-			  (k==1 && m==1)||
+			   (k==1 && m==0)||
+			   (k==1 && m==1)||
 			  (k==1 && m==2)||
-			  (k==1 && m==4)||
-			  (k==1 && m==5)||
+			  (k==1 && m==3)||
+			   (k==1 && m==4)||
+			   (k==1 && m==5)||
+			   
+			   (k==0 && m==1)||
+			   (k==0 && m==2)||
+			   (k==0 && m==3)||
+			    (k==0 && m==4)||
 			 
-			  (k==0 && m==6)
+			  // (k==0 && m==6)
+			  (k==10 && m==6)
 				 )continue;
 			 
 			 TFile* tf1=TFile::Open(Form("massOpt/MassPlotFineBins_subtr_Moriond_Silver%dto%d.root",bmin[m],bmin[m]+width[k]));
@@ -89,13 +97,13 @@ void Limit(){
 			 TGraphAsymmErrors* tg1=(TGraphAsymmErrors*)tf1->Get("LimitExpectedCLs");
 			 
 			 tg1->GetYaxis()->SetTitle("95% CLs on #sigma(X#rightarrowHH)#timesBR(HH#rightarrowb#bar{b}b#bar{b})[fb]");
-			 tg1->SetLineStyle(1+k);
+			 tg1->SetLineStyle(1);
 			 tg1->SetFillColor(0);
 			 tg1->SetLineColor(m+1);
 			 leg->AddEntry(tg1,Form("%dto%d",bmin[m],bmin[m]+width[k]));
-			 tg1->SetMaximum(15);
+			 //tg1->SetMaximum(15);
 			 cout<<k<<","<<m<<endl;
-			 if(k==2 && m==3)tg1->Draw("APL");
+			 if(k==2 && m==2)tg1->Draw("APL");
 			 else tg1->Draw("PL same");
 		}
 	}
