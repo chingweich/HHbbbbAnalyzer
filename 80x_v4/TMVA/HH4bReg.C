@@ -223,14 +223,16 @@ void TMVARegressionApplication( int wMs,int wM, string st,string st2,string opti
 	double xBinsForHeavyFlavor[5]={30,140,180,240,3000};
 	double xBinsForLightFlavor[11]={20,100,200,300,400,500,600,700,800,900,3000};
 	
-	TH1D* th2d[6];
+	TH1D* th2d[8];
 	th2d[0]=new TH1D("pr","pr",4000,1000,5000);	
 	th2d[1]=new TH1D("sd1","sd1",4000,1000,5000);	
 	th2d[2]=new TH1D("sd2","sd2",4000,1000,5000);	
+	th2d[6]=new TH1D("reg","reg",4000,1000,5000);	
 	
 	th2d[3]=new TH1D("prTM","prTM",4000,1000,5000);	
 	th2d[4]=new TH1D("sd1TM","sd1TM",4000,1000,5000);	
 	th2d[5]=new TH1D("sd2TM","sd2TM",4000,1000,5000);	
+	th2d[7]=new TH1D("regTM","regTM",4000,1000,5000);	
 	
 		
 	
@@ -238,7 +240,7 @@ void TMVARegressionApplication( int wMs,int wM, string st,string st2,string opti
 	 int width [nWidth]={20,25,30,35,40};
 	 int bmin[nBmin]={95,100,105,110,115,120,125,130,135,140,145};
 	 
-	 TH1D* th3d[6][nWidth][nBmin];
+	 TH1D* th3d[8][nWidth][nBmin];
 	 
 	 for(int i=0;i<nWidth;i++){
 		 for(int j=0;j<nBmin;j++){
@@ -249,6 +251,8 @@ void TMVARegressionApplication( int wMs,int wM, string st,string st2,string opti
 			 th3d[3][i][j]=(TH1D*) th2d[3]->Clone(Form("%s_%d_%d",th2d[3]->GetTitle(),bmin[j],width[i]+bmin[j]));
 			 th3d[4][i][j]=(TH1D*) th2d[4]->Clone(Form("%s_%d_%d",th2d[4]->GetTitle(),bmin[j],width[i]+bmin[j]));
 			 th3d[5][i][j]=(TH1D*) th2d[5]->Clone(Form("%s_%d_%d",th2d[5]->GetTitle(),bmin[j],width[i]+bmin[j]));
+			 th3d[6][i][j]=(TH1D*) th2d[6]->Clone(Form("%s_%d_%d",th2d[6]->GetTitle(),bmin[j],width[i]+bmin[j]));
+			 th3d[7][i][j]=(TH1D*) th2d[7]->Clone(Form("%s_%d_%d",th2d[7]->GetTitle(),bmin[j],width[i]+bmin[j]));
 		 }
 	 }
   
@@ -362,7 +366,7 @@ void TMVARegressionApplication( int wMs,int wM, string st,string st2,string opti
 			nPass[6]++;
 			//7. Mjj-----------------------------------------
 			float mjjRed = (*thisJet+*thatJet).M()+250-thisJet->M()-thatJet->M();
-			if(mjjRed<1000)continue;
+			//if(mjjRed<1000)continue;
 			nPass[7]++;
 			//8. fatjetPRmassL2L3Corr-----------------------------------------
 			Float_t*  fatjetPRmassL2L3Corr = data.GetPtrFloat("FATjetPRmassL2L3Corr");
@@ -513,8 +517,10 @@ void TMVARegressionApplication( int wMs,int wM, string st,string st2,string opti
 					&&fatjetPRmassL2L3Corr[1]>bmin[j] && fatjetPRmassL2L3Corr[1]<width[i]+bmin[j] && nDSVTight==2) 
 					th3d[0][i][j]->Fill((*thisJet+*thatJet).M()+250-thisJet->M()-thatJet->M(),PU_weight[0]);
 					
-					if(fatjetPRmassL2L3Corr[0]*varTemp[0]>bmin[j] && fatjetPRmassL2L3Corr[0]*varTemp[0]<width[i]+bmin[j]
-					&&fatjetPRmassL2L3Corr[1]*varTemp[1]>bmin[j] && fatjetPRmassL2L3Corr[1]*varTemp[1]<width[i]+bmin[j]  && nDSVTight==2)
+					//if(fatjetPRmassL2L3Corr[0]*varTemp[0]>bmin[j] && fatjetPRmassL2L3Corr[0]*varTemp[0]<width[i]+bmin[j]
+					//&&fatjetPRmassL2L3Corr[1]*varTemp[1]>bmin[j] && fatjetPRmassL2L3Corr[1]*varTemp[1]<width[i]+bmin[j]  && nDSVTight==2)
+					if(FATjetPuppiSDmassThea[0]>bmin[j]&& FATjetPuppiSDmassThea[0]<width[i]+bmin[j]
+					&&FATjetPuppiSDmassThea[1]>bmin[j]&& FATjetPuppiSDmassThea[1]<width[i]+bmin[j] && nDSVTight==2)  
 					th3d[1][i][j]->Fill((*thisPUPPIJet+*thatPUPPIJet).M()+250-thisPUPPIJet->M()-thatPUPPIJet->M(),PU_weight[0]);
 					
 					if(FATjetPuppiSDmassThea[0]>bmin[j]&& FATjetPuppiSDmassThea[0]<width[i]+bmin[j]
@@ -525,8 +531,10 @@ void TMVARegressionApplication( int wMs,int wM, string st,string st2,string opti
 					&&fatjetPRmassL2L3Corr[1]>bmin[j] && fatjetPRmassL2L3Corr[1]<width[i]+bmin[j] && (nDSVTight==1 && nDSVMed==1)) 
 					th3d[3][i][j]->Fill((*thisJet+*thatJet).M()+250-thisJet->M()-thatJet->M(),PU_weight[0]);
 					
-					if(fatjetPRmassL2L3Corr[0]*varTemp[0]>bmin[j] && fatjetPRmassL2L3Corr[0]*varTemp[0]<width[i]+bmin[j]
-					&&fatjetPRmassL2L3Corr[1]*varTemp[1]>bmin[j]&& fatjetPRmassL2L3Corr[1]*varTemp[1]<width[i]+bmin[j]  && (nDSVTight==1 && nDSVMed==1))
+					//if(fatjetPRmassL2L3Corr[0]*varTemp[0]>bmin[j] && fatjetPRmassL2L3Corr[0]*varTemp[0]<width[i]+bmin[j]
+					//&&fatjetPRmassL2L3Corr[1]*varTemp[1]>bmin[j]&& fatjetPRmassL2L3Corr[1]*varTemp[1]<width[i]+bmin[j]  && (nDSVTight==1 && nDSVMed==1))
+					if(FATjetPuppiSDmassThea[0]>bmin[j]&& FATjetPuppiSDmassThea[0]<width[i]+bmin[j]
+					&&FATjetPuppiSDmassThea[1]>bmin[j]&& FATjetPuppiSDmassThea[1]<width[i]+bmin[j] && (nDSVTight==1 && nDSVMed==1))  
 					th3d[4][i][j]->Fill((*thisPUPPIJet+*thatPUPPIJet).M()+250-thisPUPPIJet->M()-thatPUPPIJet->M(),PU_weight[0]);
 					
 					if(FATjetPuppiSDmassThea[0]>bmin[j]&& FATjetPuppiSDmassThea[0]<width[i]+bmin[j]
@@ -563,6 +571,8 @@ void TMVARegressionApplication( int wMs,int wM, string st,string st2,string opti
 			th3d[3][i][j]->Write();
 			th3d[4][i][j]->Write();
 			th3d[5][i][j]->Write();
+			th3d[6][i][j]->Write();
+			th3d[7][i][j]->Write();
 		}
 	}
 	outFile->Close();

@@ -32,7 +32,7 @@ TCanvas* c1;
 
 void Limit(){
 	setNCUStyle(true);
-	c1 = new TCanvas("c1","",600,800);
+	c1 = new TCanvas("c1","",800,600);
 	
 	int width [nWidth]={20,25,30,35,40};
 	int bmin[nBmin]={95,100,105,110,115,120,125,130,135,140,145};

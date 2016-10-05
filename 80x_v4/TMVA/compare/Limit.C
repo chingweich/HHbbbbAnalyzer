@@ -32,7 +32,7 @@ TCanvas* c1;
 
 void Limit(){
 	setNCUStyle(true);
-	c1 = new TCanvas("c1","",600,800);
+	c1 = new TCanvas("c1","",800,600);
 	
 	int width [nWidth]={20,25,30,35,40};
 	int bmin[nBmin]={95,100,105,110,115,120,125,130,135,140,145};
@@ -48,9 +48,9 @@ void Limit(){
 	
 			 
 			 TFile* tf1[3];
-			 tf1[0]=TFile::Open(Form("../unpr/massOpt/MassPlotFineBins_subtr_Moriond_Silver%dto%d.root",100,135));
-			 tf1[1]=TFile::Open(Form("../pr/massOpt/MassPlotFineBins_subtr_Moriond_Silver%dto%d.root",110,140));
-			 tf1[2]=TFile::Open(Form("../sd/massOpt/MassPlotFineBins_subtr_Moriond_Silver%dto%d.root",105,135));
+			 tf1[0]=TFile::Open(Form("../pr/massOpt/MassPlotFineBins_subtr_Moriond_Silver%dto%d.root",105,135));
+			 tf1[1]=TFile::Open(Form("../sd/massOpt/MassPlotFineBins_subtr_Moriond_Silver%dto%d.root",105,135));
+			 tf1[2]=TFile::Open(Form("../sd2/massOpt/MassPlotFineBins_subtr_Moriond_Silver%dto%d.root",110,135));
 			 //if (!tf1 || !tf1->IsOpen())continue;
 			 TGraphAsymmErrors* tg1[3];
 			 tg1[0]=(TGraphAsymmErrors*)tf1[0]->Get("LimitExpectedCLs");
@@ -67,10 +67,10 @@ void Limit(){
 			 tg1[0]->SetLineColor(1);
 			 tg1[1]->SetLineColor(2);
 			 tg1[2]->SetLineColor(3);
-			 leg->AddEntry(tg1[0],Form("L2L3pruned%dto%d",100,135));
-			 leg->AddEntry(tg1[1],Form("L2L3pruned+regress%dto%d",110,140));
-			 leg->AddEntry(tg1[2],Form("PUPPISD Thea%dto%d",105,135));
-			 //tg1->SetMaximum(15);
+			 leg->AddEntry(tg1[0],Form("L2L3pruned%dto%d",105,135));
+			 leg->AddEntry(tg1[1],Form("PUPPISDmass+PUPPIjet%dto%d",105,135));
+			 leg->AddEntry(tg1[2],Form("PUPPISDmass+PUPPISDjet%dto%d",110,135));
+			 tg1[0]->SetMaximum(15);
 			// cout<<k<<","<<m<<endl;
 			tg1[0]->Draw("APL");
 			tg1[1]->Draw("PL same");
