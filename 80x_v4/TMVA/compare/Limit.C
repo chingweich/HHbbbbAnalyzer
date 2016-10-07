@@ -48,9 +48,9 @@ void Limit(){
 	
 			 
 			 TFile* tf1[3];
-			 tf1[0]=TFile::Open(Form("../pr/massOpt/MassPlotFineBins_subtr_Moriond_Silver%dto%d.root",105,135));
+			 tf1[0]=TFile::Open(Form("../pr/massOpt/MassPlotFineBins_subtr_Moriond_Silver%dto%d.root",100,135));
 			 tf1[1]=TFile::Open(Form("../sd/massOpt/MassPlotFineBins_subtr_Moriond_Silver%dto%d.root",105,135));
-			 tf1[2]=TFile::Open(Form("../sd2/massOpt/MassPlotFineBins_subtr_Moriond_Silver%dto%d.root",110,135));
+			 tf1[2]=TFile::Open(Form("../sd2/massOpt/MassPlotFineBins_subtr_Moriond_Silver%dto%d.root",105,135));
 			 //if (!tf1 || !tf1->IsOpen())continue;
 			 TGraphAsymmErrors* tg1[3];
 			 tg1[0]=(TGraphAsymmErrors*)tf1[0]->Get("LimitExpectedCLs");
@@ -67,9 +67,9 @@ void Limit(){
 			 tg1[0]->SetLineColor(1);
 			 tg1[1]->SetLineColor(2);
 			 tg1[2]->SetLineColor(3);
-			 leg->AddEntry(tg1[0],Form("L2L3pruned%dto%d",105,135));
+			 leg->AddEntry(tg1[0],Form("L2L3pruned%dto%d",100,135));
 			 leg->AddEntry(tg1[1],Form("PUPPISDmass+PUPPIjet%dto%d",105,135));
-			 leg->AddEntry(tg1[2],Form("PUPPISDmass+PUPPISDjet%dto%d",110,135));
+			 leg->AddEntry(tg1[2],Form("PUPPISDmass+PUPPISDjet%dto%d",105,135));
 			 tg1[0]->SetMaximum(15);
 			// cout<<k<<","<<m<<endl;
 			tg1[0]->Draw("APL");

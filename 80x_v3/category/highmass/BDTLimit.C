@@ -39,27 +39,28 @@ void BDTLimit(){
 	
 	f[5]=TFile::Open("Graviton_subtr_4btag_cat0.root");
 	f[6]=TFile::Open("Graviton_subtr_3btag_cat1.root");
-	f[7]=TFile::Open("Graviton_subtr.root");
+	f[7]=TFile::Open("Graviton_subtr_3btag_cat1in.root");
+	f[8]=TFile::Open("Graviton_subtr.root");
 	
-	TGraphAsymmErrors* tg1[8];
+	TGraphAsymmErrors* tg1[9];
 	
-	TLegend *leg = new TLegend(0.65, 0.58, 0.96, 0.92);
+	TLegend *leg = new TLegend(0.65, 0.58, 0.94, 0.88);
   
   leg->SetBorderSize(0);
   leg->SetFillColor(0);
   leg->SetFillStyle(0);
   leg->SetTextSize(0.04);
 
-string st[8]={"TM","TL","MM","ML","LL","TT","LL","3b+4b"};
+string st[9]={"TM(TT exclusive)","TL(TT exclusive)","MM(TT exclusive)","ML(TT exclusive)","LL(TT exclusive)","TT","LL(TT exclusive)","LL(TT inclusive)","3b+4b"};
   
-	for(int i=0;i<8;i++){
+	for(int i=0;i<9;i++){
 		tg1[i]=(TGraphAsymmErrors*)f[i]->Get("LimitExpectedCLs");
 		tg1[i]->SetLineColor(i+1);
 		tg1[i]->SetLineWidth(2);
 		tg1[i]->SetLineStyle(1);
 		tg1[i]->SetFillColor(0);
-		tg1[i]->SetMinimum(0);
-		tg1[i]->SetMaximum(15);
+		tg1[i]->SetMinimum(1);
+		tg1[i]->SetMaximum(14);
 		tg1[i]->GetYaxis()->SetTitle("95% CLs on #sigma(X#rightarrowHH)#timesBR(HH#rightarrowb#bar{b}b#bar{b})[fb]");
 		if(i==0)tg1[i]->Draw("APL");
 		else tg1[i]->Draw("PL same");
