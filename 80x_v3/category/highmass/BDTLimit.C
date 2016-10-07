@@ -38,7 +38,8 @@ void BDTLimit(){
 	f[4]=TFile::Open("Graviton_subtrLLe.root");
 	
 	f[5]=TFile::Open("Graviton_subtr_4btag_cat0.root");
-	f[6]=TFile::Open("Graviton_subtr.root");
+	f[6]=TFile::Open("Graviton_subtr_3btag_cat1.root");
+	f[7]=TFile::Open("Graviton_subtr.root");
 	
 	TGraphAsymmErrors* tg1[8];
 	
@@ -49,9 +50,9 @@ void BDTLimit(){
   leg->SetFillStyle(0);
   leg->SetTextSize(0.04);
 
-string st[7]={"TM","TL","MM","ML","LL","TT","3b+4b"};
+string st[8]={"TM","TL","MM","ML","LL","TT","LL","3b+4b"};
   
-	for(int i=0;i<7;i++){
+	for(int i=0;i<8;i++){
 		tg1[i]=(TGraphAsymmErrors*)f[i]->Get("LimitExpectedCLs");
 		tg1[i]->SetLineColor(i+1);
 		tg1[i]->SetLineWidth(2);
