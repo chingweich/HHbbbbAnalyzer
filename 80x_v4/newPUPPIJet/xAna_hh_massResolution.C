@@ -266,6 +266,7 @@ void xAna_hh_massResolution(std::string inputFile, bool matchb=false, bool debug
     const int nJets=nFATJet;
     TClonesArray* fatjetP4   = (TClonesArray*) data.GetPtrTObject("FATjetP4");
     TClonesArray* puppijetP4 = (TClonesArray*) data.GetPtrTObject("FATjetPuppiP4");
+    TClonesArray* AK8PuppijetP4 = (TClonesArray*) data.GetPtrTObject("AK8PuppijetP4");
 
     // check matching first
 
@@ -346,6 +347,9 @@ void xAna_hh_massResolution(std::string inputFile, bool matchb=false, bool debug
     
     TLorentzVector recoH_l4[2];
     int nGoodJets=0;
+    
+    
+    
     for(int i=0; i<2; i++)
       {
     	
@@ -390,14 +394,25 @@ void xAna_hh_massResolution(std::string inputFile, bool matchb=false, bool debug
     if(nHP<2 && cut)continue;
     nPass[8]++;
 
-
+	long eventId=data.GetLong64("eventId");
+	int AK8nJet=data.GetInt("AK8PuppinJet");
+	if(AK8nJet<2)continue;
     // now plot mass
     for(int i=0; i<2;i++)
       {
+		
+		//cout<< eventId<<endl;
 	int jet=matchedHJetIndex[i];
 	TLorentzVector* thisJet = (TLorentzVector*)puppijetP4->At(jet);
 	float thea_corr = getPUPPIweight(thisJet->Pt(),thisJet->Eta());
 	float thea_mass = fatjetSDmass[jet]*thea_corr;
+	
+	if(jet>AK8nJet-1)break;
+	if(thisJet->Pt()>99998)break;
+	//cout<< eventId<<endl;
+	
+	TLorentzVector* thisAK8Jet = (TLorentzVector*)AK8PuppijetP4->At(jet);
+	thea_corr = getPUPPIweight(thisAK8Jet->Pt(),thisAK8Jet->Eta());
 
 	if(debug)
 	  cout << thisJet->Pt() << "\t" << thisJet->Eta() << "\t" << thea_corr << endl;
