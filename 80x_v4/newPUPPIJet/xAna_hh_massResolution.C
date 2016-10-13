@@ -327,6 +327,63 @@ void xAna_hh_massResolution(std::string inputFile, bool matchb=false, bool debug
       cout << matchedHJetIndex[0] << "\t" << matchedHJetIndex[1] << endl;
     nPass[2]++;
 
+    
+    bool findAK8Match=false;
+    //const float dRMax=0.4;
+    //const float dRbMax=0.8;
+    int matchedHAK8JetIndex[2]={-1,-1};
+		      int AK8nJet=data.GetInt("AK8PuppinJet");
+    for(int ij=0; ij<AK8nJet; ij++)
+      {
+	TLorentzVector* thisJet = (TLorentzVector*)AK8PuppijetP4->At(ij);
+
+	for(int jj=0; jj<AK8nJet; jj++)
+	  {
+
+	    if(ij==jj)continue;
+	    TLorentzVector* thatJet = (TLorentzVector*)AK8PuppijetP4->At(jj);
+	    
+	    if(thisJet->DeltaR(genH_l4[0])<dRMax && 
+	       (!matchb || (matchb && 
+			    thisJet->DeltaR(genb_l4[0][0])<dRbMax && 
+			    thisJet->DeltaR(genb_l4[0][1])<dRbMax)) &&
+	       thatJet->DeltaR(genH_l4[1])<dRMax &&
+	       (!matchb || (matchb &&
+			    thatJet->DeltaR(genb_l4[1][0])<dRbMax &&
+			    thatJet->DeltaR(genb_l4[1][1])<dRbMax)))
+	      {
+		if(debug)
+		  {
+		    cout << "dRhb00= " <<  thisJet->DeltaR(genb_l4[0][0]) << endl;
+		    cout << "dRhb01= " <<  thisJet->DeltaR(genb_l4[0][1]) << endl;
+		    cout << "dRhb10= " <<  thatJet->DeltaR(genb_l4[1][0]) << endl;
+		    cout << "dRhb11= " <<  thatJet->DeltaR(genb_l4[1][1]) << endl;
+		  }
+		if(ij<jj){
+		  matchedHAK8JetIndex[0]=ij;
+		  matchedHAK8JetIndex[1]=jj;
+		}
+		else
+		  {
+		    matchedHAK8JetIndex[0]=jj;
+		    matchedHAK8JetIndex[1]=ij;
+		  }
+		findAK8Match=true;
+		break;
+	      }
+
+	    if(findAK8Match)break;
+
+	  }	
+
+	if(findAK8Match)break;
+
+      }
+
+    if(!findAK8Match)continue;
+   
+    
+    
     //0. has a good vertex
     Int_t nVtx        = data.GetInt("nVtx");
     if(nVtx<1 && cut)continue;
@@ -395,7 +452,7 @@ void xAna_hh_massResolution(std::string inputFile, bool matchb=false, bool debug
     nPass[8]++;
 
 	long eventId=data.GetLong64("eventId");
-	int AK8nJet=data.GetInt("AK8PuppinJet");
+	
 	if(AK8nJet<2)continue;
     // now plot mass
     for(int i=0; i<2;i++)
@@ -403,15 +460,16 @@ void xAna_hh_massResolution(std::string inputFile, bool matchb=false, bool debug
 		
 		//cout<< eventId<<endl;
 	int jet=matchedHJetIndex[i];
+	int AK8jet=matchedHAK8JetIndex[i];
 	TLorentzVector* thisJet = (TLorentzVector*)puppijetP4->At(jet);
 	float thea_corr = getPUPPIweight(thisJet->Pt(),thisJet->Eta());
 	float thea_mass = fatjetSDmass[jet]*thea_corr;
 	
-	if(jet>AK8nJet-1)break;
+	//if(jet>AK8nJet-1)break;
 	if(thisJet->Pt()>99998)break;
 	//cout<< eventId<<endl;
 	
-	TLorentzVector* thisAK8Jet = (TLorentzVector*)AK8PuppijetP4->At(jet);
+	TLorentzVector* thisAK8Jet = (TLorentzVector*)AK8PuppijetP4->At(AK8jet);
 	thea_corr = getPUPPIweight(thisAK8Jet->Pt(),thisAK8Jet->Eta());
 
 	if(debug)
@@ -423,8 +481,8 @@ void xAna_hh_massResolution(std::string inputFile, bool matchb=false, bool debug
 	h_PR[i]->Fill(fatjetPRmass[jet]);
 	h_PRCorr[i]->Fill(fatjetPRmassL2L3Corr[jet]);
 	
-	h_AK8SD[i]->Fill(AK8PuppijetSDmass[jet]);
-	h_AK8SDCorrThea[i]->Fill(AK8PuppijetSDmass[jet]*thea_corr);
+	h_AK8SD[i]->Fill(AK8PuppijetSDmass[AK8jet]);
+	h_AK8SDCorrThea[i]->Fill(AK8PuppijetSDmass[AK8jet]*thea_corr);
 
 	h_SD[2]->Fill(fatjetSDmass[jet]);
 	h_SDCorr[2]->Fill(fatjetSDmassL2L3Corr[jet]);
@@ -432,8 +490,8 @@ void xAna_hh_massResolution(std::string inputFile, bool matchb=false, bool debug
 	h_PR[2]->Fill(fatjetPRmass[jet]);
 	h_PRCorr[2]->Fill(fatjetPRmassL2L3Corr[jet]);
 	
-	h_AK8SD[2]->Fill(AK8PuppijetSDmass[jet]);
-	h_AK8SDCorrThea[2]->Fill(AK8PuppijetSDmass[jet]*thea_corr);
+	h_AK8SD[2]->Fill(AK8PuppijetSDmass[AK8jet]);
+	h_AK8SDCorrThea[2]->Fill(AK8PuppijetSDmass[AK8jet]*thea_corr);
 
 
 	h_diff_SD[i]->Fill((fatjetSDmass[jet]-125)/125);
@@ -442,8 +500,8 @@ void xAna_hh_massResolution(std::string inputFile, bool matchb=false, bool debug
 	h_diff_PR[i]->Fill((fatjetPRmass[jet]-125)/125);
 	h_diff_PRCorr[i]->Fill((fatjetPRmassL2L3Corr[jet]-125)/125);
 	
-	h_diff_AK8SD[i]->Fill((AK8PuppijetSDmass[jet]-125)/125);
-	h_diff_AK8SDCorrThea[i]->Fill((AK8PuppijetSDmass[jet]*thea_corr-125)/125);
+	h_diff_AK8SD[i]->Fill((AK8PuppijetSDmass[AK8jet]-125)/125);
+	h_diff_AK8SDCorrThea[i]->Fill((AK8PuppijetSDmass[AK8jet]*thea_corr-125)/125);
 
 	h_diff_SD[2]->Fill((fatjetSDmass[jet]-125)/125);
 	h_diff_SDCorr[2]->Fill((fatjetSDmassL2L3Corr[jet]-125)/125);
@@ -451,8 +509,8 @@ void xAna_hh_massResolution(std::string inputFile, bool matchb=false, bool debug
 	h_diff_PR[2]->Fill((fatjetPRmass[jet]-125)/125);
 	h_diff_PRCorr[2]->Fill((fatjetPRmassL2L3Corr[jet]-125)/125);
 	
-	h_diff_AK8SD[2]->Fill((AK8PuppijetSDmass[jet]-125)/125);
-	h_diff_AK8SDCorrThea[2]->Fill((AK8PuppijetSDmass[jet]*thea_corr-125)/125);
+	h_diff_AK8SD[2]->Fill((AK8PuppijetSDmass[AK8jet]-125)/125);
+	h_diff_AK8SDCorrThea[2]->Fill((AK8PuppijetSDmass[AK8jet]*thea_corr-125)/125);
 
       }
     
