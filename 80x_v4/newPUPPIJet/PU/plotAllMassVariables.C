@@ -43,7 +43,8 @@ void plotAllMassVariables(std::string inputFile){
   TFile *inf = new TFile(inputFile.data());
   TH1F* hmass[NTYPES][NHISTOS];
   TH1F* hdiffmass[NTYPES][NHISTOS];
-  int COLORS[] ={1,2,4,8,kOrange-3,kCyan+2,kGreen+3};
+  //int COLORS[] ={1,2,4,8,kOrange-3,kCyan+2,kGreen+3};
+  int COLORS[] ={8,6,1,4};
 
 
   std::string prefix[]={"leading","subleading","both"};

@@ -25,9 +25,11 @@ void plotMultiGraphs(){
 
   const int NTYPES=4;
   float mass[9]={10,15,20,25,30,35,40,45,50};
-  int MARKERS[7]={20,21,22,23,34,29,24};
+ // int MARKERS[7]={20,21,22,23,34,29,24};
+  int MARKERS[7]={23,34,20,22};
   //int COLORS[NTYPES]={1,4,2,kOrange,kGreen+2};
-   int COLORS[] ={1,2,4,8,kOrange-3,kCyan+2,kGreen+3};
+  // int COLORS[] ={1,2,4,8,kOrange-3,kCyan+2,kGreen+3};
+   int COLORS[] ={kOrange,kGreen+2,1,2};
   setNCUStyle(true);
 
   
