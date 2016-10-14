@@ -38,7 +38,7 @@ void plotAllMassVariables(std::string inputFile){
   TString HeaderName;
   HeaderName=gSystem->GetFromPipe(Form("file=%s; test=${file%%.root}; echo \"${test}\"",inputFile.data()));
 
-  const int NTYPES=5;
+  const int NTYPES=4;
   const int NHISTOS=3;
   TFile *inf = new TFile(inputFile.data());
   TH1F* hmass[NTYPES][NHISTOS];
@@ -47,7 +47,7 @@ void plotAllMassVariables(std::string inputFile){
 
 
   std::string prefix[]={"leading","subleading","both"};
-  std::string name[]={"SDCorr","PR","PRCorr","AK8SD","AK8SDCorrThea"};
+  std::string name[]={"PR","PRCorr","AK8SD","AK8SDCorrThea"};
 
   float max[3]={-9999,-9999,-9999};
   float maxdiff[3]={-9999,-9999,-9999};

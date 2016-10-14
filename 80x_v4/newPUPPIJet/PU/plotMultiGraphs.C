@@ -21,9 +21,9 @@ using namespace std;
 void plotMultiGraphs(){
 
   std::string prefix[]={"leading","subleading","both"};
-  std::string name[]={"SDCorr","PR","PRCorr","AK8SD","AK8SDCorrThea"};
+  std::string name[]={"PR","PRCorr","AK8SD","AK8SDCorrThea"};
 
-  const int NTYPES=5;
+  const int NTYPES=4;
   float mass[9]={10,15,20,25,30,35,40,45,50};
   int MARKERS[7]={20,21,22,23,34,29,24};
   //int COLORS[NTYPES]={1,4,2,kOrange,kGreen+2};
