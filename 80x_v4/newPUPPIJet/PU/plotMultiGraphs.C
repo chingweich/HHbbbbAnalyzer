@@ -116,7 +116,7 @@ void plotMultiGraphs(){
 
 
     mg->Draw("AP");
-    mg->GetXaxis()->SetTitle("PU");
+    mg->GetXaxis()->SetTitle("number of vertex");
     mg->GetYaxis()->SetTitleOffset(1.1);
     mg->GetYaxis()->SetTitle("Mean of (Mass-125)/125");
     mg->GetYaxis()->SetRangeUser(-0.25,0.1);
@@ -145,7 +145,7 @@ void plotMultiGraphs(){
 		 );
     
     mg_h->Draw("AP");
-    mg_h->GetXaxis()->SetTitle("PU");
+    mg_h->GetXaxis()->SetTitle("number of vertex");
     mg_h->GetYaxis()->SetTitleOffset(1.1);
     mg_h->GetYaxis()->SetTitle("RMS of (Mass-125)/125");
     mg_h->GetYaxis()->SetRangeUser(0.1,0.2);
@@ -165,7 +165,7 @@ void plotMultiGraphs(){
 		 );
     
     mg_a->Draw("AP");
-    mg_a->GetXaxis()->SetTitle("PU");
+    mg_a->GetXaxis()->SetTitle("number of vertex");
     mg_a->GetYaxis()->SetTitleOffset(1.1);
     mg_a->GetYaxis()->SetTitle("RMS/Mean of mass");
     mg_a->GetYaxis()->SetRangeUser(0.12,0.2);
