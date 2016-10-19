@@ -49,6 +49,7 @@ void plotAllMassPoint(){
 		TH1D* th1=(TH1D*)f[i]->Get("mass");
 		th1->SetLineColor(97-4*i);
 		if(i==1)th1->SetMaximum(th1->GetMaximum()*1.8);
+		th1->Scale(1/th1->Integral());
 		th1->Draw("same");
 		th1->SetLineWidth(2);
 		leg->AddEntry(th1,Form("M=%s",masspoint[i].data()));
