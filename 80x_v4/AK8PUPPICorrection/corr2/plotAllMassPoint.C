@@ -54,6 +54,6 @@ void plotAllMassPoint(){
 		leg->AddEntry(th1,Form("M=%s",masspoint[i].data()));
 	}
 	leg->Draw("same");
-	c1->Print("SDMass");
+	c1->Print("SDMass.pdf");
 	
 }
