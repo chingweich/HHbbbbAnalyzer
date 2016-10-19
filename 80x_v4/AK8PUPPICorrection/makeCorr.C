@@ -46,8 +46,10 @@ void makeCorr(){
 		TF1 *tf1[4];
 	tf1[0]=new TF1("fa1","gaus(25000)",50,150);
 		th1->Fit(tf1[0],"","",50,150);
-		mean[0][i]=125/tf1[0]->GetParameter(1);
-		sigma[0][i]=tf1[0]->GetParError(1)/tf1[0]->GetParameter(1);
+		//mean[0][i]=125/tf1[0]->GetParameter(1);
+		//sigma[0][i]=tf1[0]->GetParError(1)/tf1[0]->GetParameter(1);
+		mean[0][i]=125/th1->GetMean();
+		sigma[0][i]=th1->GetMeanError()/th1->GetMean();
 		th1->Draw();
 		th1->SetTitle(Form("%.0f",ptBins[i]));
 		tf1[0]->Draw("same");
@@ -61,8 +63,10 @@ void makeCorr(){
 		TF1 *tf1[4];
 	tf1[0]=new TF1("fa1","gaus(25000)",50,150);
 		th1->Fit(tf1[0],"","",50,150);
-		mean[1][i]=125/tf1[0]->GetParameter(1);
-		sigma[1][i]=tf1[0]->GetParError(1)/tf1[0]->GetParameter(1);
+		//mean[1][i]=125/tf1[0]->GetParameter(1);
+		//sigma[1][i]=tf1[0]->GetParError(1)/tf1[0]->GetParameter(1);
+		mean[1][i]=125/th1->GetMean();
+		sigma[1][i]=th1->GetMeanError()/th1->GetMean();
 			th1->Draw();
 			th1->SetTitle(Form("%.0f",ptBins[i]));
 		tf1[0]->Draw("same");
@@ -76,8 +80,11 @@ void makeCorr(){
 		TF1 *tf1[4];
 		tf1[0]=new TF1("fa1","gaus(25000)",50,150);
 		th1->Fit(tf1[0],"","",50,150);
-		mean[2][i]=125/(tf1[0]->GetParameter(1)*mean[0][i]);
-		sigma[2][i]=sqrt(pow((tf1[0]->GetParError(1)/tf1[0]->GetParameter(1)),2)+pow(sigma[0][i],2));
+		//mean[2][i]=125/(tf1[0]->GetParameter(1)*mean[0][i]);
+		//sigma[2][i]=sqrt(pow((tf1[0]->GetParError(1)/tf1[0]->GetParameter(1)),2)+pow(sigma[0][i],2));
+		
+		mean[2][i]=125/(th1->GetMean()*mean[0][i]);
+		sigma[2][i]=sqrt(pow((th1->GetMeanError()/th1->GetMean()),2)+pow(sigma[0][i],2));
 			th1->Draw();
 			th1->SetTitle(Form("%.0f",ptBins[i]));
 		tf1[0]->Draw("same");
@@ -91,8 +98,10 @@ void makeCorr(){
 		TF1 *tf1[4];
 		tf1[0]=new TF1("fa1","gaus(25000)",50,150);
 		th1->Fit(tf1[0],"","",50,150);
-		mean[3][i]=125/(tf1[0]->GetParameter(1)*mean[1][i]);
-		sigma[3][i]=sqrt(pow((tf1[0]->GetParError(1)/tf1[0]->GetParameter(1)),2)+pow(sigma[1][i],2));
+		//mean[3][i]=125/(tf1[0]->GetParameter(1)*mean[1][i]);
+		//sigma[3][i]=sqrt(pow((tf1[0]->GetParError(1)/tf1[0]->GetParameter(1)),2)+pow(sigma[1][i],2));
+		mean[3][i]=125/(th1->GetMean()*mean[1][i]);
+		sigma[3][i]=sqrt(pow((th1->GetMeanError()/th1->GetMean()),2)+pow(sigma[1][i],2));
 			th1->Draw();
 			th1->SetTitle(Form("%.0f",ptBins[i]));
 		tf1[0]->Draw("same");
