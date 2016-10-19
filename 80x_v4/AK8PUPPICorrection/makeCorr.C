@@ -44,8 +44,8 @@ void makeCorr(){
 	for(int i=0;i<14;i++){
 		TH1D* th1=(TH1D*)f->Get(Form("genBarelMass%.0f",ptBins[i]));
 		TF1 *tf1[4];
-		tf1[0]=new TF1("fa1","gaus(25000)",70,150);
-		th1->Fit(tf1[0],"","",70,150);
+	tf1[0]=new TF1("fa1","gaus(25000)",50,150);
+		th1->Fit(tf1[0],"","",50,150);
 		mean[0][i]=125/tf1[0]->GetParameter(1);
 		sigma[0][i]=tf1[0]->GetParameter(2)/tf1[0]->GetParameter(1);
 		th1->Draw();
@@ -59,8 +59,8 @@ void makeCorr(){
 	for(int i=0;i<14;i++){
 		TH1D* th1=(TH1D*)f->Get(Form("genEndcapMass%.0f",ptBins[i]));
 		TF1 *tf1[4];
-		tf1[0]=new TF1("fa1","gaus(25000)",70,150);
-		th1->Fit(tf1[0],"","",70,150);
+	tf1[0]=new TF1("fa1","gaus(25000)",50,150);
+		th1->Fit(tf1[0],"","",50,150);
 		mean[1][i]=125/tf1[0]->GetParameter(1);
 		sigma[1][i]=tf1[0]->GetParameter(2)/tf1[0]->GetParameter(1);
 			th1->Draw();
@@ -74,8 +74,8 @@ void makeCorr(){
 	for(int i=0;i<14;i++){
 		TH1D* th1=(TH1D*)f->Get(Form("recoBarelMass%.0f",ptBins[i]));
 		TF1 *tf1[4];
-		tf1[0]=new TF1("fa1","gaus(25000)",70,150);
-		th1->Fit(tf1[0],"","",70,150);
+		tf1[0]=new TF1("fa1","gaus(25000)",50,150);
+		th1->Fit(tf1[0],"","",50,150);
 		mean[2][i]=125/(tf1[0]->GetParameter(1)*mean[0][i]);
 		sigma[2][i]=sqrt(pow((tf1[0]->GetParameter(2)/tf1[0]->GetParameter(1)),2)+pow(sigma[0][i],2));
 			th1->Draw();
@@ -89,8 +89,8 @@ void makeCorr(){
 	for(int i=0;i<14;i++){
 		TH1D* th1=(TH1D*)f->Get(Form("recoEndcapMass%.0f",ptBins[i]));
 		TF1 *tf1[4];
-		tf1[0]=new TF1("fa1","gaus(25000)",70,150);
-		th1->Fit(tf1[0],"","",70,150);
+		tf1[0]=new TF1("fa1","gaus(25000)",50,150);
+		th1->Fit(tf1[0],"","",50,150);
 		mean[3][i]=125/(tf1[0]->GetParameter(1)*mean[1][i]);
 		sigma[3][i]=sqrt(pow((tf1[0]->GetParameter(2)/tf1[0]->GetParameter(1)),2)+pow(sigma[1][i],2));
 			th1->Draw();
