@@ -131,7 +131,7 @@ void AK8CorrBase(int wMs,int wM, string st,string st2,string option=""){
 			int matchedHAK8JetIndex[2]={-1,-1};
 		      int AK8nJet=data.GetInt("AK8PuppinJet");
 			if(AK8nJet<2)continue;
-			bool matchb=0;
+			bool matchb=1;
 			for(int ij=0; ij<AK8nJet; ij++)
 			{
 				TLorentzVector* thisJet = (TLorentzVector*)AK8PuppijetP4->At(ij);
@@ -177,6 +177,7 @@ void AK8CorrBase(int wMs,int wM, string st,string st2,string option=""){
 			
 			Float_t*  AK8PuppijetGenSDmass = data.GetPtrFloat("AK8PuppijetGenSDmass");
 			Float_t*  AK8PuppijetSDmass = data.GetPtrFloat("AK8PuppijetSDmass");
+			int* AK8PuppinSubSDJet=data.GetPtrInt("AK8PuppinSubSDJet");
 			for(int i=0; i<2;i++){
 		
 				
@@ -186,7 +187,7 @@ void AK8CorrBase(int wMs,int wM, string st,string st2,string option=""){
 				
 				if(thisAK8Jet->Pt()<200)continue;
 				if(fabs(thisAK8Jet->Eta())>2.4)continue;
-				
+				if(AK8PuppinSubSDJet[AK8jet]!=2)continue;
 				
 				for(int j=0;j<13;j++){
 					if(thisAK8Jet->Pt()>ptBins[j] && thisAK8Jet->Pt()<ptBins[j+1]){
@@ -221,7 +222,7 @@ void AK8CorrBase(int wMs,int wM, string st,string st2,string option=""){
 	
 	
 	TFile* outFile ;
-	outFile= new TFile(Form("corr/%s.root",st2.data()),"recreate");
+	outFile= new TFile(Form("corr2/%s.root",st2.data()),"recreate");
 	for(int i=0;i<14;i++){
 		th2[0][i]->Write();
 		th2[1][i]->Write();

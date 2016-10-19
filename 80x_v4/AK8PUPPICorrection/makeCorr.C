@@ -32,7 +32,7 @@ void makeCorr(){
 	c1 = new TCanvas("c1","",1360,768);
 	
 	TFile *f;
-	f=TFile::Open("corr/corr.root");
+	f=TFile::Open("corr2/corr.root");
 		
 	double ptBins[14]={200,300,400,500,600,700,800,900,1000,1250,1500,1750,2000,2500};
 	double ptBinsCenter[14]={250,350,450,550,650,750,850,950,1125,1375,1625,1875,2250,2750};
