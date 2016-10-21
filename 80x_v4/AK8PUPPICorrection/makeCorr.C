@@ -33,16 +33,33 @@ void makeCorr(){
 	
 	TFile *f;
 	f=TFile::Open("corr2/corr.root");
+	
+	TFile* tf1[9];
+	int masspoint[9]={1200,1400,1600,1800,2000,2500,3000,4000,4500};
+	for(int i=0;i<9;i++){
+		tf1[i]=TFile::Open(Form("corr2/B%d.root",masspoint[i]));
+		//f[i+11]=TFile::Open(Form("R%s.root",masspoint[i].data()));
+	}
+	double xsec[9]={1.90,0.763,0.33,0.155,7.65e-2,1.58e-2,3.73e-3,2.08e-4,4.91e-5};
 		
 	double ptBins[14]={200,300,400,500,600,700,800,900,1000,1250,1500,1750,2000,2500};
 	double ptBinsCenter[14]={250,350,450,550,650,750,850,950,1125,1375,1625,1875,2250,2750};
 	double ptBinsError[14]={0};
 	
-	double mean[4][15];
-	double sigma[4][15];
+	double mean[6][15];
+	double sigma[6][15];
 	
 	for(int i=0;i<14;i++){
 		TH1D* th1=(TH1D*)f->Get(Form("genBarelMass%.0f",ptBins[i]));
+		
+		TH1D* th2=(TH1D*)tf1[0]->Get(Form("genBarelMass%.0f",ptBins[i]));
+		th2->Scale(xsec[0]);
+		for(int j=1;j<9;j++){
+			TH1D* th3=(TH1D*)tf1[j]->Get(Form("genBarelMass%.0f",ptBins[i]));
+			th3->Scale(xsec[j]);
+			th2->Add(th3);
+		}
+		//th1=th2;
 		TF1 *tf1[4];
 	tf1[0]=new TF1("fa1","gaus(25000)",50,150);
 		th1->Fit(tf1[0],"","",50,150);
@@ -73,6 +90,36 @@ void makeCorr(){
 		if(i==0)c1->Print("plots/genEndcap.pdf(");
 		else if(i==13)c1->Print("plots/genEndcap.pdf)");
 		else  c1->Print("plots/genEndcap.pdf");
+	}
+	
+	for(int i=0;i<14;i++){
+		TH1D* th1=(TH1D*)f->Get(Form("recoBarelMass%.0f",ptBins[i]));
+		TF1 *tf1[4];
+	tf1[0]=new TF1("fa1","gaus(25000)",50,150);
+		th1->Fit(tf1[0],"","",50,150);
+		//mean[0][i]=125/tf1[0]->GetParameter(1);
+		//sigma[0][i]=tf1[0]->GetParError(1)/tf1[0]->GetParameter(1);
+		mean[4][i]=125/th1->GetMean();
+		sigma[4][i]=th1->GetMeanError()/th1->GetMean();
+		th1->Draw();
+		th1->SetTitle(Form("%.0f",ptBins[i]));
+		tf1[0]->Draw("same");
+		
+	}
+	
+	for(int i=0;i<14;i++){
+		TH1D* th1=(TH1D*)f->Get(Form("recoEndcapMass%.0f",ptBins[i]));
+		TF1 *tf1[4];
+	tf1[0]=new TF1("fa1","gaus(25000)",50,150);
+		th1->Fit(tf1[0],"","",50,150);
+		//mean[1][i]=125/tf1[0]->GetParameter(1);
+		//sigma[1][i]=tf1[0]->GetParError(1)/tf1[0]->GetParameter(1);
+		mean[5][i]=125/th1->GetMean();
+		sigma[5][i]=th1->GetMeanError()/th1->GetMean();
+			th1->Draw();
+			th1->SetTitle(Form("%.0f",ptBins[i]));
+		tf1[0]->Draw("same");
+	
 	}
 	
 	for(int i=0;i<14;i++){
@@ -111,11 +158,14 @@ void makeCorr(){
 	}
 	
 	
-	TGraphErrors* tg1[4];
+	TGraphErrors* tg1[6];
 	tg1[0]=new TGraphErrors(14,ptBinsCenter,mean[0],ptBinsError,sigma[0]);
 	tg1[1]=new TGraphErrors(11,ptBinsCenter,mean[1],ptBinsError,sigma[1]);
 	tg1[2]=new TGraphErrors(14,ptBinsCenter,mean[2],ptBinsError,sigma[2]);
 	tg1[3]=new TGraphErrors(11,ptBinsCenter,mean[3],ptBinsError,sigma[3]);
+	
+	tg1[4]=new TGraphErrors(14,ptBinsCenter,mean[4],ptBinsError,sigma[4]);
+	tg1[5]=new TGraphErrors(11,ptBinsCenter,mean[5],ptBinsError,sigma[5]);
 	
 	tg1[0]->GetXaxis()->SetTitle("jet Pt");
 	tg1[0]->GetYaxis()->SetTitle("M_{PDG}/M_{Gen}");
@@ -205,5 +255,66 @@ void makeCorr(){
 	recoBarel->Draw("same");
 	recoEndcap->Draw("same");
 	c1->Print("plots/reco.pdf");
+	
+	
+	tg1[4]->GetXaxis()->SetTitle("jet Pt");
+	tg1[4]->GetYaxis()->SetTitle("M_{PDG}/M_{Reco}");
+	tg1[4]->SetTitle("Gen Correction");
+	tg1[4]->Draw("APL");
+	tg1[4]->SetFillColor(0);
+	tg1[5]->SetFillColor(0);
+	tg1[5]->SetLineColor(2);
+	tg1[5]->SetMarkerColor(2);
+	tg1[5]->Draw("PLsame");
+	/*
+	TF1* recoOneBarel = new TF1("genBarel","[0]+[1]*pow(x*[2],-[3])");
+	  recoOneBarel->SetParameters(
+   				 1.00626,
+   				 -1.06161,
+   				 0.07999,
+   				 1.20454
+   				 );
+	TF1* recoOneEndcap = new TF1("genEndcap","[0]+[1]*pow(x*[2],-[3])");
+	  recoOneEndcap->SetParameters(
+   				 1.00626,
+   				 -1.06161,
+   				 0.07999,
+   				 1.20454
+   				 );
+	*/
+	
+	  TF1* recoOneBarel = new TF1("recoBarel","[0]+[1]*x+[2]*pow(x,2)+[3]*pow(x,3)+[4]*pow(x,4)+[5]*pow(x,5)");
+  recoBarel->SetParameters(
+   				      1.05807,
+   				      -5.91971e-05,
+   				      2.296e-07,
+   				      -1.98795e-10,
+   				      6.67382e-14,
+   				      -7.80604e-18
+   				      );
+		  TF1* recoOneEndcap= new TF1("recoEndcap","[0]+[1]*x+[2]*pow(x,2)+[3]*pow(x,3)+[4]*pow(x,4)+[5]*pow(x,5)");
+  recoEndcap->SetParameters(
+   				      1.05807,
+   				      -5.91971e-05,
+   				      2.296e-07,
+   				      -1.98795e-10,
+   				      6.67382e-14,
+   				      -7.80604e-18
+   				      );
+	
+	recoOneBarel->SetLineColor(1);
+	recoOneEndcap->SetLineColor(2);
+	tg1[4]->Fit(recoOneBarel);
+	tg1[5]->Fit(recoOneEndcap);
+leg->Clear();
+  
+  leg->AddEntry(tg1[4],"reco barel");
+  leg->AddEntry(tg1[5],"reco endcap");
+
+	leg->Draw("same");
+	genBarel->Draw("same");
+	genEndcap->Draw("same");
+	
+	c1->Print("plots/recoOne.pdf");
 	
 }

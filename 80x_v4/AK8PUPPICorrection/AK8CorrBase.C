@@ -175,9 +175,53 @@ void AK8CorrBase(int wMs,int wM, string st,string st2,string option=""){
 	
 			if(!findAK8Match)continue;
 			
+			
+				
+			
+			
 			Float_t*  AK8PuppijetGenSDmass = data.GetPtrFloat("AK8PuppijetGenSDmass");
 			Float_t*  AK8PuppijetSDmass = data.GetPtrFloat("AK8PuppijetSDmass");
 			int* AK8PuppinSubSDJet=data.GetPtrInt("AK8PuppinSubSDJet");
+			
+			 TLorentzVector *leadjet = (TLorentzVector*)AK8PuppijetP4->At(matchedHAK8JetIndex[0]);
+			TLorentzVector *subljet = (TLorentzVector*)AK8PuppijetP4->At(matchedHAK8JetIndex[1]);
+			
+			 int n_neutrinos_lead=0;
+    TLorentzVector neutrinos_lead_p4;
+
+    int n_neutrinos_subl=0;
+    TLorentzVector neutrinos_subl_p4;    
+
+    for(int ig=0; ig < nGenPar; ig++){
+      
+      int pid =abs(genParId[ig]);
+      int mom_pid = abs(genMomParId[ig]);
+      if(genParSt[ig]!=1)continue;
+      
+      if(pid!=12 && pid!=14 && pid!=16)continue;
+    
+      // look for daughters of charm and b hadrons
+      // bhadrons can decay to l nu + charm hadrons 
+      // charm hadrons could further decay to l nu + other hadrons
+      
+      if(mom_pid < 400 || mom_pid > 600)continue;
+      
+      TLorentzVector* thisGen = (TLorentzVector*)genParP4->At(ig);
+      
+      if(thisGen->DeltaR(*leadjet)<0.8) { 
+	n_neutrinos_lead++;
+	neutrinos_lead_p4 += *thisGen; 
+      }
+      else if(thisGen->DeltaR(*subljet)<0.8) { 
+	n_neutrinos_subl++;
+	neutrinos_subl_p4 += *thisGen;
+      }
+      else continue;
+      
+    }
+    
+    if(n_neutrinos_lead > 0||  n_neutrinos_subl > 0)continue;
+			
 			for(int i=0; i<2;i++){
 		
 				
@@ -188,6 +232,8 @@ void AK8CorrBase(int wMs,int wM, string st,string st2,string option=""){
 				if(thisAK8Jet->Pt()<200)continue;
 				if(fabs(thisAK8Jet->Eta())>2.4)continue;
 				if(AK8PuppinSubSDJet[AK8jet]!=2)continue;
+				
+				th1->Fill(AK8PuppijetGenSDmass[AK8jet]);
 				
 				for(int j=0;j<13;j++){
 					if(thisAK8Jet->Pt()>ptBins[j] && thisAK8Jet->Pt()<ptBins[j+1]){
@@ -223,6 +269,7 @@ void AK8CorrBase(int wMs,int wM, string st,string st2,string option=""){
 	
 	TFile* outFile ;
 	outFile= new TFile(Form("corr2/%s.root",st2.data()),"recreate");
+	th1->Write();
 	for(int i=0;i<14;i++){
 		th2[0][i]->Write();
 		th2[1][i]->Write();
