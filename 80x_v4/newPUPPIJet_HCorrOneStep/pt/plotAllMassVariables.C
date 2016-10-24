@@ -38,17 +38,17 @@ void plotAllMassVariables(std::string inputFile){
   TString HeaderName;
   HeaderName=gSystem->GetFromPipe(Form("file=%s; test=${file%%.root}; echo \"${test}\"",inputFile.data()));
 
-  const int NTYPES=4;
+  const int NTYPES=5;
   const int NHISTOS=3;
   TFile *inf = new TFile(inputFile.data());
   TH1F* hmass[NTYPES][NHISTOS];
   TH1F* hdiffmass[NTYPES][NHISTOS];
   //int COLORS[] ={1,2,4,8,kOrange-3,kCyan+2,kGreen+3};
-  int COLORS[] ={8,6,1,4};
+  int COLORS[] ={kOrange,kGreen+2,1,2,4};
 
 
   std::string prefix[]={"leading","subleading","both"};
-  std::string name[]={"PR","PRCorr","AK8SD","AK8SDCorrThea"};
+  std::string name[]={"PR","PRCorr","AK8SD","AK8SDCorrThea","AK8SDHCorr"};
 
   float max[3]={-9999,-9999,-9999};
   float maxdiff[3]={-9999,-9999,-9999};

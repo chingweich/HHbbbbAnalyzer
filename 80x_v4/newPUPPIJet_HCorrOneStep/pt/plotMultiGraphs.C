@@ -21,15 +21,15 @@ using namespace std;
 void plotMultiGraphs(){
 
   std::string prefix[]={"leading","subleading","both"};
-  std::string name[]={"PR","PRCorr","AK8SD","AK8SDCorrThea"};
+  std::string name[]={"PR","PRCorr","AK8SD","AK8SDCorrThea","AK8SDHCorr"};
 
-  const int NTYPES=4;
+  const int NTYPES=5;
   float mass[11]={200,300,400,500,600,700,800,900,1000,1250,1500};
  // int MARKERS[7]={20,21,22,23,34,29,24};
-  int MARKERS[7]={23,34,20,22};
+  int MARKERS[7]={23,34,20,22,21};
   //int COLORS[NTYPES]={1,4,2,kOrange,kGreen+2};
   // int COLORS[] ={1,2,4,8,kOrange-3,kCyan+2,kGreen+3};
-   int COLORS[] ={kOrange,kGreen+2,1,2};
+   int COLORS[] ={kOrange,kGreen+2,1,2,4};
   setNCUStyle(true);
 
   
@@ -119,7 +119,7 @@ void plotMultiGraphs(){
     mg->GetXaxis()->SetTitle("Jet Pt");
     mg->GetYaxis()->SetTitleOffset(1.1);
     mg->GetYaxis()->SetTitle("Mean of (Mass-125)/125");
-    mg->GetYaxis()->SetRangeUser(-0.25,0.1);
+    mg->GetYaxis()->SetRangeUser(-0.3,0.15);
     
     TLegend* leg = new TLegend(0.148,0.634,0.397,0.877);
     leg->SetFillColor(0);
@@ -148,7 +148,7 @@ void plotMultiGraphs(){
     mg_h->GetXaxis()->SetTitle("Jet Pt");
     mg_h->GetYaxis()->SetTitleOffset(1.1);
     mg_h->GetYaxis()->SetTitle("RMS of (Mass-125)/125");
-    mg_h->GetYaxis()->SetRangeUser(0.1,0.2);
+    mg_h->GetYaxis()->SetRangeUser(0.1,0.3);
     
     leg->Draw("same");
     
@@ -168,7 +168,7 @@ void plotMultiGraphs(){
     mg_a->GetXaxis()->SetTitle("Jet Pt");
     mg_a->GetYaxis()->SetTitleOffset(1.1);
     mg_a->GetYaxis()->SetTitle("RMS/Mean of mass");
-    mg_a->GetYaxis()->SetRangeUser(0.12,0.2);
+    mg_a->GetYaxis()->SetRangeUser(0.12,0.3);
     
     leg->Draw("same");
     
