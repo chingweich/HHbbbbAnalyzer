@@ -44,10 +44,26 @@ void makeCorr(){
 		
 	double ptBins[14]={200,300,400,500,600,700,800,900,1000,1250,1500,1750,2000,2500};
 	double ptBinsCenter[14]={250,350,450,550,650,750,850,950,1125,1375,1625,1875,2250,2750};
+	double ptBinsCenterE[14]={250,350,450,550,650,750,850,950,1125,1375,1625,1875,2250,2750};
 	double ptBinsError[14]={0};
+	double ptBinsErrorE[14]={0};
 	
 	double mean[6][15];
 	double sigma[6][15];
+	
+	for(int i=0;i<14;i++){
+		TH1D* th1=(TH1D	*)f->Get(Form("ptBarel%.0f",ptBins[i]));
+		ptBinsCenter[i]=th1->GetMean();
+		ptBinsError[i]=th1->GetRMS();
+		cout<<i<<","<<ptBinsCenter[i]<<","<<ptBinsError[i]<<endl;
+	}
+	
+	for(int i=0;i<11;i++){
+		TH1D* th1=(TH1D*)f->Get(Form("ptEndcap%.0f",ptBins[i]));
+		ptBinsCenterE[i]=th1->GetMean();
+		ptBinsErrorE[i]=th1->GetRMS();
+		cout<<i<<","<<ptBinsCenterE[i]<<","<<ptBinsErrorE[i]<<endl;
+	}
 	
 	for(int i=0;i<14;i++){
 		TH1D* th1=(TH1D*)f->Get(Form("genBarelMass%.0f",ptBins[i]));
@@ -104,7 +120,7 @@ void makeCorr(){
 		th1->Draw();
 		th1->SetTitle(Form("%.0f",ptBins[i]));
 		tf1[0]->Draw("same");
-		
+		//cout<<i<<"="<<mean[4][i]<<endl;
 	}
 	
 	for(int i=0;i<14;i++){
@@ -119,7 +135,7 @@ void makeCorr(){
 			th1->Draw();
 			th1->SetTitle(Form("%.0f",ptBins[i]));
 		tf1[0]->Draw("same");
-	
+	//cout<<i<<"="<<mean[5][i]<<endl;
 	}
 	
 	for(int i=0;i<14;i++){
@@ -159,13 +175,16 @@ void makeCorr(){
 	
 	
 	TGraphErrors* tg1[6];
-	tg1[0]=new TGraphErrors(14,ptBinsCenter,mean[0],ptBinsError,sigma[0]);
+	tg1[0]=new TGraphErrors(13,ptBinsCenter,mean[0],ptBinsError,sigma[0]);
 	tg1[1]=new TGraphErrors(11,ptBinsCenter,mean[1],ptBinsError,sigma[1]);
-	tg1[2]=new TGraphErrors(14,ptBinsCenter,mean[2],ptBinsError,sigma[2]);
+	tg1[2]=new TGraphErrors(13,ptBinsCenter,mean[2],ptBinsError,sigma[2]);
 	tg1[3]=new TGraphErrors(11,ptBinsCenter,mean[3],ptBinsError,sigma[3]);
 	
-	tg1[4]=new TGraphErrors(14,ptBinsCenter,mean[4],ptBinsError,sigma[4]);
+	tg1[4]=new TGraphErrors(13,ptBinsCenter,mean[4],ptBinsError,sigma[4]);
 	tg1[5]=new TGraphErrors(11,ptBinsCenter,mean[5],ptBinsError,sigma[5]);
+	
+	for(int i=0;i<14;i++)cout<<i<<"="<<mean[4][i]<<endl;
+	for(int i=0;i<14;i++)cout<<i<<"="<<mean[5][i]<<endl;
 	
 	tg1[0]->GetXaxis()->SetTitle("jet Pt");
 	tg1[0]->GetYaxis()->SetTitle("M_{PDG}/M_{Gen}");
@@ -267,6 +286,13 @@ void makeCorr(){
 	tg1[5]->SetLineColor(2);
 	tg1[5]->SetMarkerColor(2);
 	tg1[5]->Draw("PLsame");
+	
+	TFile* outFile = new TFile("pdgToReco.root","recreate");
+	tg1[4]->SetName("barel");
+	tg1[5]->SetName("endcap");
+	tg1[4]->Write();
+	tg1[5]->Write();
+	outFile->Close();
 	/*
 	TF1* recoOneBarel = new TF1("genBarel","[0]+[1]*pow(x*[2],-[3])");
 	  recoOneBarel->SetParameters(
@@ -286,27 +312,27 @@ void makeCorr(){
 	
 	  TF1* recoOneBarel = new TF1("recoBarel","[0]+[1]*x+[2]*pow(x,2)+[3]*pow(x,3)+[4]*pow(x,4)+[5]*pow(x,5)");
   recoBarel->SetParameters(
-   				      1.05807,
-   				      -5.91971e-05,
-   				      2.296e-07,
-   				      -1.98795e-10,
-   				      6.67382e-14,
-   				      -7.80604e-18
+   				       1.63082e+00,
+   				    -1.93676e-03,
+   				      2.59101e-06,
+   				   -1.58447e-09,
+   				     4.49982e-13,
+   				-4.85023e-17
    				      );
 		  TF1* recoOneEndcap= new TF1("recoEndcap","[0]+[1]*x+[2]*pow(x,2)+[3]*pow(x,3)+[4]*pow(x,4)+[5]*pow(x,5)");
   recoEndcap->SetParameters(
-   				      1.05807,
-   				      -5.91971e-05,
-   				      2.296e-07,
-   				      -1.98795e-10,
-   				      6.67382e-14,
-   				      -7.80604e-18
+   				        2.07578e+00,
+   				-3.92989e-03,
+   				   6.64560e-06,
+   				 -5.69331e-09,
+   				   2.44060e-12,
+   				   -4.13464e-16
    				      );
 	
 	recoOneBarel->SetLineColor(1);
 	recoOneEndcap->SetLineColor(2);
-	tg1[4]->Fit(recoOneBarel);
-	tg1[5]->Fit(recoOneEndcap);
+	tg1[4]->Fit(recoOneBarel,"","",200,2000);
+	tg1[5]->Fit(recoOneEndcap,"","",200,2000);
 leg->Clear();
 
 

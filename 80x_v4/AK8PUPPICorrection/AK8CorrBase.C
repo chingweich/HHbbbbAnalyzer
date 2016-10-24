@@ -25,15 +25,20 @@ void AK8CorrBase(int wMs,int wM, string st,string st2,string option=""){
 	TH1D* th1;
 	th1=new TH1D("mass","mass",100,50,150);
 	
+	TH1D* th3;
+	th3=new TH1D("mass","mass",1100,200,2400);
+	
 	double ptBins[14]={200,300,400,500,600,700,800,900,1000,1250,1500,1750,2000,2500};
 	
-	TH1D* th2[4][14];
+	TH1D* th2[6][14];
 	
 	for(int i=0;i<14;i++){
 		th2[0][i]=(TH1D*)th1->Clone(Form("genBarelMass%.0f",ptBins[i]));
 		th2[1][i]=(TH1D*)th1->Clone(Form("genEndcapMass%.0f",ptBins[i]));
 		th2[2][i]=(TH1D*)th1->Clone(Form("recoBarelMass%.0f",ptBins[i]));
 		th2[3][i]=(TH1D*)th1->Clone(Form("recoEndcapMass%.0f",ptBins[i]));
+		th2[4][i]=(TH1D*)th3->Clone(Form("ptBarel%.0f",ptBins[i]));
+		th2[5][i]=(TH1D*)th3->Clone(Form("ptEndcap%.0f",ptBins[i]));
 	}
 
 	for(int i=0;i<14;i++){
@@ -41,6 +46,8 @@ void AK8CorrBase(int wMs,int wM, string st,string st2,string option=""){
 		th2[1][i]->Sumw2();
 		th2[2][i]->Sumw2();
 		th2[3][i]->Sumw2();
+		th2[4][i]->Sumw2();
+		th2[5][i]->Sumw2();
 	}
 	
 	//---------------------------------
@@ -237,13 +244,16 @@ void AK8CorrBase(int wMs,int wM, string st,string st2,string option=""){
 				
 				for(int j=0;j<13;j++){
 					if(thisAK8Jet->Pt()>ptBins[j] && thisAK8Jet->Pt()<ptBins[j+1]){
+						
 						if(fabs(thisAK8Jet->Eta())<1.3){
 							th2[0][j]->Fill(AK8PuppijetGenSDmass[AK8jet]);
 							th2[2][j]->Fill(AK8PuppijetSDmass[AK8jet]);
+							th2[4][j]->Fill(thisAK8Jet->Pt());
 						}
 						else{
 							th2[1][j]->Fill(AK8PuppijetGenSDmass[AK8jet]);
 							th2[3][j]->Fill(AK8PuppijetSDmass[AK8jet]);
+							th2[5][j]->Fill(thisAK8Jet->Pt());
 						}
 							
 					}
@@ -253,10 +263,12 @@ void AK8CorrBase(int wMs,int wM, string st,string st2,string option=""){
 					if(fabs(thisAK8Jet->Eta())<1.3){
 							th2[0][13]->Fill(AK8PuppijetGenSDmass[AK8jet]);
 							th2[2][13]->Fill(AK8PuppijetSDmass[AK8jet]);
+							th2[4][13]->Fill(thisAK8Jet->Pt());
 						}
 						else{
 							th2[1][13]->Fill(AK8PuppijetGenSDmass[AK8jet]);
 							th2[3][13]->Fill(AK8PuppijetSDmass[AK8jet]);
+							th2[5][13]->Fill(thisAK8Jet->Pt());
 						}
 				}
 				
@@ -275,6 +287,8 @@ void AK8CorrBase(int wMs,int wM, string st,string st2,string option=""){
 		th2[1][i]->Write();
 		th2[2][i]->Write();
 		th2[3][i]->Write();
+		th2[4][i]->Write();
+		th2[5][i]->Write();
 	}
 	outFile->Close();
 }
