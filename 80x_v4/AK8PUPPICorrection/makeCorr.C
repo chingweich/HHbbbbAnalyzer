@@ -260,6 +260,7 @@ void makeCorr(){
 	tg1[4]->GetXaxis()->SetTitle("jet Pt");
 	tg1[4]->GetYaxis()->SetTitle("M_{PDG}/M_{Reco}");
 	tg1[4]->SetTitle("Gen Correction");
+	tg1[4]->SetMinimum(1);
 	tg1[4]->Draw("APL");
 	tg1[4]->SetFillColor(0);
 	tg1[5]->SetFillColor(0);
@@ -307,13 +308,59 @@ void makeCorr(){
 	tg1[4]->Fit(recoOneBarel);
 	tg1[5]->Fit(recoOneEndcap);
 leg->Clear();
+
+
+ TF1* puppisd_corrGEN      = new TF1("puppisd_corrGEN","[0]+[1]*pow(x*[2],-[3])");
+  puppisd_corrGEN->SetParameters(
+   				 1.00626,
+   				 -1.06161,
+   				 0.07999,
+   				 1.20454
+   				 );
+  TF1* puppisd_corrRECO_cen = new TF1("puppisd_corrRECO_cen","([0]+[1]*x+[2]*pow(x,2)+[3]*pow(x,3)+[4]*pow(x,4)+[5]*pow(x,5))*([6]+[7]*pow(x*[8],-[9]))",200,2000);
+  puppisd_corrRECO_cen->SetParameters(
+   				      1.05807,
+   				      -5.91971e-05,
+   				      2.296e-07,
+   				      -1.98795e-10,
+   				      6.67382e-14,
+   				      -7.80604e-18,
+					 1.00626,
+   				 -1.06161,
+   				 0.07999,
+   				 1.20454
+   				      );
+
+  TF1* puppisd_corrRECO_for = new TF1("puppisd_corrRECO_for","([0]+[1]*x+[2]*pow(x,2)+[3]*pow(x,3)+[4]*pow(x,4)+[5]*pow(x,5))*([6]+[7]*pow(x*[8],-[9]))",200,2000);
+  puppisd_corrRECO_for->SetParameters(
+   				      1.26638,
+   				      -0.000658496,
+   				      9.73779e-07,
+   				      -5.93843e-10,
+   				      1.61619e-13,
+   				      -1.6272e-17,
+						 1.00626,
+   				 -1.06161,
+   				 0.07999,
+   				 1.20454);
+					
+					
+				TF1* n=new TF1("n","puppisd_corrRECO_cen*puppisd_corrGEN");	
+				TF1* n2=new TF1("n","puppisd_corrRECO_for*puppisd_corrGEN");	
   
   leg->AddEntry(tg1[4],"reco barel");
   leg->AddEntry(tg1[5],"reco endcap");
+  leg->AddEntry(puppisd_corrRECO_cen,"Thea barel");
+  leg->AddEntry(puppisd_corrRECO_for,"Thea endcap");
 
 	leg->Draw("same");
 	genBarel->Draw("same");
 	genEndcap->Draw("same");
+	puppisd_corrRECO_cen->SetLineColor(3);
+	puppisd_corrRECO_for->SetLineColor(4);
+	//tg1[2]->Draw("APL");
+	puppisd_corrRECO_cen->Draw("same");
+	puppisd_corrRECO_for->Draw("same");
 	
 	c1->Print("plots/recoOne.pdf");
 	
