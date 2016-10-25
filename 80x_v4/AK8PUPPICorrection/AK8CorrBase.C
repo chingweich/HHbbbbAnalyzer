@@ -23,7 +23,7 @@ void AK8CorrBase(int wMs,int wM, string st,string st2,string option=""){
 	int total=0;
 	
 	TH1D* th1;
-	th1=new TH1D("mass","mass",100,50,150);
+	th1=new TH1D("mass","mass",150,0,150);
 	
 	TH1D* th3;
 	th3=new TH1D("mass","mass",1100,200,2400);
@@ -66,7 +66,8 @@ void AK8CorrBase(int wMs,int wM, string st,string st2,string option=""){
 		dir->GetObject("treeMaker",tree);
 		TreeReader data(tree);
 		total+=data.GetEntriesFast();
-		for(Long64_t jEntry=0; jEntry<data.GetEntriesFast() /2;jEntry++){
+		for(Long64_t jEntry=0; jEntry<data.GetEntriesFast() ;jEntry++){
+			if(jEntry%2)continue;
 			data.GetEntry(jEntry);
 			
 			
