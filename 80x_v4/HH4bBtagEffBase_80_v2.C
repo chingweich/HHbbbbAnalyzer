@@ -92,7 +92,7 @@ void HH4bBtagEffBase_80_v2(int wMs,int wM, string st,string st2,string option=""
 	th5[182]= new TH1D("h_nvtx_cut","h_nvtx_cut",60,0,60);
 	th5[183]= new TH1D("h_ntrue_cut","h_ntrue_cut",60,0,60);
 	
-	string prMass_no[4]={"prMass","prMassL2L3","PuppiSDMass","PuppiSDMassL2L3"};
+	string prMass_no[5]={"prMass","prMassL2L3","PuppiSDMass","PuppiSDMassL2L3","PuppiSDMassThea"};
 	string tau21_no[2]={"tau21","puppiTau21"};
 	for (int i=0;i<4;i++){
 		th5[214+i*2]=new TH1D(Form("%s_j0_noPr_noTau21",prMass_no[i].data()),Form("%s_j0_noPr_noTau21",prMass_no[i].data()),200,0,200);
@@ -102,6 +102,8 @@ void HH4bBtagEffBase_80_v2(int wMs,int wM, string st,string st2,string option=""
 		th5[230+i*2]=new TH1D(Form("%s_j0_noTau21",prMass_no[i].data()),Form("%s_j0_noTau21",prMass_no[i].data()),15,90,150);
 		th5[231+i*2]=new TH1D(Form("%s_j1_noTau21",prMass_no[i].data()),Form("%s_j1_noTau21",prMass_no[i].data()),15,90,150);
 	}
+	th5[265]=new TH1D(Form("%s_j0_noPr",prMass_no[4].data()),Form("%s_j0_noPr",prMass_no[4].data()),200,0,200);
+	th5[266]=new TH1D(Form("%s_j1_noPr",prMass_no[4].data()),Form("%s_j1_noPr",prMass_no[4].data()),200,0,200);
 	for (int i=0;i<2;i++){
 		th5[238+i*2]=new TH1D(Form("%s_j0_noPr_noTau21",tau21_no[i].data()),Form("%s_j0_noPr_noTau21",tau21_no[i].data()),25,0,1);
 		th5[239+i*2]=new TH1D(Form("%s_j1_noPr_noTau21",tau21_no[i].data()),Form("%s_j1_noPr_noTau21",tau21_no[i].data()),25,0,1);
@@ -110,7 +112,7 @@ void HH4bBtagEffBase_80_v2(int wMs,int wM, string st,string st2,string option=""
 		th5[246+i*2]=new TH1D(Form("%s_j0_noTau21",tau21_no[i].data()),Form("%s_j0_noTau21",tau21_no[i].data()),25,0,1);
 		th5[247+i*2]=new TH1D(Form("%s_j1_noTau21",tau21_no[i].data()),Form("%s_j1_noTau21",tau21_no[i].data()),25,0,1);
 	}
-	for(int i=0;i<265;i++){
+	for(int i=0;i<267;i++){
 		th5[i]->Sumw2();
 		th_flavor[0][i]=(TH1D* )th5[i]->Clone(Form("%s_bb",th5[i]->GetTitle()));
 		th_flavor[1][i]=(TH1D* )th5[i]->Clone(Form("%s_b",th5[i]->GetTitle()));
@@ -362,7 +364,31 @@ void HH4bBtagEffBase_80_v2(int wMs,int wM, string st,string st2,string option=""
 			if(nameRoot==2)btaggingscaleFactor=1;
 			double scaleFactor=PU_weight[0]*btaggingscaleFactor;
 			
+			Float_t  FATjetPuppiSDmassThea[2] ={0};
+			FATjetPuppiSDmassThea[0]=FATjetPuppiSDmass[0]*getPUPPIweight(thisJet->Pt(),thisJet->Eta(),tf1);
+			FATjetPuppiSDmassThea[1]=FATjetPuppiSDmass[1]*getPUPPIweight(thatJet->Pt(),thatJet->Eta(),tf1);
+			eta[0]=thisJet->Eta();
+			eta[1]=thatJet->Eta();
+			Float_t*  ADDjet_DoubleSV = data.GetPtrFloat("ADDjet_DoubleSV");
+			Float_t  FATjet_DoubleSV[2]={0};
 			
+			Int_t ADDnJet        = data.GetInt("ADDnJet");
+			bool matchThis=0,matchThat=0;
+			TClonesArray* ADDjetP4 = (TClonesArray*) data.GetPtrTObject("ADDjetP4");
+			for(int i=0;i<ADDnJet;i++){
+				TLorentzVector* thisAddJet ;
+				thisAddJet= (TLorentzVector*)ADDjetP4->At(i);
+				if(!matchThis && thisAddJet->DeltaR(*thisJet)<0.8){
+					matchThis=1;
+					FATjet_DoubleSV[0]=ADDjet_DoubleSV[i];
+					continue;
+				}
+				if(!matchThat && thisAddJet->DeltaR(*thatJet)<0.8){
+					matchThat=1;
+					FATjet_DoubleSV[1]=ADDjet_DoubleSV[i];
+				}
+				if(matchThis&& matchThat)break;
+			}
 			
 			Float_t*  fatjetTau1 = data.GetPtrFloat("FATjetTau1");
 			Float_t*  fatjetTau2 = data.GetPtrFloat("FATjetTau2");
@@ -398,6 +424,7 @@ void HH4bBtagEffBase_80_v2(int wMs,int wM, string st,string st2,string option=""
 					th5[228+i]->Fill(FATjetPuppiSDmassL2L3Corr[i],scaleFactor);
 					th5[242+i]->Fill(tau21[i],scaleFactor);
 					th5[244+i]->Fill(puppiTau21[i],scaleFactor);
+					th5[265+i]->Fill(FATjetPuppiSDmassThea[i],scaleFactor);
 					
 					th_flavor[event_flavor][222+i]->Fill(FATjetPRmass[i],scaleFactor);
 					th_flavor[event_flavor][224+i]->Fill(fatjetPRmassL2L3Corr[i],scaleFactor);
@@ -405,8 +432,10 @@ void HH4bBtagEffBase_80_v2(int wMs,int wM, string st,string st2,string option=""
 					th_flavor[event_flavor][228+i]->Fill(FATjetPuppiSDmassL2L3Corr[i],scaleFactor);
 					th_flavor[event_flavor][242+i]->Fill(tau21[i],scaleFactor);
 					th_flavor[event_flavor][244+i]->Fill(puppiTau21[i],scaleFactor);
+					th_flavor[event_flavor][265+i]->Fill(FATjetPuppiSDmassThea[i],scaleFactor);
 				}
 			}
+			
 			
 			
 			if(fatjetPRmassL2L3Corr[0]<105||fatjetPRmassL2L3Corr[0]>135)continue;
@@ -430,7 +459,7 @@ void HH4bBtagEffBase_80_v2(int wMs,int wM, string st,string st2,string option=""
 			}
 			
 			//9.-----------------------------------------
-			if(tau21[0]>0.6 || tau21[1]>0.6) continue;
+			//if(tau21[0]>0.6 || tau21[1]>0.6) continue;
 			nPass[9]+=PU_weight[0];
 			double tau21_SF=1.031*0.881;
 			if(JESOption==5)tau21_SF=(1.031+0.126)*(0.881+0.49);
@@ -459,31 +488,7 @@ void HH4bBtagEffBase_80_v2(int wMs,int wM, string st,string st2,string option=""
 			 for(int i=5;i<14;i++)th7[i]->Fill(mjj,btaggingscaleFactor*PU_weight[0]*tau21_SF);
 			 fixScaleNum[1]+=PU_weight[0];
 			//--------------------------------------
-			Float_t  FATjetPuppiSDmassThea[2] ={0};
-			FATjetPuppiSDmassThea[0]=FATjetPuppiSDmass[0]*getPUPPIweight(thisJet->Pt(),thisJet->Eta(),tf1);
-			FATjetPuppiSDmassThea[1]=FATjetPuppiSDmass[1]*getPUPPIweight(thatJet->Pt(),thatJet->Eta(),tf1);
-			eta[0]=thisJet->Eta();
-			eta[1]=thatJet->Eta();
-			Float_t*  ADDjet_DoubleSV = data.GetPtrFloat("ADDjet_DoubleSV");
-			Float_t  FATjet_DoubleSV[2]={0};
 			
-			Int_t ADDnJet        = data.GetInt("ADDnJet");
-			bool matchThis=0,matchThat=0;
-			TClonesArray* ADDjetP4 = (TClonesArray*) data.GetPtrTObject("ADDjetP4");
-			for(int i=0;i<ADDnJet;i++){
-				TLorentzVector* thisAddJet ;
-				thisAddJet= (TLorentzVector*)ADDjetP4->At(i);
-				if(!matchThis && thisAddJet->DeltaR(*thisJet)<0.8){
-					matchThis=1;
-					FATjet_DoubleSV[0]=ADDjet_DoubleSV[i];
-					continue;
-				}
-				if(!matchThat && thisAddJet->DeltaR(*thatJet)<0.8){
-					matchThat=1;
-					FATjet_DoubleSV[1]=ADDjet_DoubleSV[i];
-				}
-				if(matchThis&& matchThat)break;
-			}
 			
 			
 			
@@ -602,7 +607,7 @@ void HH4bBtagEffBase_80_v2(int wMs,int wM, string st,string st2,string option=""
 	fixScale->Write();
 	cutflow->Write();
 	
-	for(int i=0;i<265;i++){
+	for(int i=0;i<267;i++){
 		th5[i]->Write();
 		th_flavor[0][i]->Write();
 		th_flavor[1][i]->Write();

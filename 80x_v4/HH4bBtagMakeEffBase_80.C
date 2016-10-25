@@ -148,7 +148,7 @@ void HH4bBtagMakeEffBase_80(int wMs,int wM, string st,string st2,string option="
 			Float_t*  fatjetTau1 = data.GetPtrFloat("FATjetTau1");
 			Float_t*  fatjetTau2 = data.GetPtrFloat("FATjetTau2");
 			double tau21_1=(fatjetTau2[0]/fatjetTau1[0]),tau21_2=(fatjetTau2[1]/fatjetTau1[1]);
-			if(tau21_1>0.6 || tau21_2>0.6) continue;
+			//if(tau21_1>0.6 || tau21_2>0.6) continue;
 			nPass[9]++;
 			
 			//10.btag

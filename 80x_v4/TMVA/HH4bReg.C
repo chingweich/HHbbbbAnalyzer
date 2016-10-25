@@ -402,12 +402,12 @@ void TMVARegressionApplication( int wMs,int wM, string st,string st2,string opti
 			
 			int nDSVTight=0,nDSVMed=0,nDSVLoose=0;
 			if(FATjet_DoubleSV[0]>0.8)nDSVTight++;
-			else if (FATjet_DoubleSV[0]>0.6)nDSVMed++;
-			else if (FATjet_DoubleSV[0]>0.3)nDSVLoose++;
+			if (FATjet_DoubleSV[0]>0.6)nDSVMed++;
+			if (FATjet_DoubleSV[0]>0.3)nDSVLoose++;
 			
 			if(FATjet_DoubleSV[1]>0.8)nDSVTight++;
-			else if (FATjet_DoubleSV[1]>0.6)nDSVMed++;
-			else if (FATjet_DoubleSV[1]>0.3)nDSVLoose++;
+			if (FATjet_DoubleSV[1]>0.6)nDSVMed++;
+			if (FATjet_DoubleSV[1]>0.3)nDSVLoose++;
 			
 			
     
@@ -527,18 +527,19 @@ void TMVARegressionApplication( int wMs,int wM, string st,string st2,string opti
 					&&FATjetPuppiSDmassThea[1]>bmin[j]&& FATjetPuppiSDmassThea[1]<width[i]+bmin[j] && nDSVTight==2)  
 					th3d[2][i][j]->Fill(Mjjcase3,PU_weight[0]);
 					
+					
 					if(fatjetPRmassL2L3Corr[0]>bmin[j] && fatjetPRmassL2L3Corr[0]<width[i]+bmin[j]
-					&&fatjetPRmassL2L3Corr[1]>bmin[j] && fatjetPRmassL2L3Corr[1]<width[i]+bmin[j] && (nDSVTight==1 && nDSVMed==1)) 
+					&&fatjetPRmassL2L3Corr[1]>bmin[j] && fatjetPRmassL2L3Corr[1]<width[i]+bmin[j] && (nDSVLoose==2 && !(nDSVTight==2))) 
 					th3d[3][i][j]->Fill((*thisJet+*thatJet).M()+250-thisJet->M()-thatJet->M(),PU_weight[0]);
 					
 					//if(fatjetPRmassL2L3Corr[0]*varTemp[0]>bmin[j] && fatjetPRmassL2L3Corr[0]*varTemp[0]<width[i]+bmin[j]
 					//&&fatjetPRmassL2L3Corr[1]*varTemp[1]>bmin[j]&& fatjetPRmassL2L3Corr[1]*varTemp[1]<width[i]+bmin[j]  && (nDSVTight==1 && nDSVMed==1))
 					if(FATjetPuppiSDmassThea[0]>bmin[j]&& FATjetPuppiSDmassThea[0]<width[i]+bmin[j]
-					&&FATjetPuppiSDmassThea[1]>bmin[j]&& FATjetPuppiSDmassThea[1]<width[i]+bmin[j] && (nDSVTight==1 && nDSVMed==1))  
+					&&FATjetPuppiSDmassThea[1]>bmin[j]&& FATjetPuppiSDmassThea[1]<width[i]+bmin[j] && (nDSVLoose==2 && !(nDSVTight==2)))  
 					th3d[4][i][j]->Fill((*thisPUPPIJet+*thatPUPPIJet).M()+250-thisPUPPIJet->M()-thatPUPPIJet->M(),PU_weight[0]);
 					
 					if(FATjetPuppiSDmassThea[0]>bmin[j]&& FATjetPuppiSDmassThea[0]<width[i]+bmin[j]
-					&&FATjetPuppiSDmassThea[1]>bmin[j]&& FATjetPuppiSDmassThea[1]<width[i]+bmin[j] && (nDSVTight==1 && nDSVMed==1))  
+					&&FATjetPuppiSDmassThea[1]>bmin[j]&& FATjetPuppiSDmassThea[1]<width[i]+bmin[j] && (nDSVLoose==2 && !(nDSVTight==2)))  
 					th3d[5][i][j]->Fill(Mjjcase3,PU_weight[0]);
 					
 				}

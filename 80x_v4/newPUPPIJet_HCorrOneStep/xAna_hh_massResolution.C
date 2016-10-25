@@ -58,23 +58,37 @@ TF1* puppisd_corrGENEndcap      = new TF1("puppisd_corrGEN","[0]+[1]*pow(x*[2],-
    				   -4.13464e-16);
 				   
 TF1* oneBarel = new TF1("oneBarel","[0]+[1]*x+[2]*pow(x,2)+[3]*pow(x,3)+[4]*pow(x,4)+[5]*pow(x,5)");
-  oneBarel->SetParameters(
+  oneBarel->SetParameters(/*
    				      2.32790e+00,
    				    -4.28162e-03,
    				     5.88872e-06,
    				   -3.69312e-09,
    				    1.07407e-12,
-   				-1.18250e-16
+   				-1.18250e-16*/
+				2.26084e+00,
+				-4.03837e-03,
+				5.54725e-06,
+				-3.46742e-09,
+				1.00377e-12,
+				 -1.09930e-16
    				      );
 
   TF1* oneEndcap = new TF1("oneEndcap","[0]+[1]*x+[2]*pow(x,2)+[3]*pow(x,3)+[4]*pow(x,4)+[5]*pow(x,5)");
   oneEndcap->SetParameters(
+  /*
    				2.85414e+00,
    				-7.67771e-03,
    				 1.43612e-05,
    				-1.33354e-08,
    			 6.11380e-12,
-   				-1.10337e-15);
+   				-1.10337e-15*/
+			2.78161e+00,
+			-7.32847e-03,
+			1.37222e-05,
+			-1.27878e-08,
+			5.89519e-12,
+			-1.07097e-15
+				);
 
   float genCorr  = 1.;
   float recoCorr = 1.;
@@ -589,7 +603,6 @@ void xAna_hh_massResolution(){
 	xAna_hh_massResolutionBase("/data7/chchen/AK8PuppijetGenSDmass/B/B2000.root","B2000.root");
 	xAna_hh_massResolutionBase("/data7/chchen/AK8PuppijetGenSDmass/B/B2500.root","B2500.root");
 	xAna_hh_massResolutionBase("/data7/chchen/AK8PuppijetGenSDmass/B/B3000.root","B3000.root");
-	
 	xAna_hh_massResolutionBase("/data7/chchen/AK8PuppijetGenSDmass/B/B4000.root","B4000.root");
 	xAna_hh_massResolutionBase("/data7/chchen/AK8PuppijetGenSDmass/B/B4500.root","B4500.root");
 	//xAna_hh_massResolutionBase("/data7/chchen/8_0_20/B/B1200.root",PU_up,PU_down);

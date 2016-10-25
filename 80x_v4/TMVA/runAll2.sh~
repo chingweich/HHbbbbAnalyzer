@@ -1,0 +1,8 @@
+#!/bin/bash
+file=mass.txt
+while read line
+do
+    echo $line
+
+    
+done

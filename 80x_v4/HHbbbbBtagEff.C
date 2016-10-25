@@ -33,7 +33,7 @@
 #include "untuplizer.h"
 //#include "jetEnergyScale.h"
 
-#include "getPUPPIweight.h"
+//#include "getPUPPIweight.h"
 #include "standalone_LumiReWeighting.cc"
 #include "standalone_LumiReWeighting.h"
 //#include "CondFormats/BTauObjects/interface/BTagCalibration.h"
@@ -82,15 +82,15 @@ void HHbbbbBtagEff(int a){
 		"/data7/chchen/80x_dsv/QCD/2000/NCUGlobalTuples_",
 		"/data7/chchen/80x_dsv/QCD/2000_1/NCUGlobalTuples_",	
 		
-		"/data7/chchen/80x_dsv/QCDHTbGen/700/NCUGlobalTuples_",
-		"/data7/chchen/80x_dsv/QCDHTbGen/1000/NCUGlobalTuples_",
-		"/data7/chchen/80x_dsv/QCDHTbGen/1500/NCUGlobalTuples_",
-		"/data7/chchen/80x_dsv/QCDHTbGen/2000/NCUGlobalTuples_",
+		"",//"/data7/chchen/80x_dsv/QCDHTbGen/700/NCUGlobalTuples_",
+		"",//"/data7/chchen/80x_dsv/QCDHTbGen/1000/NCUGlobalTuples_",
+		"",//"/data7/chchen/80x_dsv/QCDHTbGen/1500/NCUGlobalTuples_",
+		"",//"/data7/chchen/80x_dsv/QCDHTbGen/2000/NCUGlobalTuples_",
 		
-		"/data7/chchen/80x_dsv/QCDHTbEnriched/700/NCUGlobalTuples_",
-		"/data7/chchen/80x_dsv/QCDHTbEnriched/1000/NCUGlobalTuples_",
-		"/data7/chchen/80x_dsv/QCDHTbEnriched/1500/NCUGlobalTuples_",
-		"/data7/chchen/80x_dsv/QCDHTbEnriched/2000/NCUGlobalTuples_",
+		"",//"/data7/chchen/80x_dsv/QCDHTbEnriched/700/NCUGlobalTuples_",
+		"",//"/data7/chchen/80x_dsv/QCDHTbEnriched/1000/NCUGlobalTuples_",
+		"",//"/data7/chchen/80x_dsv/QCDHTbEnriched/1500/NCUGlobalTuples_",
+		"",//"/data7/chchen/80x_dsv/QCDHTbEnriched/2000/NCUGlobalTuples_",
 		
 	};
 	string  fileName[40]={

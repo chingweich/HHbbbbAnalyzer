@@ -26,41 +26,60 @@ float getPUPPIweight(float puppipt, float puppieta ){
 
   TF1* puppisd_corrGEN      = new TF1("puppisd_corrGEN","[0]+[1]*pow(x*[2],-[3])");
   puppisd_corrGEN->SetParameters(
-   				 1.03886e+00,
-   				1.55461e+01   ,
-				2.28035e-02,
-   				 2.26325e+00
+   				1.08383e+00,
+   				1.80932e+01  ,
+				1.13231e-02,
+   				 4.05749e+00
    				 );
 TF1* puppisd_corrGENEndcap      = new TF1("puppisd_corrGEN","[0]+[1]*pow(x*[2],-[3])");
   puppisd_corrGENEndcap->SetParameters(
-   				 1.03870e+00,
-   				 1.24160e+01,
-   				  1.70157e-02,
-   				 3.21012e+00
+   				1.06913e+00,
+   				1.06485e+01,
+   				1.50484e-02,
+   				3.62054e+00
    				 );
   TF1* puppisd_corrRECO_cen = new TF1("puppisd_corrRECO_cen","[0]+[1]*x+[2]*pow(x,2)+[3]*pow(x,3)+[4]*pow(x,4)+[5]*pow(x,5)");
   puppisd_corrRECO_cen->SetParameters(
-   				      2.55601e+00,
-   				     -6.01870e-03,
-   				      9.09154e-06,
-   				     -6.31291e-09,
-   				      2.04003e-12,
-   				      -2.48504e-16
+   				      1.63082e+00,
+   				    -1.93676e-03,
+   				      2.59101e-06,
+   				   -1.58447e-09,
+   				     4.49982e-13,
+   				-4.85023e-17
    				      );
 
   TF1* puppisd_corrRECO_for = new TF1("puppisd_corrRECO_for","[0]+[1]*x+[2]*pow(x,2)+[3]*pow(x,3)+[4]*pow(x,4)+[5]*pow(x,5)");
   puppisd_corrRECO_for->SetParameters(
-   				     1.91045e+00,
-   				   -2.47797e-03,
-   				     2.42634e-06,
-   				    -2.05978e-10,
-   				     -7.91653e-13,
-   				       2.87195e-16);
+   				    2.07578e+00,
+   				-3.92989e-03,
+   				   6.64560e-06,
+   				 -5.69331e-09,
+   				   2.44060e-12,
+   				   -4.13464e-16);
+				   
+TF1* oneBarel = new TF1("oneBarel","[0]+[1]*x+[2]*pow(x,2)+[3]*pow(x,3)+[4]*pow(x,4)+[5]*pow(x,5)");
+  puppisd_corrRECO_cen->SetParameters(
+   				      2.32790e+00,
+   				    -4.28162e-03,
+   				     5.88872e-06,
+   				   -3.69312e-09,
+   				    1.07407e-12,
+   				-1.18250e-16
+   				      );
+
+  TF1* oneEndcap = new TF1("oneEndcap","[0]+[1]*x+[2]*pow(x,2)+[3]*pow(x,3)+[4]*pow(x,4)+[5]*pow(x,5)");
+  puppisd_corrRECO_for->SetParameters(
+   				2.85414e+00,
+   				-7.67771e-03,
+   				 1.43612e-05,
+   				-1.33354e-08,
+   			 6.11380e-12,
+   				-1.10337e-15);
 
   float genCorr  = 1.;
   float recoCorr = 1.;
   float totalWeight = 1.;
-
+/*
   if( fabs(puppieta)  <= 1.3 )
   genCorr =  puppisd_corrGEN->Eval( puppipt );
 else  genCorr =  puppisd_corrGENEndcap->Eval( puppipt );
@@ -69,6 +88,9 @@ else  genCorr =  puppisd_corrGENEndcap->Eval( puppipt );
     if( fabs(puppieta) > 1.3 ) recoCorr = puppisd_corrRECO_for->Eval( puppipt );
 
   totalWeight = genCorr * recoCorr;
+  */
+   if( fabs(puppieta)  <= 1.3 )totalWeight =  oneBarel->Eval( puppipt );
+else  totalWeight =  oneEndcap->Eval( puppipt );
   // file->Close();
   return totalWeight;
 }
