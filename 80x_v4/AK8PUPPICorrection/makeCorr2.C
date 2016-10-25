@@ -302,6 +302,7 @@ void makeCorr2(){
 	tg1[4]->GetYaxis()->SetTitle("M_{PDG}/M_{Reco}");
 	tg1[4]->SetTitle("Gen Correction");
 	tg1[4]->SetMinimum(1);
+	tg1[4]->SetMaximum(1.5);
 	tg1[4]->Draw("APL");
 	tg1[4]->SetFillColor(0);
 	tg1[5]->SetFillColor(0);
