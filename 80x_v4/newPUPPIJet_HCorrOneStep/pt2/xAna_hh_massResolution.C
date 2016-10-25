@@ -20,34 +20,34 @@ float getPUPPIweight(float puppipt, float puppieta ){
 
   float totalWeight=1;
    if( fabs(puppieta)  <= 1.3 ){
-	   if(puppipt>200 && puppipt<=300)totalWeight=1.67089;
-	   else if(puppipt>300 && puppipt<=400)totalWeight=1.41137;
-	    else if(puppipt>400 && puppipt<=500)totalWeight=1.28994;
-	    else if(puppipt>500 && puppipt<=600)totalWeight=1.21486;
-	   else  if(puppipt>600 && puppipt<=700)totalWeight=1.19433;
-	   else  if(puppipt>700 && puppipt<=800)totalWeight=1.18954;
-	   else  if(puppipt>800 && puppipt<=900)totalWeight=1.1834;
-	   else  if(puppipt>900 && puppipt<=1000)totalWeight=1.18759;
-	  else   if(puppipt>1000 && puppipt<=1250)totalWeight=1.21482;
-	   else  if(puppipt>1250 && puppipt<=1500)totalWeight=1.21597;
-	   else  if(puppipt>1500 && puppipt<=1750)totalWeight=1.23268;
-	   else  if(puppipt>1750 && puppipt<=2000)totalWeight=1.1942;
-	   else  if(puppipt>2000)totalWeight=1.14559;
+	   if(puppipt>200 && puppipt<=300)totalWeight=1.8251;
+	   else if(puppipt>300 && puppipt<=400)totalWeight=1.4101;
+	    else if(puppipt>400 && puppipt<=500)totalWeight=1.24906;
+	    else if(puppipt>500 && puppipt<=600)totalWeight=1.16083;
+	   else  if(puppipt>600 && puppipt<=700)totalWeight=1.14623;
+	   else  if(puppipt>700 && puppipt<=800)totalWeight=1.13851;
+	   else  if(puppipt>800 && puppipt<=900)totalWeight=1.12952;
+	   else  if(puppipt>900 && puppipt<=1000)totalWeight=1.1238;
+	  else   if(puppipt>1000 && puppipt<=1250)totalWeight=1.15479;
+	   else  if(puppipt>1250 && puppipt<=1500)totalWeight=1.15194;
+	   else  if(puppipt>1500 && puppipt<=1750)totalWeight=1.18082;
+	   else  if(puppipt>1750 && puppipt<=2000)totalWeight=1.15492;
+	   else  if(puppipt>2000)totalWeight=1.10885;
    }
 else{
-	  if(puppipt>200 && puppipt<=300)totalWeight=1.6226;
-	  else   if(puppipt>300 && puppipt<=400)totalWeight=1.44047;
-	  else   if(puppipt>400 && puppipt<=500)totalWeight=1.31216;
-	  else   if(puppipt>500 && puppipt<=600)totalWeight=1.26373;
-	  else   if(puppipt>600 && puppipt<=700)totalWeight=1.23108;
-	  else   if(puppipt>700 && puppipt<=800)totalWeight=1.22018;
-	  else  if(puppipt>800 && puppipt<=900)totalWeight=1.21676;
-	  else   if(puppipt>900 && puppipt<=1000)totalWeight=1.20739;
-	  else   if(puppipt>1000 && puppipt<=1250)totalWeight=1.21224;
-	  else   if(puppipt>1250 && puppipt<=1500)totalWeight=1.21192;
-	   else  if(puppipt>1500 && puppipt<=1750)totalWeight=1.20726;
-	   else  if(puppipt>1750 && puppipt<=2000)totalWeight=1.13487;
-	      else  if(puppipt>2000)totalWeight=1.21016;
+	  if(puppipt>200 && puppipt<=300)totalWeight=1.5397;
+	  else   if(puppipt>300 && puppipt<=400)totalWeight=1.41683;
+	  else   if(puppipt>400 && puppipt<=500)totalWeight=1.29611;
+	  else   if(puppipt>500 && puppipt<=600)totalWeight=1.23467;
+	  else   if(puppipt>600 && puppipt<=700)totalWeight=1.18734;
+	  else   if(puppipt>700 && puppipt<=800)totalWeight=1.17678;
+	  else  if(puppipt>800 && puppipt<=900)totalWeight=1.1578;
+	  else   if(puppipt>900 && puppipt<=1000)totalWeight=1.17361;
+	  else   if(puppipt>1000 && puppipt<=1250)totalWeight=1.17921;
+	  else   if(puppipt>1250 && puppipt<=1500)totalWeight=1.21322;
+	   else  if(puppipt>1500 && puppipt<=1750)totalWeight=1.1231;
+	   else  if(puppipt>1750 && puppipt<=2000)totalWeight=1.27456;
+	      else  if(puppipt>2000)totalWeight=1.99435;
 }
   // file->Close();
   return totalWeight;
@@ -192,8 +192,9 @@ void xAna_hh_massResolutionBase(std::string inputFile,TString outputFile,int pt_
     }
 
 
-  for(Long64_t jEntry=25000; jEntry<data.GetEntriesFast() ;jEntry++){
+  for(Long64_t jEntry=0; jEntry<data.GetEntriesFast() ;jEntry++){
 
+  if((jEntry+1)%2)continue;
     if (jEntry % 1000 == 0)
       fprintf(stderr, "Processing event %lli of %lli\n", jEntry + 1, data.GetEntriesFast());
 
