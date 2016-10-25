@@ -42,16 +42,16 @@ void makeCorr2(){
 	}
 	double xsec[9]={1.90,0.763,0.33,0.155,7.65e-2,1.58e-2,3.73e-3,2.08e-4,4.91e-5};
 		
-	double ptBins[14]={200,300,400,500,600,700,800,900,1000,1250,1500,1750,2000,2500};
-	double ptBinsCenter[14]={250,350,450,550,650,750,850,950,1125,1375,1625,1875,2250,2750};
-	double ptBinsCenterE[14]={250,350,450,550,650,750,850,950,1125,1375,1625,1875,2250,2750};
+	double ptBins[14]={300,400,500,600,700,800,900,1000,1250,1500,1750,2000,2500};
+	double ptBinsCenter[14]={350,450,550,650,750,850,950,1125,1375,1625,1875,2250,2750};
+	double ptBinsCenterE[14]={350,450,550,650,750,850,950,1125,1375,1625,1875,2250,2750};
 	double ptBinsError[14]={0};
 	double ptBinsErrorE[14]={0};
 	
 	double mean[6][15];
 	double sigma[6][15];
 	
-	for(int i=0;i<14;i++){
+	for(int i=0;i<13;i++){
 		TH1D* th1=(TH1D	*)f->Get(Form("ptBarel%.0f",ptBins[i]));
 		ptBinsCenter[i]=th1->GetMean();
 		ptBinsError[i]=th1->GetRMS();
@@ -65,7 +65,7 @@ void makeCorr2(){
 		cout<<i<<","<<ptBinsCenterE[i]<<","<<ptBinsErrorE[i]<<endl;
 	}
 	
-	for(int i=0;i<14;i++){
+	for(int i=0;i<13;i++){
 		TH1D* th1=(TH1D*)f->Get(Form("genBarelMass%.0f",ptBins[i]));
 		
 		TH1D* th2=(TH1D*)tf1[0]->Get(Form("genBarelMass%.0f",ptBins[i]));
@@ -91,7 +91,7 @@ void makeCorr2(){
 		else  c1->Print("plots/genBarel.pdf");
 	}
 	
-	for(int i=0;i<14;i++){
+	for(int i=0;i<13;i++){
 		TH1D* th1=(TH1D*)f->Get(Form("genEndcapMass%.0f",ptBins[i]));
 		TF1 *tf1[4];
 	tf1[0]=new TF1("fa1","gaus(25000)",50,150);
@@ -108,7 +108,7 @@ void makeCorr2(){
 		else  c1->Print("plots/genEndcap.pdf");
 	}
 	
-	for(int i=0;i<14;i++){
+	for(int i=0;i<13;i++){
 		TH1D* th1=(TH1D*)f->Get(Form("recoBarelMass%.0f",ptBins[i]));
 		TF1 *tf1[4];
 	if(i==0){
@@ -138,7 +138,7 @@ void makeCorr2(){
 		else  c1->Print("plots/recoBarel.pdf");
 	}
 	
-	for(int i=0;i<14;i++){
+	for(int i=0;i<13;i++){
 		TH1D* th1=(TH1D*)f->Get(Form("recoEndcapMass%.0f",ptBins[i]));
 		TF1 *tf1[4];
 		if(i<2){
@@ -164,7 +164,7 @@ void makeCorr2(){
 	
 	}
 	
-	for(int i=0;i<14;i++){
+	for(int i=0;i<13;i++){
 		TH1D* th1=(TH1D*)f->Get(Form("recoBarelMass%.0f",ptBins[i]));
 		TF1 *tf1[4];
 		tf1[0]=new TF1("fa1","gaus(25000)",50,150);
@@ -180,7 +180,7 @@ void makeCorr2(){
 		
 	}
 	
-	for(int i=0;i<14;i++){
+	for(int i=0;i<13;i++){
 		TH1D* th1=(TH1D*)f->Get(Form("recoEndcapMass%.0f",ptBins[i]));
 		TF1 *tf1[4];
 		tf1[0]=new TF1("fa1","gaus(25000)",50,150);
@@ -197,13 +197,13 @@ void makeCorr2(){
 	
 	
 	TGraphErrors* tg1[6];
-	tg1[0]=new TGraphErrors(13,ptBinsCenter,mean[0],ptBinsError,sigma[0]);
-	tg1[1]=new TGraphErrors(11,ptBinsCenter,mean[1],ptBinsError,sigma[1]);
-	tg1[2]=new TGraphErrors(13,ptBinsCenter,mean[2],ptBinsError,sigma[2]);
-	tg1[3]=new TGraphErrors(11,ptBinsCenter,mean[3],ptBinsError,sigma[3]);
+	tg1[0]=new TGraphErrors(12,ptBinsCenter,mean[0],ptBinsError,sigma[0]);
+	tg1[1]=new TGraphErrors(9,ptBinsCenter,mean[1],ptBinsError,sigma[1]);
+	tg1[2]=new TGraphErrors(12,ptBinsCenter,mean[2],ptBinsError,sigma[2]);
+	tg1[3]=new TGraphErrors(9,ptBinsCenter,mean[3],ptBinsError,sigma[3]);
 	
-	tg1[4]=new TGraphErrors(13,ptBinsCenter,mean[4],ptBinsError,sigma[4]);
-	tg1[5]=new TGraphErrors(11,ptBinsCenter,mean[5],ptBinsError,sigma[5]);
+	tg1[4]=new TGraphErrors(12,ptBinsCenter,mean[4],ptBinsError,sigma[4]);
+	tg1[5]=new TGraphErrors(9,ptBinsCenter,mean[5],ptBinsError,sigma[5]);
 	
 	for(int i=0;i<14;i++)cout<<i<<"="<<mean[4][i]<<endl;
 	for(int i=0;i<14;i++)cout<<i<<"="<<mean[5][i]<<endl;
