@@ -111,12 +111,7 @@ void makeCorr2(){
 	for(int i=0;i<13;i++){
 		TH1D* th1=(TH1D*)f->Get(Form("recoBarelMass%.0f",ptBins[i]));
 		TF1 *tf1[4];
-	if(i==0){
-		tf1[0]=new TF1("fa1","gaus(25000)",20,100);
-		th1->Fit(tf1[0],"","",20,100);
-	}
-	
-	else if(i<2){
+	if(i<2){
 			tf1[0]=new TF1("fa1","gaus(25000)",th1->GetMaximumBin()-30,th1->GetMaximumBin()+30);
 		th1->Fit(tf1[0],"","",th1->GetMaximumBin()-30,th1->GetMaximumBin()+30);
 		}
