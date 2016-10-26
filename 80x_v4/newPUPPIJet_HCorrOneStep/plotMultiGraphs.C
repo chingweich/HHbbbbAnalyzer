@@ -151,7 +151,7 @@ void plotMultiGraphs(){
     mg_h->GetXaxis()->SetTitle("Jet Pt[GeV]");
     mg_h->GetYaxis()->SetTitleOffset(1.1);
     mg_h->GetYaxis()->SetTitle("#sigma of (Mass-125)/125");
-    mg_h->GetYaxis()->SetRangeUser(0.05,0.3);
+    mg_h->GetYaxis()->SetRangeUser(0.05,0.2);
     
     leg->Draw("same");
     
@@ -171,7 +171,7 @@ void plotMultiGraphs(){
     mg_a->GetXaxis()->SetTitle("Jet Pt[GeV]");
     mg_a->GetYaxis()->SetTitleOffset(1.1);
     mg_a->GetYaxis()->SetTitle("#sigma/Mean of mass");
-    mg_a->GetYaxis()->SetRangeUser(0.07,0.3);
+    mg_a->GetYaxis()->SetRangeUser(0.07,0.2);
     
     leg->Draw("same");
     
