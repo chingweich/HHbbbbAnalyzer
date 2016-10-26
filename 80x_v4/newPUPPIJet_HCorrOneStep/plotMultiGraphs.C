@@ -124,7 +124,7 @@ void plotMultiGraphs(){
     mg->GetYaxis()->SetTitle("Mean of (Mass-125)/125");
     mg->GetYaxis()->SetRangeUser(-0.3,0.2);
     
-    TLegend* leg = new TLegend(0.148,0.634,0.397,0.877);
+    TLegend* leg = new TLegend(0.648,0.704,0.397,0.877);
     leg->SetFillColor(0);
     leg->SetFillStyle(0);
     leg->SetTextSize(0.05);
