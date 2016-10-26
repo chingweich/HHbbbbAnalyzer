@@ -53,23 +53,51 @@ void plotAllMassVariables(std::string inputFile){
   float max[3]={-9999,-9999,-9999};
   float maxdiff[3]={-9999,-9999,-9999};
   
+  double hmassFit[4][NTYPES][NHISTOS];
+  double hdiffmassFit[4][NTYPES][NHISTOS];
+  gStyle->SetOptStat(0);
+		gStyle->SetOptFit(0);
   for(int i=0; i < NTYPES;i++){
     for(int k=0; k < NHISTOS; k++){
+	 TF1 *tf1[4];
+	 	
+		
+	    
       hmass[i][k] = (TH1F*)inf->FindObjectAny(Form("h_%s_%s",name[i].data(),prefix[k].data()));
       hmass[i][k]->Scale(1.0/hmass[i][k]->Integral());
       if( hmass[i][k]->GetMaximum()>max[k])
 	max[k]=hmass[i][k]->GetMaximum();
+tf1[0]=new TF1("fa1","gaus(25000)", hmass[i][k]->GetBinCenter(hmass[i][k]->GetMaximumBin())-20, hmass[i][k]->GetBinCenter(hmass[i][k]->GetMaximumBin())+20);
+tf1[0] ->SetLineColor(COLORS[i]);
+ hmass[i][k]->Fit(tf1[0],"","", hmass[i][k]->GetBinCenter(hmass[i][k]->GetMaximumBin())-20, hmass[i][k]->GetBinCenter(hmass[i][k]->GetMaximumBin())+20);
+//tf1[0] ->SetLineColor(COLORS[i]);
+
+
+ hmassFit[0][i][k]=tf1[0]->GetParameter(1);
+ hmassFit[1][i][k]=tf1[0]->GetParError(1);
+ hmassFit[2][i][k]=tf1[0]->GetParameter(2);
+ hmassFit[3][i][k]=tf1[0]->GetParError(2);
+
+		
 
       hdiffmass[i][k] = (TH1F*)inf->FindObjectAny(Form("h_diff_%s_%s",name[i].data(),prefix[k].data()));						  
       hdiffmass[i][k]->Scale(1.0/hdiffmass[i][k]->Integral());
       if( hdiffmass[i][k]->GetMaximum()>maxdiff[k])
 	maxdiff[k]=hdiffmass[i][k]->GetMaximum();
+tf1[1]=new TF1("fa1","gaus(25000)", hdiffmass[i][k]->GetBinCenter(hdiffmass[i][k]->GetMaximumBin())-0.2, hdiffmass[i][k]->GetBinCenter(hdiffmass[i][k]->GetMaximumBin())+0.2);
+		tf1[1] ->SetLineColor(COLORS[i]);
+hdiffmass[i][k]->Fit(tf1[1],"","", hdiffmass[i][k]->GetBinCenter(hdiffmass[i][k]->GetMaximumBin())-0.2, hdiffmass[i][k]->GetBinCenter(hdiffmass[i][k]->GetMaximumBin())+0.2);
+
+hdiffmassFit[0][i][k]=tf1[1]->GetParameter(1);
+ hdiffmassFit[1][i][k]=tf1[1]->GetParError(1);
+ hdiffmassFit[2][i][k]=tf1[1]->GetParameter(2);
+ hdiffmassFit[3][i][k]=tf1[1]->GetParError(2);
     }
   }
   
   TCanvas* c1 = new TCanvas("c1","",500,500);
 
-  TLegend* leg = new TLegend(0.179,0.592,0.426,0.882);
+  TLegend* leg = new TLegend(0.179,0.692,0.326,0.882);
   leg->SetFillColor(0);
   leg->SetFillStyle(0);
   leg->SetTextSize(0.05);
@@ -130,20 +158,22 @@ void plotAllMassVariables(std::string inputFile){
       ofstream fout;
       fout.open(Form("%s_%s.dat",prefix[k].data(),name[i].data()),ios::out | ios::app);
 
-      string tagname="RMS = ";
-      tagname += Form("%.3f",hdiffmass[i][k]->GetRMS());
+      string tagname="Sigma = ";
+      tagname += Form("%.3f",hdiffmassFit[2][i][k]);
       string tagname2="FWHM = ";
       tagname2 += Form("%.3f",FWHM(hdiffmass[i][k])); 
       string tagname3="Mean = ";
-      tagname3 += Form("%.3f",hdiffmass[i][k]->GetMean());
+      tagname3 += Form("%.3f",hdiffmassFit[0][i][k]);
 
-      fout << hdiffmass[i][k]->GetMean() << " " << hdiffmass[i][k]->GetMeanError() << " " << hdiffmass[i][k]->GetRMS() << " " << hdiffmass[i][k]->GetRMSError()  << endl;
+      //fout << hdiffmass[i][k]->GetMean() << " " << hdiffmass[i][k]->GetMeanError() << " " << hdiffmass[i][k]->GetRMS() << " " << hdiffmass[i][k]->GetRMSError()  << endl;
+      fout << hdiffmassFit[0][i][k] << " " << hdiffmassFit[1][i][k] << " " << hdiffmassFit[2][i][k] << " " << hdiffmassFit[3][i][k]  << endl;
       fout.close();
 
       ofstream fout2;
       fout2.open(Form("rel_%s_%s.dat",prefix[k].data(),name[i].data()),ios::out | ios::app);
-
-      fout2 << hmass[i][k]->GetMean() << " " << hmass[i][k]->GetMeanError() << " " << hmass[i][k]->GetRMS() << " " << hmass[i][k]->GetRMSError()  << endl;
+	 fout << hmassFit[0][i][k] << " " << hmassFit[1][i][k] << " " << hmassFit[2][i][k] << " " << hmassFit[3][i][k]  << endl;
+      //fout2 << hmass[i][k]->GetMean() << " " << hmass[i][k]->GetMeanError() << " " << hmass[i][k]->GetRMS() << " " << hmass[i][k]->GetRMSError()  << endl;
+      //fout2 << hmass[i][k]->GetMean() << " " << hmass[i][k]->GetMeanError() << " " << hmass[i][k]->GetRMS() << " " << hmass[i][k]->GetRMSError()  << endl;
       fout2.close();
  
       leg2->AddEntry(hdiffmass[i][k], name[i].data(),"l");
