@@ -120,7 +120,7 @@ void makeCorr2(){
 		th1->Fit(tf1[0],"","",th1->GetMaximumBin()-15,th1->GetMaximumBin()+15);
 		}
 		mean[4][i]=125/tf1[0]->GetParameter(1);
-		sigma[4][i]=tf1[0]->GetParError(1)/tf1[0]->GetParameter(1);
+		sigma[4][i]=tf1[0]->GetParError(1)*(125/tf1[0]->GetParameter(1))/tf1[0]->GetParameter(1);
 		//mean[4][i]=125/th1->GetMean();
 		//sigma[4][i]=th1->GetMeanError()/th1->GetMean();
 		th1->Draw();
@@ -146,7 +146,7 @@ void makeCorr2(){
 		}
 	
 		mean[5][i]=125/tf1[0]->GetParameter(1);
-		sigma[5][i]=tf1[0]->GetParError(1)/tf1[0]->GetParameter(1);
+		sigma[5][i]=tf1[0]->GetParError(1)*(125/tf1[0]->GetParameter(1)	)/tf1[0]->GetParameter(1);
 		//mean[5][i]=125/th1->GetMean();
 		//sigma[5][i]=th1->GetMeanError()/th1->GetMean();
 			th1->Draw();
@@ -340,7 +340,7 @@ f2->SetParameters(
 6.50081,
 0.7995);
 
-TF1* f3 = new TF1("f3","[0]/sqrt(x)+[1]/x+[2]");
+TF1* f3 =  new TF1("fendcap","[0]+[1]/sqrt(x)+[2]/x+[3]/pow(x,0.75)");
 /*f3->SetParameters(
 -26.9944,
 434.986,
