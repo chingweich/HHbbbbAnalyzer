@@ -134,7 +134,7 @@ void makeCorr2(){
 		//cout<<i<<"="<<mean[4][i]<<endl;
 		
 	if(i==0)c1->Print("plots/recoBarel.pdf(");
-		else if(i==13)c1->Print("plots/recoBarel.pdf)");
+		else if(i==12)c1->Print("plots/recoBarel.pdf)");
 		else  c1->Print("plots/recoBarel.pdf");
 	}
 	
@@ -159,7 +159,7 @@ void makeCorr2(){
 		tf1[0]->Draw("same");
 	//cout<<i<<"="<<mean[5][i]<<endl;
 	if(i==0)c1->Print("plots/recoEndcap.pdf(");
-		else if(i==13)c1->Print("plots/recoEndcap.pdf)");
+		else if(i==12)c1->Print("plots/recoEndcap.pdf)");
 		else  c1->Print("plots/recoEndcap.pdf");
 	
 	}
