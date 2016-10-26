@@ -333,29 +333,31 @@ void makeCorr2(){
    				 );
 	*/
 	
-	  TF1* recoOneBarel = new TF1("recoBarel","[0]+[1]*x+[2]*pow(x,2)+[3]*pow(x,3)+[4]*pow(x,4)+[5]*pow(x,5)");
-  recoBarel->SetParameters(
-   				       1.63082e+00,
-   				    -1.93676e-03,
-   				      2.59101e-06,
-   				   -1.58447e-09,
-   				     4.49982e-13,
-   				-4.85023e-17
-   				      );
-		  TF1* recoOneEndcap= new TF1("recoEndcap","[0]+[1]*x+[2]*pow(x,2)+[3]*pow(x,3)+[4]*pow(x,4)+[5]*pow(x,5)");
-  recoEndcap->SetParameters(
-   				        2.07578e+00,
-   				-3.92989e-03,
-   				   6.64560e-06,
-   				 -5.69331e-09,
-   				   2.44060e-12,
-   				   -4.13464e-16
-   				      );
+	  TF1* f2 = new TF1("f2","[0]/pow(x,0.5)+[1]/pow(x,[7])+[2]*x+[3]+[4]/x+[5]/pow(x,[6])");
+
+f2->SetParameters(
+-1356.74,
+12127.2,
+-0.00129311,
+15.6148,
+-18669.2,
+5.14592e+4,
+6.50081,
+0.7995);
+
+TF1* f3 = new TF1("f3","[0]/sqrt(x)+[1]/x+[2]");
+/*f3->SetParameters(
+-26.9944,
+434.986,
+1.62699);*/
 	
-	recoOneBarel->SetLineColor(1);
-	recoOneEndcap->SetLineColor(2);
-	tg1[4]->Fit(recoOneBarel,"","",200,2000);
-	tg1[5]->Fit(recoOneEndcap,"","",200,2000);
+	f2->SetLineColor(1);
+	f3->SetLineColor(2);
+	tg1[4]->Fit(f2,"","",200,2000);
+	tg1[4]->Fit(f2,"","",200,2000);
+	tg1[4]->Fit(f2,"","",200,2000);
+	tg1[5]->Fit(f3,"","",200,2000);
+	tg1[5]->Fit(f3,"","",200,2000);
 leg->Clear();
 
 
