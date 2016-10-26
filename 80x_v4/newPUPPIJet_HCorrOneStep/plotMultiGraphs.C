@@ -21,13 +21,15 @@ using namespace std;
 void plotMultiGraphs(){
 
   std::string prefix[]={"leading","subleading","both"};
-  std::string name[]={"SDCorr","PR","PRCorr","AK8SD","AK8SDCorrThea"};
+  std::string name[]={"PR","PRCorr","AK8SD","AK8SDCorrThea","AK8SDHCorr"};
 
   const int NTYPES=5;
-  float mass[9]={1200,1400,1600,1800,2000,2500,3000,4000,4500};
-  int MARKERS[7]={20,21,22,23,34,29,24};
+  float mass[10]={1200,1400,1600,1800,2000,2500,3000,4000,4500};
+ // int MARKERS[7]={20,21,22,23,34,29,24};
+  int MARKERS[7]={23,34,20,22,21};
   //int COLORS[NTYPES]={1,4,2,kOrange,kGreen+2};
-   int COLORS[] ={1,2,4,8,kOrange-3,kCyan+2,kGreen+3};
+  // int COLORS[] ={1,2,4,8,kOrange-3,kCyan+2,kGreen+3};
+   int COLORS[] ={kOrange,kGreen+2,1,2,4};
   setNCUStyle(true);
 
   
@@ -59,7 +61,9 @@ void plotMultiGraphs(){
 	for(int il=0; il<9; il++)
 	  {
 	    fin >> mean[il] >> meanerr[il] >> RMS[il] >> RMSerr[il];
-	    masserr[il]=100;
+	    masserr[il]=2;
+	    //meanerr[il]/=mean[il];
+	    //RMSerr[il]/=RMS[il];
 	  }
 	fin.close();
 
@@ -93,6 +97,7 @@ void plotMultiGraphs(){
 				   pow(meanerr[il]/mean[il],2));
 	    rel[il] = yield;
 	    relerr[il] = err;
+	    cout<<yield<<","<<err<<endl;
 	  }
 	fin2.close();
 
@@ -114,10 +119,10 @@ void plotMultiGraphs(){
 
 
     mg->Draw("AP");
-    mg->GetXaxis()->SetTitle("M_{bulkG} [GeV]");
+    mg->GetXaxis()->SetTitle("Jet Pt[GeV]");
     mg->GetYaxis()->SetTitleOffset(1.1);
     mg->GetYaxis()->SetTitle("Mean of (Mass-125)/125");
-    mg->GetYaxis()->SetRangeUser(-0.25,0.1);
+    mg->GetYaxis()->SetRangeUser(-0.3,0.2);
     
     TLegend* leg = new TLegend(0.148,0.634,0.397,0.877);
     leg->SetFillColor(0);
@@ -143,10 +148,10 @@ void plotMultiGraphs(){
 		 );
     
     mg_h->Draw("AP");
-    mg_h->GetXaxis()->SetTitle("M_{bulkG} [GeV]");
+    mg_h->GetXaxis()->SetTitle("Jet Pt[GeV]");
     mg_h->GetYaxis()->SetTitleOffset(1.1);
-    mg_h->GetYaxis()->SetTitle("RMS of (Mass-125)/125");
-    mg_h->GetYaxis()->SetRangeUser(0.1,0.22);
+    mg_h->GetYaxis()->SetTitle("#sigma of (Mass-125)/125");
+    mg_h->GetYaxis()->SetRangeUser(0.05,0.3);
     
     leg->Draw("same");
     
@@ -163,10 +168,10 @@ void plotMultiGraphs(){
 		 );
     
     mg_a->Draw("AP");
-    mg_a->GetXaxis()->SetTitle("M_{bulkG} [GeV]");
+    mg_a->GetXaxis()->SetTitle("Jet Pt[GeV]");
     mg_a->GetYaxis()->SetTitleOffset(1.1);
-    mg_a->GetYaxis()->SetTitle("RMS/Mean of mass");
-    mg_a->GetYaxis()->SetRangeUser(0.08,0.25);
+    mg_a->GetYaxis()->SetTitle("#sigma/Mean of mass");
+    mg_a->GetYaxis()->SetRangeUser(0.07,0.3);
     
     leg->Draw("same");
     

@@ -24,7 +24,7 @@ void plotMultiGraphs(){
   std::string name[]={"PR","PRCorr","AK8SD","AK8SDCorrThea","AK8SDHCorr"};
 
   const int NTYPES=5;
-  float mass[11]={200,300,400,500,600,700,800,900,1000,1250,1500};
+  float mass[10]={300,400,500,600,700,800,900,1000,1250,1500};
  // int MARKERS[7]={20,21,22,23,34,29,24};
   int MARKERS[7]={23,34,20,22,21};
   //int COLORS[NTYPES]={1,4,2,kOrange,kGreen+2};

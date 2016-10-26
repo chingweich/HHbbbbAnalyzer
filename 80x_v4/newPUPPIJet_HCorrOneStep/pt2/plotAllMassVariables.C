@@ -61,14 +61,16 @@ void plotAllMassVariables(std::string inputFile){
     for(int k=0; k < NHISTOS; k++){
 	 TF1 *tf1[4];
 	 	
-		
+	//hmass[i][k]->Sumw2();
 	    
       hmass[i][k] = (TH1F*)inf->FindObjectAny(Form("h_%s_%s",name[i].data(),prefix[k].data()));
+	hmass[i][k]->Sumw2();
       hmass[i][k]->Scale(1.0/hmass[i][k]->Integral());
       if( hmass[i][k]->GetMaximum()>max[k])
 	max[k]=hmass[i][k]->GetMaximum();
 tf1[0]=new TF1("fa1","gaus(25000)", hmass[i][k]->GetBinCenter(hmass[i][k]->GetMaximumBin())-20, hmass[i][k]->GetBinCenter(hmass[i][k]->GetMaximumBin())+20);
 tf1[0] ->SetLineColor(COLORS[i]);
+ hmass[i][k]->Fit(tf1[0],"","", hmass[i][k]->GetBinCenter(hmass[i][k]->GetMaximumBin())-20, hmass[i][k]->GetBinCenter(hmass[i][k]->GetMaximumBin())+20);
  hmass[i][k]->Fit(tf1[0],"","", hmass[i][k]->GetBinCenter(hmass[i][k]->GetMaximumBin())-20, hmass[i][k]->GetBinCenter(hmass[i][k]->GetMaximumBin())+20);
 //tf1[0] ->SetLineColor(COLORS[i]);
 
@@ -78,12 +80,14 @@ tf1[0] ->SetLineColor(COLORS[i]);
  hmassFit[2][i][k]=tf1[0]->GetParameter(2);
  hmassFit[3][i][k]=tf1[0]->GetParError(2);
 
-		
+	//hdiffmass[i][k]->Sumw2();
 
-      hdiffmass[i][k] = (TH1F*)inf->FindObjectAny(Form("h_diff_%s_%s",name[i].data(),prefix[k].data()));						  
+      hdiffmass[i][k] = (TH1F*)inf->FindObjectAny(Form("h_diff_%s_%s",name[i].data(),prefix[k].data()));			
+hdiffmass[i][k]->Sumw2();	
       hdiffmass[i][k]->Scale(1.0/hdiffmass[i][k]->Integral());
       if( hdiffmass[i][k]->GetMaximum()>maxdiff[k])
 	maxdiff[k]=hdiffmass[i][k]->GetMaximum();
+tf1[1]=new TF1("fa1","gaus(25000)", hdiffmass[i][k]->GetBinCenter(hdiffmass[i][k]->GetMaximumBin())-0.2, hdiffmass[i][k]->GetBinCenter(hdiffmass[i][k]->GetMaximumBin())+0.2);
 tf1[1]=new TF1("fa1","gaus(25000)", hdiffmass[i][k]->GetBinCenter(hdiffmass[i][k]->GetMaximumBin())-0.2, hdiffmass[i][k]->GetBinCenter(hdiffmass[i][k]->GetMaximumBin())+0.2);
 		tf1[1] ->SetLineColor(COLORS[i]);
 hdiffmass[i][k]->Fit(tf1[1],"","", hdiffmass[i][k]->GetBinCenter(hdiffmass[i][k]->GetMaximumBin())-0.2, hdiffmass[i][k]->GetBinCenter(hdiffmass[i][k]->GetMaximumBin())+0.2);
@@ -171,7 +175,7 @@ hdiffmassFit[0][i][k]=tf1[1]->GetParameter(1);
 
       ofstream fout2;
       fout2.open(Form("rel_%s_%s.dat",prefix[k].data(),name[i].data()),ios::out | ios::app);
-	 fout << hmassFit[0][i][k] << " " << hmassFit[1][i][k] << " " << hmassFit[2][i][k] << " " << hmassFit[3][i][k]  << endl;
+	 fout2 << hmassFit[0][i][k] << " " << hmassFit[1][i][k] << " " << hmassFit[2][i][k] << " " << hmassFit[3][i][k]  << endl;
       //fout2 << hmass[i][k]->GetMean() << " " << hmass[i][k]->GetMeanError() << " " << hmass[i][k]->GetRMS() << " " << hmass[i][k]->GetRMSError()  << endl;
       //fout2 << hmass[i][k]->GetMean() << " " << hmass[i][k]->GetMeanError() << " " << hmass[i][k]->GetRMS() << " " << hmass[i][k]->GetRMSError()  << endl;
       fout2.close();
