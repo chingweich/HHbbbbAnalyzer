@@ -191,45 +191,7 @@ void AK8CorrBase(int wMs,int wM, string st,string st2,string option=""){
 			Float_t*  AK8PuppijetSDmass = data.GetPtrFloat("AK8PuppijetSDmass");
 			int* AK8PuppinSubSDJet=data.GetPtrInt("AK8PuppinSubSDJet");
 			
-			 TLorentzVector *leadjet = (TLorentzVector*)AK8PuppijetP4->At(matchedHAK8JetIndex[0]);
-			TLorentzVector *subljet = (TLorentzVector*)AK8PuppijetP4->At(matchedHAK8JetIndex[1]);
-			
-			 int n_neutrinos_lead=0;
-    TLorentzVector neutrinos_lead_p4;
-
-    int n_neutrinos_subl=0;
-    TLorentzVector neutrinos_subl_p4;    
-
-    for(int ig=0; ig < nGenPar; ig++){
-      
-      int pid =abs(genParId[ig]);
-      int mom_pid = abs(genMomParId[ig]);
-      if(genParSt[ig]!=1)continue;
-      
-      if(pid!=12 && pid!=14 && pid!=16)continue;
-    
-      // look for daughters of charm and b hadrons
-      // bhadrons can decay to l nu + charm hadrons 
-      // charm hadrons could further decay to l nu + other hadrons
-      
-      if(mom_pid < 400 || mom_pid > 600)continue;
-      
-      TLorentzVector* thisGen = (TLorentzVector*)genParP4->At(ig);
-      
-      if(thisGen->DeltaR(*leadjet)<0.8) { 
-	n_neutrinos_lead++;
-	neutrinos_lead_p4 += *thisGen; 
-      }
-      else if(thisGen->DeltaR(*subljet)<0.8) { 
-	n_neutrinos_subl++;
-	neutrinos_subl_p4 += *thisGen;
-      }
-      else continue;
-      
-    }
-    
-    if(n_neutrinos_lead > 0||  n_neutrinos_subl > 0)continue;
-			
+		
 			for(int i=0; i<2;i++){
 		
 				

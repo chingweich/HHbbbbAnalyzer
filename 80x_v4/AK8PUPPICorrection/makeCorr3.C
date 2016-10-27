@@ -34,6 +34,9 @@ void makeCorr3(){
 	TFile *f;
 	f=TFile::Open("corr2/corr.root");
 	
+	TFile *f2;
+	f2=TFile::Open("pdgToReco2.root");
+	
 	TFile* tf1[9];
 	int masspoint[9]={1200,1400,1600,1800,2000,2500,3000,4000,4500};
 	for(int i=0;i<9;i++){
@@ -90,7 +93,7 @@ void makeCorr3(){
 		//sigma[4][i]=th1->GetMeanError()/th1->GetMean();
 		
 		//cout<<i<<"="<<mean[4][i]<<endl;
-		sigma[4][i]=0;
+		//sigma[4][i]=0;
 		th1->SetTitle(Form("%.0f",ptBins[i]));
 		if(i==0)c1->Print(Form("plots/recoBarel%d.pdf(",masspoint[k]));
 		else if(i==12)c1->Print(Form("plots/recoBarel%d.pdf)",masspoint[k]));
@@ -161,6 +164,15 @@ void makeCorr3(){
 	}
 	}
 	
+	
+	TGraphErrors* te1=(TGraphErrors*)f2->Get("barel");
+	leg->AddEntry(te1,"avg");
+	te1->Draw("samePL");
+	te1->SetLineColor(1);
+	te1->SetLineWidth(3);
+	te1->SetMarkerColor(1);
+	te1->SetMarkerSize(1.5);
+	te1->SetMarkerStyle(20);
 	leg->Draw("same");
 	c1->Print("plots/recoOneBarel.pdf");
 	
@@ -198,7 +210,7 @@ void makeCorr3(){
 		//sigma[4][i]=th1->GetMeanError()/th1->GetMean();
 		
 		//cout<<i<<"="<<mean[4][i]<<endl;
-		sigma[4][i]=0;
+		//sigma[4][i]=0;
 		th1->SetTitle(Form("%.0f",ptBins[i]));
 		if(i==0)c1->Print(Form("plots/recoEndcap%d.pdf(",masspoint[k]));
 		else if(i==12)c1->Print(Form("plots/recoEndcap%d.pdf)",masspoint[k]));
@@ -268,7 +280,14 @@ void makeCorr3(){
 		}
 	}
 	}
-	
+	 te1=(TGraphErrors*)f2->Get("endcap");
+	leg->AddEntry(te1,"avg");
+	te1->Draw("samePL");
+	te1->SetLineColor(1);
+	te1->SetLineWidth(3);
+	te1->SetMarkerColor(1);
+	te1->SetMarkerSize(1.5);
+	te1->SetMarkerStyle(20);
 	leg->Draw("same");
 	c1->Print("plots/recoOneEndcap.pdf");
 	
