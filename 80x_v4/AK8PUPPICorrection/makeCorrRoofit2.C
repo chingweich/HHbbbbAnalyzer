@@ -51,6 +51,7 @@
 #include "RooAbsPdf.h"
 #include "RooRealProxy.h"
 #include "RooBifurGauss.h"
+#define nMasspoint 13
 
 TCanvas* c1;
 
@@ -63,63 +64,110 @@ void makeCorrRoofit2(){
 	TFile *f;
 	f=TFile::Open("corr2/corr.root");
 	
-	TFile* tf1[9];
-	int masspoint[9]={1200,1400,1600,1800,2000,2500,3000,4000,4500};
-	for(int i=0;i<9;i++){
+	
+	TFile* tf1[nMasspoint];
+	int masspoint[nMasspoint]={700,800,900,1000,1200,1400,1600,1800,2000,2500,3000,4000,4500};
+	for(int i=0;i<nMasspoint;i++){
 		tf1[i]=TFile::Open(Form("corr2/B%d.root",masspoint[i]));
 		//f[i+11]=TFile::Open(Form("R%s.root",masspoint[i].data()));
 	}
 	double xsec[9]={1.90,0.763,0.33,0.155,7.65e-2,1.58e-2,3.73e-3,2.08e-4,4.91e-5};
 		
-	double ptBins[14]={300,400,500,600,700,800,900,1000,1250,1500,1750,2000,2500};
-	double ptBinsCenter[14]={350,450,550,650,750,850,950,1125,1375,1625,1875,2250,2750};
-	double ptBinsCenterE[14]={350,450,550,650,750,850,950,1125,1375,1625,1875,2250,2750};
-	double ptBinsError[14]={0};
-	double ptBinsErrorE[14]={0};
+	double ptBins[14]={200,300,400,500,600,700,800,900,1000,1250,1500,1750,2000,2500};
+	double ptBinsCenter[16]={350,450,550,650,750,850,950,1125,1375,1625,1875,2250,2750};
+	double ptBinsCenterE[16]={350,450,550,650,750,850,950,1125,1375,1625,1875,2250,2750};
+	double ptBinsError[16]={0};
+	double ptBinsErrorE[16]={0};
 	
-	double mean[6][15];
-	double sigma[6][15];
+	double mean[2][16];
+	double sigma[2][16];
 	
-	for(int i=0;i<9;i++){
+	RooRealVar xpt("x","x",0,3200) ;
+	
+	for(int i=0;i<nMasspoint;i++){
 		TH1D* th1=(TH1D	*)tf1[i]->Get(Form("ptBarel%.0f",ptBins[0]));
 		for(int j=1;j<14;j++){
 			TH1D* th2=(TH1D	*)tf1[i]->Get(Form("ptBarel%.0f",ptBins[j]));
+			//cout<<"i="<<i<<",j="<<j<<","<<th2->GetEntries()<<endl;
 			th1->Add(th2);
+			delete th2;
 		}
+		/*
+		RooDataHist dh("dh","dh",xpt,Import(*th1)) ;
+		RooRealVar m0("m0","m0",masspoint[i]/2,0,2000);
+		RooRealVar sig("sigma","sigma",50,0,500);
+		RooRealVar alpha("alpha","alpha",1,0,10);
+		RooRealVar n("n","n",1,0,50);
+		RooCBShape CB("CB","CB",xpt,m0,sig,alpha,n);
+		RooPlot* frame=xpt.frame(Title(Form("%d",masspoint[i])));
+		dh.plotOn(frame);
+		CB.fitTo(dh) ; 
+		CB.plotOn(frame,LineColor(kRed)) ;
+		CB.paramOn(frame,Layout(0.55)) ;
+		ptBinsCenter[i]=m0.getValV();
 		
+		frame->SetMaximum(th1->GetMaximum()*1.3);
+		frame->Draw() ;
+		*/
+		//sigma[4][i]=tf1[0]->GetParError(1)*(125/tf1[0]->GetParameter(1))/tf1[0]->GetParameter(1);
 		ptBinsCenter[i]=th1->GetMean();
-		ptBinsError[i]=th1->GetRMS();
 		ptBinsError[i]=20;
 		cout<<i<<","<<ptBinsCenter[i]<<","<<ptBinsError[i]<<endl;
+		th1->SetTitle(Form("%d",masspoint[i]));
+		th1->Draw("");
+		if(i==0)c1->Print("plotsR/ptBarel.pdf(");
+		else if(i==nMasspoint-1)c1->Print("plotsR/ptBarel.pdf)");
+		else  c1->Print("plotsR/ptBarel.pdf");
+		delete th1;
 	}
 	
 	
 	
-	for(int i=0;i<9;i++){
+	for(int i=0;i<nMasspoint;i++){
 		TH1D* th1=(TH1D	*)tf1[i]->Get(Form("ptEndcap%.0f",ptBins[0]));
 		for(int j=1;j<14;j++){
 			TH1D* th2=(TH1D	*)tf1[i]->Get(Form("ptEndcap%.0f",ptBins[j]));
+			
 			th1->Add(th2);
+			delete th2;
 		}
+		/*
+		RooDataHist dh("dh","dh",xpt,Import(*th1)) ;
+		RooRealVar m0("m0","m0",masspoint[i]/2,0,2000);
+		RooRealVar sig("sigma","sigma",25,0,500);
+		RooRealVar alpha("alpha","alpha",1,0,10);
+		RooRealVar n("n","n",1,0,50);
+		RooCBShape CB("CB","CB",xpt,m0,sig,alpha,n);
+		RooPlot* frame=xpt.frame(Title(Form("%d",masspoint[i])));
+		dh.plotOn(frame);
+		CB.fitTo(dh) ; 
+		CB.plotOn(frame,LineColor(kRed)) ;
+		CB.paramOn(frame,Layout(0.55)) ;
+		ptBinsCenter[i]=m0.getValV();
 		
+		frame->SetMaximum(th1->GetMaximum()*1.3);
+		frame->Draw() ;
+		*/
 		ptBinsCenterE[i]=th1->GetMean();
-		ptBinsErrorE[i]=th1->GetRMS();
 		ptBinsErrorE[i]=20;
 		cout<<i<<","<<ptBinsCenterE[i]<<","<<ptBinsErrorE[i]<<endl;
+		delete th1;
 	}
 	
 	
 	RooRealVar x("x","x",40,150) ;
 	
-	for(int i=0;i<9;i++){
+	for(int i=0;i<nMasspoint;i++){
 		TH1D* th1=(TH1D*)tf1[i]->Get(Form("recoBarelMass%.0f",ptBins[i]));
 		for(int j=1;j<14;j++){
 			TH1D* th2=(TH1D	*)tf1[i]->Get(Form("recoBarelMass%.0f",ptBins[j]));
 			th1->Add(th2);
+			//delete th2;
 		}
 		th1->SetTitle(Form("%d",masspoint[i]));
 		th1->SetMaximum(th1->GetMaximum()*1.3);
-		
+		cout<<i<<"="<<Form("%d",masspoint[i])<<endl;
+
 		RooDataHist dh("dh","dh",x,Import(*th1)) ;
 		/*RooRealVar mean("mean","mean",125,50,150) ;
 		RooRealVar sigmaR("sigmaR","sigmaR",4,0.1,9) ;
@@ -137,26 +185,27 @@ void makeCorrRoofit2(){
 		CB.fitTo(dh) ; 
 		CB.plotOn(frame,LineColor(kRed)) ;
 		CB.paramOn(frame,Layout(0.55)) ;
-		mean[4][i]=125/m0.getValV();
-		sigma[4][i]=m0.getError()*(125/m0.getValV())/m0.getValV();
+		mean[0][i]=125/m0.getValV();
+		sigma[0][i]=m0.getError()*(125/m0.getValV())/m0.getValV();
 		//mean[4][i]=125/th1->GetMean();
 		//sigma[4][i]=th1->GetMeanError()/th1->GetMean();
 		//th1->Draw();
 		frame->SetMaximum(th1->GetMaximum()*1.3);
 		frame->Draw() ;
-		//cout<<i<<"="<<mean[4][i]<<endl;
 		
 	if(i==0)c1->Print("plotsR/recoBarel.pdf(");
-		else if(i==8)c1->Print("plotsR/recoBarel.pdf)");
+		else if(i==nMasspoint-1)c1->Print("plotsR/recoBarel.pdf)");
 		else  c1->Print("plotsR/recoBarel.pdf");
+		delete th1;
 	}
 	
-	for(int i=0;i<9;i++){
+	for(int i=0;i<nMasspoint;i++){
 		
 		TH1D* th1=(TH1D*)tf1[i]->Get(Form("recoEndcapMass%.0f",ptBins[i]));
 		for(int j=1;j<14;j++){
 			TH1D* th2=(TH1D	*)tf1[i]->Get(Form("recoEndcapMass%.0f",ptBins[j]));
 			th1->Add(th2);
+			//delete th2;
 		}
 		th1->SetTitle(Form("%d",masspoint[i]));
 		th1->SetMaximum(th1->GetMaximum()*1.3);
@@ -178,8 +227,8 @@ void makeCorrRoofit2(){
 		CB.fitTo(dh) ; 
 		CB.plotOn(frame,LineColor(kRed)) ;
 		CB.paramOn(frame,Layout(0.55)) ;
-		mean[5][i]=125/m0.getValV();
-		sigma[5][i]=m0.getError()*(125/m0.getValV())/m0.getValV();
+		mean[1][i]=125/m0.getValV();
+		sigma[1][i]=m0.getError()*(125/m0.getValV())/m0.getValV();
 		//mean[4][i]=125/th1->GetMean();
 		//sigma[4][i]=th1->GetMeanError()/th1->GetMean();
 		//th1->Draw();
@@ -187,9 +236,9 @@ void makeCorrRoofit2(){
 		frame->Draw() ;
 	//cout<<i<<"="<<mean[5][i]<<endl;
 	if(i==0)c1->Print("plotsR/recoEndcap.pdf(");
-		else if(i==8)c1->Print("plotsR/recoEndcap.pdf)");
+		else if(i==nMasspoint-1)c1->Print("plotsR/recoEndcap.pdf)");
 		else  c1->Print("plotsR/recoEndcap.pdf");
-	
+		delete th1;
 	}
 	
 	
@@ -197,11 +246,21 @@ void makeCorrRoofit2(){
 	
 	TGraphErrors* tg1[6];
 	
-	tg1[4]=new TGraphErrors(9,ptBinsCenter,mean[4],ptBinsError,sigma[4]);
-	tg1[5]=new TGraphErrors(9,ptBinsCenterE,mean[5],ptBinsErrorE,sigma[5]);
+	tg1[4]=new TGraphErrors(nMasspoint,ptBinsCenter,mean[0],ptBinsError,sigma[0]);
+	tg1[5]=new TGraphErrors(nMasspoint,ptBinsCenterE,mean[1],ptBinsErrorE,sigma[1]);
 	
-	for(int i=0;i<14;i++)cout<<i<<"="<<mean[4][i]<<endl;
-	for(int i=0;i<14;i++)cout<<i<<"="<<mean[5][i]<<endl;
+	for(int i=0;i<14;i++)cout<<i<<"="<<mean[0][i]<<endl;
+	for(int i=0;i<14;i++)cout<<i<<"="<<mean[1][i]<<endl;
+	for(int i=0;i<14;i++)cout<<i<<","<<ptBinsCenter[i]<<","<<ptBinsError[i]<<endl;
+	
+	for(int i=0;i<nMasspoint;i++)cout<<ptBinsCenter[i]<<",";
+	cout<<endl;
+	for(int i=0;i<nMasspoint;i++)cout<<mean[0][i]<<",";
+	cout<<endl;
+	for(int i=0;i<nMasspoint;i++)cout<<ptBinsCenterE[i]<<",";
+	cout<<endl;
+	for(int i=0;i<nMasspoint;i++)cout<<mean[1][i]<<",";
+	cout<<endl;
 	
 	TLegend *leg = new TLegend(0.68, 0.65, 0.94, 0.90);
   
@@ -312,9 +371,9 @@ leg->Clear();
 				TF1* n=new TF1("n","puppisd_corrRECO_cen*puppisd_corrGEN");	
 				TF1* n2=new TF1("n","puppisd_corrRECO_for*puppisd_corrGEN");	
   
-  leg->AddEntry(tg1[4],"reco barel");
+  leg->AddEntry(tg1[4],"reco barrel");
   leg->AddEntry(tg1[5],"reco endcap");
-  leg->AddEntry(puppisd_corrRECO_cen,"Thea barel");
+  leg->AddEntry(puppisd_corrRECO_cen,"Thea barrel");
   leg->AddEntry(puppisd_corrRECO_for,"Thea endcap");
 
 	leg->Draw("same");

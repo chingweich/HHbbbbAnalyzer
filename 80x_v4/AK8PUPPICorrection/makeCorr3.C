@@ -25,6 +25,7 @@
 #include <sstream>
 #include"../setNCUStyle.C"
 #include "TF1.h"
+#define nMasspoint 8
 TCanvas* c1;
 
 void makeCorr3(){
@@ -37,13 +38,13 @@ void makeCorr3(){
 	TFile *f2;
 	f2=TFile::Open("pdgToReco2.root");
 	
-	TFile* tf1[9];
-	int masspoint[9]={1200,1400,1600,1800,2000,2500,3000,4000,4500};
-	for(int i=0;i<9;i++){
+	TFile* tf1[nMasspoint];
+	int masspoint[nMasspoint]={1000,1200,1400,1600,1800,2000,2500,3000};
+	for(int i=0;i<nMasspoint;i++){
 		tf1[i]=TFile::Open(Form("corr2/B%d.root",masspoint[i]));
 		//f[i+11]=TFile::Open(Form("R%s.root",masspoint[i].data()));
 	}
-	double xsec[9]={1.90,0.763,0.33,0.155,7.65e-2,1.58e-2,3.73e-3,2.08e-4,4.91e-5};
+	//double xsec[nMasspoint]={1.90,0.763,0.33,0.155,7.65e-2,1.58e-2,3.73e-3,2.08e-4,4.91e-5};
 		
 	double ptBins[14]={300,400,500,600,700,800,900,1000,1250,1500,1750,2000,2500};
 	double ptBinsCenter[14]={350,450,550,650,750,850,950,1125,1375,1625,1875,2250,2750};
@@ -63,9 +64,9 @@ void makeCorr3(){
   leg->SetTextSize(0.04);
 	
 	
-	TGraphErrors* tg1[9];
+	TGraphErrors* tg1[nMasspoint];
 	
-	for(int k=0;k<9;k++){
+	for(int k=0;k<nMasspoint;k++){
 		for(int i=0;i<13;i++){
 		TH1D* th1=(TH1D	*)tf1[k]->Get(Form("ptBarel%.0f",ptBins[i]));
 		ptBinsCenter[i]=th1->GetMean();
@@ -114,8 +115,8 @@ void makeCorr3(){
 	tg1[k]->GetXaxis()->SetRangeUser(0,1800);
 	tg1[k]->GetYaxis()->SetTitle("M_{PDG}/M_{Reco}");
 	tg1[k]->SetTitle("Gen Correction");
-	tg1[k]->SetMinimum(1);
-	tg1[k]->SetMaximum(2.6);
+	tg1[k]->SetMinimum(0.9);
+	tg1[k]->SetMaximum(2.2);
 	tg1[k]->SetFillColor(0);
 	tg1[k]->SetLineColor(97-5*k);
 	tg1[k]->SetMarkerColor(97-5*k);
@@ -127,10 +128,10 @@ void makeCorr3(){
 		leg->AddEntry(tg1[k],Form("M=%d",masspoint[k]));
 	
 	}
-	for(int k=0;k<9;k++){
+	for(int k=0;k<nMasspoint;k++){
 		tg1[k]->GetXaxis()->SetRangeUser(200,2500);
 		if(k==0)tg1[k]->Draw("APL");
-	else tg1[k]->Draw("samePL");
+		else tg1[k]->Draw("samePL");
 	
 	for(int j=0;j<12;j++){
 		double x,y;
@@ -174,12 +175,12 @@ void makeCorr3(){
 	te1->SetMarkerSize(1.5);
 	te1->SetMarkerStyle(20);
 	leg->Draw("same");
-	c1->Print("plots/recoOneBarel.pdf");
+	c1->Print("plots/recoOneBarrel.pdf");
 	
 	
 	leg->Clear();
 	
-		for(int k=0;k<9;k++){
+		for(int k=0;k<nMasspoint;k++){
 
 	
 	for(int i=0;i<11;i++){
@@ -232,7 +233,7 @@ void makeCorr3(){
 	tg1[k]->GetYaxis()->SetTitle("M_{PDG}/M_{Reco}");
 	tg1[k]->SetTitle("Gen Correction");
 	tg1[k]->SetMinimum(1);
-	tg1[k]->SetMaximum(1.8);
+	tg1[k]->SetMaximum(1.7);
 	tg1[k]->SetFillColor(0);
 	tg1[k]->SetLineColor(97-5*k);
 	tg1[k]->SetMarkerColor(97-5*k);
@@ -244,7 +245,7 @@ void makeCorr3(){
 		leg->AddEntry(tg1[k],Form("M=%d",masspoint[k]));
 	
 	}
-	for(int k=0;k<9;k++){
+	for(int k=0;k<nMasspoint;k++){
 		tg1[k]->GetXaxis()->SetRangeUser(200,2500);
 		if(k==0)tg1[k]->Draw("APL");
 	else tg1[k]->Draw("samePL");

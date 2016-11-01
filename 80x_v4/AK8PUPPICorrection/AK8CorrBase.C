@@ -7,6 +7,9 @@ void AK8CorrBase(int wMs,int wM, string st,string st2,string option=""){
 	(st2.find("bGen")!= std::string::npos)||
 	(st2.find("bEnriched")!= std::string::npos))nameRoot=0;
 	if(st2.find("data")!= std::string::npos)nameRoot=2;
+	
+	bool fixGen=0;
+	if(st2.find("B1000")!= std::string::npos)fixGen=1;
 	cout<<"nameRoot = "<<nameRoot<<endl;
 	
 	//option-----------------------------------------------------------
@@ -26,7 +29,7 @@ void AK8CorrBase(int wMs,int wM, string st,string st2,string option=""){
 	th1=new TH1D("mass","mass",150,0,150);
 	
 	TH1D* th3;
-	th3=new TH1D("mass","mass",1100,200,2400);
+	th3=new TH1D("mass","mass",1500,200,3200);
 	
 	double ptBins[14]={200,300,400,500,600,700,800,900,1000,1250,1500,1750,2000,2500};
 	
@@ -187,7 +190,9 @@ void AK8CorrBase(int wMs,int wM, string st,string st2,string option=""){
 				
 			
 			
-			Float_t*  AK8PuppijetGenSDmass = data.GetPtrFloat("AK8PuppijetGenSDmass");
+			Float_t*  AK8PuppijetGenSDmass;
+			if(fixGen)AK8PuppijetGenSDmass= data.GetPtrFloat("AK8PuppijetSDmass");
+			else 	AK8PuppijetGenSDmass= data.GetPtrFloat("AK8PuppijetGenSDmass");
 			Float_t*  AK8PuppijetSDmass = data.GetPtrFloat("AK8PuppijetSDmass");
 			int* AK8PuppinSubSDJet=data.GetPtrInt("AK8PuppinSubSDJet");
 			
