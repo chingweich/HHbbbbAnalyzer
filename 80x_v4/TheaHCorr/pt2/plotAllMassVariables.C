@@ -17,6 +17,7 @@
 #include <TObject.h>
 #include "../../setNCUStyle.C"
 
+
 using namespace std;
 
 float FWHM(TH1F* hist)
@@ -50,7 +51,7 @@ void plotAllMassVariablesBase(std::string inputFile){
 
 
   std::string prefix[]={"leading","subleading","both"};
-  std::string name[]={"AK8SDThealikeHCorr","PRCorr","AK8SD","AK8SDCorrThea","AK8SDHCorr"};
+  std::string name[]={"PR","PRCorr","AK8SD","AK8SDCorrThea","AK8SDHCorr"};
 
   float max[3]={-9999,-9999,-9999};
   float maxdiff[3]={-9999,-9999,-9999};
@@ -204,13 +205,17 @@ hdiffmassFit[0][i][k]=tf1[1]->GetParameter(1);
 
 }
 
-void plotMultiGraphs(string masspoint){
+void plotMultiGraphs(string masspoint,bool jetPtFix=0){
 
   std::string prefix[]={"leading","subleading","both"};
-  std::string name[]={"AK8SDThealikeHCorr","PRCorr","AK8SD","AK8SDCorrThea","AK8SDHCorr"};
+  std::string name[]={"PR","PRCorr","AK8SD","AK8SDCorrThea","AK8SDHCorr"};
 
   const int NTYPES=5;
   float mass[10]={300,400,500,600,700,800,900,1000,1250,1500};
+ float mass2 [10]={452.286,540.273,627.553,714.669,799.949,883.213,1097.31,1310.44,1728.48,1937.44};
+ if(jetPtFix){
+	 for(int i=0;i<10;i++)mass[i]=mass2[i];
+ }
  // int MARKERS[7]={20,21,22,23,34,29,24};
   int MARKERS[7]={23,34,20,22,21};
   //int COLORS[NTYPES]={1,4,2,kOrange,kGreen+2};
@@ -253,8 +258,9 @@ void plotMultiGraphs(string masspoint){
 	  }
 	fin.close();
 
-	
-	graph_mean[j] = new TGraphErrors(9,mass,mean,masserr,meanerr);
+	int nPoint=9;
+	if(jetPtFix)nPoint=8;
+	graph_mean[j] = new TGraphErrors(nPoint,mass,mean,masserr,meanerr);
 	graph_mean[j]->SetName(Form("gr_Mean_%d",j));
 	graph_mean[j]->SetMarkerStyle(MARKERS[j]);
 	graph_mean[j]->SetMarkerColor(COLORS[j]);
@@ -264,7 +270,7 @@ void plotMultiGraphs(string masspoint){
 
 	
 	
-	graph_RMS[j] = new TGraphErrors(9,mass,RMS,masserr,RMSerr);
+	graph_RMS[j] = new TGraphErrors(nPoint,mass,RMS,masserr,RMSerr);
 	graph_RMS[j]->SetName(Form("gr_RMS_%d",j));
 	graph_RMS[j]->SetMarkerStyle(MARKERS[j]);
 	graph_RMS[j]->SetMarkerColor(COLORS[j]);
@@ -374,8 +380,19 @@ void plotMultiGraphs(string masspoint){
 
 }
 
-void  plotAllMassVariables(string masspoint=""){
-	
+void  plotAllMassVariables(string masspoint="",bool plotJetPtFix=0){
+	if(plotJetPtFix){
+		plotAllMassVariablesBase("0/B1000.root");
+		plotAllMassVariablesBase("0/B1200.root");
+		plotAllMassVariablesBase("0/B1400.root");
+		plotAllMassVariablesBase("0/B1600.root");
+		plotAllMassVariablesBase("0/B1800.root");
+		plotAllMassVariablesBase("0/B2000.root");
+		plotAllMassVariablesBase("0/B2500.root");
+		plotAllMassVariablesBase("0/B3000.root");
+		plotMultiGraphs("FixJetPt",1);
+	}
+	else{ 
 	plotAllMassVariablesBase(Form("300/B%s.root",masspoint.data()));
 	plotAllMassVariablesBase(Form("400/B%s.root",masspoint.data()));
 	plotAllMassVariablesBase(Form("500/B%s.root",masspoint.data()));
@@ -387,6 +404,8 @@ void  plotAllMassVariables(string masspoint=""){
 	plotAllMassVariablesBase(Form("1250/B%s.root",masspoint.data()));
 	//plotAllMassVariablesBase(Form("1500/B%s.root",masspoint.data()));
 	plotMultiGraphs(masspoint);
+	
+	}
 }
 /*
 void  plotAllMassVariables(){

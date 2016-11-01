@@ -565,7 +565,7 @@ void xAna_hh_massResolutionBase(std::string inputFile,TString outputFile,int pt_
 	h_AK8SD[i]->Fill(AK8PuppijetSDmass[AK8jet]);
 	h_AK8SDCorrThea[i]->Fill(AK8PuppijetSDmass[AK8jet]*thea_corr);
 	
-	h_AK8SDHCorr[i]->Fill(AK8PuppijetSDmass[AK8jet]*H_corrBin);
+	h_AK8SDHCorr[i]->Fill(AK8PuppijetSDmass[AK8jet]*H_corr);
 	h_AK8SDThealikeHCorr[i]->Fill(AK8PuppijetSDmass[AK8jet]*H_corr);
 
 	h_SD[2]->Fill(fatjetSDmass[jet]);
@@ -576,7 +576,7 @@ void xAna_hh_massResolutionBase(std::string inputFile,TString outputFile,int pt_
 	
 	h_AK8SD[2]->Fill(AK8PuppijetSDmass[AK8jet]);
 	h_AK8SDCorrThea[2]->Fill(AK8PuppijetSDmass[AK8jet]*thea_corr);
-	h_AK8SDHCorr[2]->Fill(AK8PuppijetSDmass[AK8jet]*H_corrBin);
+	h_AK8SDHCorr[2]->Fill(AK8PuppijetSDmass[AK8jet]*H_corr);
 	h_AK8SDThealikeHCorr[2]->Fill(AK8PuppijetSDmass[AK8jet]*H_corr);
 
 	h_diff_SD[i]->Fill((fatjetSDmass[jet]-125)/125);
@@ -588,7 +588,7 @@ void xAna_hh_massResolutionBase(std::string inputFile,TString outputFile,int pt_
 	h_diff_AK8SD[i]->Fill((AK8PuppijetSDmass[AK8jet]-125)/125);
 	h_diff_AK8SDCorrThea[i]->Fill((AK8PuppijetSDmass[AK8jet]*thea_corr-125)/125);
 	
-	h_diff_AK8SDHCorr[i]->Fill((AK8PuppijetSDmass[AK8jet]*H_corrBin-125)/125);
+	h_diff_AK8SDHCorr[i]->Fill((AK8PuppijetSDmass[AK8jet]*H_corr-125)/125);
 	h_diff_AK8SDThealikeHCorr[i]->Fill((AK8PuppijetSDmass[AK8jet]*H_corr-125)/125);
 
 	h_diff_SD[2]->Fill((fatjetSDmass[jet]-125)/125);
@@ -600,7 +600,7 @@ void xAna_hh_massResolutionBase(std::string inputFile,TString outputFile,int pt_
 	h_diff_AK8SD[2]->Fill((AK8PuppijetSDmass[AK8jet]-125)/125);
 	h_diff_AK8SDCorrThea[2]->Fill((AK8PuppijetSDmass[AK8jet]*thea_corr-125)/125);
 	
-	h_diff_AK8SDHCorr[2]->Fill((AK8PuppijetSDmass[AK8jet]*H_corrBin-125)/125);
+	h_diff_AK8SDHCorr[2]->Fill((AK8PuppijetSDmass[AK8jet]*H_corr-125)/125);
 	h_diff_AK8SDThealikeHCorr[2]->Fill((AK8PuppijetSDmass[AK8jet]*H_corr-125)/125);
 
       }
