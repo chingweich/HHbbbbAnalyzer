@@ -51,7 +51,7 @@
 #include "RooAbsPdf.h"
 #include "RooRealProxy.h"
 #include "RooBifurGauss.h"
-#define nMasspoint 13
+#define nMasspoint 11
 
 TCanvas* c1;
 
@@ -66,7 +66,7 @@ void makeCorrRoofit2(){
 	
 	
 	TFile* tf1[nMasspoint];
-	int masspoint[nMasspoint]={700,800,900,1000,1200,1400,1600,1800,2000,2500,3000,4000,4500};
+	int masspoint[nMasspoint]={700,800,900,1000,1200,1400,1600,1800,2000,2500,3000};
 	for(int i=0;i<nMasspoint;i++){
 		tf1[i]=TFile::Open(Form("corr2/B%d.root",masspoint[i]));
 		//f[i+11]=TFile::Open(Form("R%s.root",masspoint[i].data()));
@@ -371,8 +371,8 @@ leg->Clear();
 				TF1* n=new TF1("n","puppisd_corrRECO_cen*puppisd_corrGEN");	
 				TF1* n2=new TF1("n","puppisd_corrRECO_for*puppisd_corrGEN");	
   
-  leg->AddEntry(tg1[4],"reco barrel");
-  leg->AddEntry(tg1[5],"reco endcap");
+  leg->AddEntry(tg1[4],"H corr barrel");
+  leg->AddEntry(tg1[5],"H corr endcap");
   leg->AddEntry(puppisd_corrRECO_cen,"Thea barrel");
   leg->AddEntry(puppisd_corrRECO_for,"Thea endcap");
 
