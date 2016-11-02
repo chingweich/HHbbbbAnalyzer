@@ -167,8 +167,8 @@ void makeCorr3(){
 	
 	
 	TGraphErrors* te1=(TGraphErrors*)f2->Get("barel");
-	leg->AddEntry(te1,"avg");
-	te1->Draw("samePL");
+	//leg->AddEntry(te1,"avg");
+	//te1->Draw("samePL");
 	te1->SetLineColor(1);
 	te1->SetLineWidth(3);
 	te1->SetMarkerColor(1);
@@ -282,8 +282,8 @@ void makeCorr3(){
 	}
 	}
 	 te1=(TGraphErrors*)f2->Get("endcap");
-	leg->AddEntry(te1,"avg");
-	te1->Draw("samePL");
+	//leg->AddEntry(te1,"avg");
+	//te1->Draw("samePL");
 	te1->SetLineColor(1);
 	te1->SetLineWidth(3);
 	te1->SetMarkerColor(1);
