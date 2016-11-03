@@ -157,7 +157,7 @@ void makeCorrRoofit3(){
 	
 	
 	RooRealVar x("x","x",40,150) ;
-	x.setRange("Range5",75,145) ; 
+	x.setRange("Range5",80,140) ; 
 	for(int i=0;i<nMasspoint;i++){
 		TH1D* th1=(TH1D*)tf1[i]->Get(Form("recoBarelMass%.0f",ptBins[i]));
 		for(int j=1;j<14;j++){
@@ -183,9 +183,8 @@ void makeCorrRoofit3(){
 		RooCBShape CB("CB","CB",x,m0,sig,alpha,n);
 		RooPlot* frame=x.frame(Title(Form("%d",masspoint[i])));
 		dh.plotOn(frame);
-		CB.fitTo(dh) ; 
-		//Bi.fitTo(dh,Range("Range5")) ; 
-		Bi.fitTo(dh) ; 
+		CB.fitTo(dh,Range("Range5")) ; 
+		Bi.fitTo(dh,Range("Range5")) ; 
 		Bi.plotOn(frame,LineColor(kBlue)) ;
 		CB.plotOn(frame,LineColor(kRed)) ;
 		//fitr->plotOn(frame,LineColor(kRed)) ;
@@ -199,9 +198,9 @@ void makeCorrRoofit3(){
 		frame->SetMaximum(th1->GetMaximum()*1.3);
 		frame->Draw() ;
 		
-	if(i==0)c1->Print("plotsR/recoBarrel2.pdf(");
-		else if(i==nMasspoint-1)c1->Print("plotsR/recoBarrel2.pdf)");
-		else  c1->Print("plotsR/recoBarrel2.pdf");
+	if(i==0)c1->Print("plotsR/recoBarrel.pdf(");
+		else if(i==nMasspoint-1)c1->Print("plotsR/recoBarrel.pdf)");
+		else  c1->Print("plotsR/recoBarrel.pdf");
 		delete th1;
 	}
 	
