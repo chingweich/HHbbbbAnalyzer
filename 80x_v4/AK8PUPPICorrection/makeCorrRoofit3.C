@@ -184,7 +184,8 @@ void makeCorrRoofit3(){
 		RooPlot* frame=x.frame(Title(Form("%d",masspoint[i])));
 		dh.plotOn(frame);
 		CB.fitTo(dh) ; 
-		Bi.fitTo(dh,Range("Range5")) ; 
+		//Bi.fitTo(dh,Range("Range5")) ; 
+		Bi.fitTo(dh) ; 
 		Bi.plotOn(frame,LineColor(kBlue)) ;
 		CB.plotOn(frame,LineColor(kRed)) ;
 		//fitr->plotOn(frame,LineColor(kRed)) ;
@@ -198,9 +199,9 @@ void makeCorrRoofit3(){
 		frame->SetMaximum(th1->GetMaximum()*1.3);
 		frame->Draw() ;
 		
-	if(i==0)c1->Print("plotsR/recoBarel.pdf(");
-		else if(i==nMasspoint-1)c1->Print("plotsR/recoBarel.pdf)");
-		else  c1->Print("plotsR/recoBarel.pdf");
+	if(i==0)c1->Print("plotsR/recoBarrel2.pdf(");
+		else if(i==nMasspoint-1)c1->Print("plotsR/recoBarrel2.pdf)");
+		else  c1->Print("plotsR/recoBarrel2.pdf");
 		delete th1;
 	}
 	
