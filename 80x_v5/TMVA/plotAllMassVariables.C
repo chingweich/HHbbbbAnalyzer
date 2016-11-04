@@ -34,7 +34,7 @@ float FWHM(TH1F* hist)
 void plotAllMassVariablesBase(std::string inputFile,int print=0){
 
   setNCUStyle();
-  TString outputFile="sdmass";
+  TString outputFile="sdmass.pdf";
   //outputFile=gSystem->GetFromPipe(Form("file=%s; test=${file%%.root}; echo \"${test}.pdf\"",inputFile.data()));
   cout << "output file name = " << outputFile.Data() << endl;
 
