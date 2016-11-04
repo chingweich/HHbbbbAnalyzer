@@ -218,8 +218,8 @@ void TMVARegressionApplication( int wMs,int wM, string st,string st2,string opti
 	TH1D* th2[6][14];
 	
 	for(int i=0;i<14;i++){
-		th2[0][i]=(TH1D*)th1->Clone(Form("genBarelMass%.0f",ptBins[i]));
-		th2[1][i]=(TH1D*)th1->Clone(Form("genEndcapMass%.0f",ptBins[i]));
+		//th2[0][i]=(TH1D*)th1->Clone(Form("genBarelMass%.0f",ptBins[i]));
+		//th2[1][i]=(TH1D*)th1->Clone(Form("genEndcapMass%.0f",ptBins[i]));
 		th2[2][i]=(TH1D*)th1->Clone(Form("recoBarelMass%.0f",ptBins[i]));
 		th2[3][i]=(TH1D*)th1->Clone(Form("recoEndcapMass%.0f",ptBins[i]));
 		th2[4][i]=(TH1D*)th3->Clone(Form("ptBarel%.0f",ptBins[i]));
@@ -227,13 +227,21 @@ void TMVARegressionApplication( int wMs,int wM, string st,string st2,string opti
 	}
 
 	for(int i=0;i<14;i++){
-		th2[0][i]->Sumw2();
-		th2[1][i]->Sumw2();
+		//th2[0][i]->Sumw2();
+		//th2[1][i]->Sumw2();
 		th2[2][i]->Sumw2();
 		th2[3][i]->Sumw2();
 		th2[4][i]->Sumw2();
 		th2[5][i]->Sumw2();
 	}
+	
+	TH1D* th4[4];
+	th4[0]=(TH1D*)th1->Clone("uncorr_l");
+	th4[1]=(TH1D*)th1->Clone("uncorr_s");
+	th4[2]=(TH1D*)th1->Clone("corr_l");
+	th4[3]=(TH1D*)th1->Clone("corr_s");
+	
+	for(int i=0;i<4;i++)th4[i]->Sumw2();
 	
 	//---------------------------------
 	
@@ -372,7 +380,7 @@ void TMVARegressionApplication( int wMs,int wM, string st,string st2,string opti
 				
 			
 			
-			Float_t*  AK8PuppijetGenSDmass = data.GetPtrFloat("AK8PuppijetGenSDmass");
+			//Float_t*  AK8PuppijetGenSDmass = data.GetPtrFloat("AK8PuppijetGenSDmass");
 			Float_t*  AK8PuppijetSDmass = data.GetPtrFloat("AK8PuppijetSDmass");
 			int* AK8PuppinSubSDJet=data.GetPtrInt("AK8PuppinSubSDJet");
 			
@@ -424,18 +432,27 @@ void TMVARegressionApplication( int wMs,int wM, string st,string st2,string opti
 				thisAK8Jet=&test0;
 				if(thisAK8Jet->Pt()<200)continue;
 				if(fabs(thisAK8Jet->Eta())>2.4)continue;
-				th1->Fill(AK8PuppijetGenSDmass[AK8jet]*val);
+				//th1->Fill(AK8PuppijetGenSDmass[AK8jet]*val);
+				
+				if(i==0){
+					th4[0]->Fill(AK8PuppijetSDmass[AK8jet]);
+					th4[2]->Fill(AK8PuppijetSDmass[AK8jet]*val);
+				}
+				else {
+					th4[1]->Fill(AK8PuppijetSDmass[AK8jet]);
+					th4[3]->Fill(AK8PuppijetSDmass[AK8jet]*val);
+				}
 				
 				for(int j=0;j<13;j++){
 					if(thisAK8Jet->Pt()>ptBins[j] && thisAK8Jet->Pt()<ptBins[j+1]){
 						
 						if(fabs(thisAK8Jet->Eta())<1.3){
-							th2[0][j]->Fill(AK8PuppijetGenSDmass[AK8jet]*val);
+							//th2[0][j]->Fill(AK8PuppijetGenSDmass[AK8jet]*val);
 							th2[2][j]->Fill(AK8PuppijetSDmass[AK8jet]*val);
 							th2[4][j]->Fill(thisAK8Jet->Pt());
 						}
 						else{
-							th2[1][j]->Fill(AK8PuppijetGenSDmass[AK8jet]*val);
+							//th2[1][j]->Fill(AK8PuppijetGenSDmass[AK8jet]*val);
 							th2[3][j]->Fill(AK8PuppijetSDmass[AK8jet]*val);
 							th2[5][j]->Fill(thisAK8Jet->Pt());
 						}
@@ -445,12 +462,12 @@ void TMVARegressionApplication( int wMs,int wM, string st,string st2,string opti
 				
 				if(thisAK8Jet->Pt()>ptBins[13]){
 					if(fabs(thisAK8Jet->Eta())<1.3){
-							th2[0][13]->Fill(AK8PuppijetGenSDmass[AK8jet]*val);
+							//th2[0][13]->Fill(AK8PuppijetGenSDmass[AK8jet]*val);
 							th2[2][13]->Fill(AK8PuppijetSDmass[AK8jet]*val);
 							th2[4][13]->Fill(thisAK8Jet->Pt());
 						}
 						else{
-							th2[1][13]->Fill(AK8PuppijetGenSDmass[AK8jet]*val);
+							//th2[1][13]->Fill(AK8PuppijetGenSDmass[AK8jet]*val);
 							th2[3][13]->Fill(AK8PuppijetSDmass[AK8jet]*val);
 							th2[5][13]->Fill(thisAK8Jet->Pt());
 						}
@@ -467,18 +484,21 @@ void TMVARegressionApplication( int wMs,int wM, string st,string st2,string opti
 	outFile= new TFile(Form("corr2/%s.root",st2.data()),"recreate");
 	th1->Write();
 	for(int i=0;i<14;i++){
-		th2[0][i]->Write();
-		th2[1][i]->Write();
+		//th2[0][i]->Write();
+		//th2[1][i]->Write();
 		th2[2][i]->Write();
 		th2[3][i]->Write();
 		th2[4][i]->Write();
 		th2[5][i]->Write();
 	}
+	for(int i=0;i<4;i++)th4[i]->Write();
 	outFile->Close();
   
 		
 	
-	
+	for(int i=0;i<14;i++){
+		for(int j=2;j<6;j++)delete th2[j][i];
+	}
 	
   
    delete reader;

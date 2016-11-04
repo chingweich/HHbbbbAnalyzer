@@ -394,9 +394,9 @@ leg->Clear();
 				TF1* n=new TF1("n","puppisd_corrRECO_cen*puppisd_corrGEN");	
 				TF1* n2=new TF1("n","puppisd_corrRECO_for*puppisd_corrGEN");	
   
-  leg->AddEntry(tg1[4],"reco barel");
+  leg->AddEntry(tg1[4],"reco barrel");
   leg->AddEntry(tg1[5],"reco endcap");
-  leg->AddEntry(puppisd_corrRECO_cen,"Thea barel");
+  leg->AddEntry(puppisd_corrRECO_cen,"Thea barrel");
   leg->AddEntry(puppisd_corrRECO_for,"Thea endcap");
 
 	leg->Draw("same");
