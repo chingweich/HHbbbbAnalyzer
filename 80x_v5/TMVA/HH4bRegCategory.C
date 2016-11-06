@@ -213,8 +213,8 @@ void TMVARegressionApplication( int wMs,int wM, string st,string st2,string opti
    
    // Spectator variables declared in the training have to be added to the reader, too
    Float_t spec1,spec2;
-   reader->AddSpectator( "spec1:=n_pv",  &spec1 );
-   reader->AddSpectator( "spec2:=mpruned_AK8MatchedToHbb",  &spec2 );
+    reader->AddSpectator( "spec1:=n_pv",  &spec1 );
+   reader->AddSpectator( "spec2:=msoftdrop_AK8MatchedToHbb",  &spec2 );
 
    // --- Book the MVA methods
 
