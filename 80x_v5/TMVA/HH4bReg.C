@@ -400,8 +400,6 @@ void TMVARegressionApplication( int wMs,int wM, string st,string st2,string opti
 				
 				int AK8jet=matchedHAK8JetIndex[i];
 				
-				
-				
 				TLorentzVector* thisAK8Jet = (TLorentzVector*)AK8PuppijetP4->At(AK8jet);
 				
 				if(thisAK8Jet->Pt()<200)continue;
@@ -508,7 +506,10 @@ void TMVARegressionApplication( int wMs,int wM, string st,string st2,string opti
 
 void HH4bReg(){
 
-		string st1[40]={
+		string st1[50]={
+		"/data7/syu/NCUGlobalTuples/80X_MiniAODv2/80X_puppi/a64c3c6/BulkGravTohhTo4b/B700.root",
+		"/data7/syu/NCUGlobalTuples/80X_MiniAODv2/80X_puppi/a64c3c6/BulkGravTohhTo4b/B800.root",
+		"/data7/syu/NCUGlobalTuples/80X_MiniAODv2/80X_puppi/a64c3c6/BulkGravTohhTo4b/B900.root",
 		/*0-11*/
 		"/data7/chchen/AK8PuppijetGenSDmass/B/B1000.root",
 		"/data7/chchen/AK8PuppijetGenSDmass/B/B1200.root",
@@ -553,8 +554,8 @@ void HH4bReg(){
 		"/data7/chchen/80x_dsv/QCDHTbEnriched/1500/NCUGlobalTuples_",
 		"/data7/chchen/80x_dsv/QCDHTbEnriched/2000/NCUGlobalTuples_",
 	};
-	string  fileName[40]={
-	"B1000","B1200","B1400","B1600","B1800","B2000","B2500","B3000","B3500","B4000","B4500",
+	string  fileName[50]={
+	"B700","B800","B900","B1000","B1200","B1400","B1600","B1800","B2000","B2500","B3000","B3500","B4000","B4500",
 	"R1000","R1200","R1400","R1600","R1800","R2000","R2500","R3000","R3500","R4000","R4500",
 	"QCD700_1","QCD700_2","QCD1000_1","QCD1000_2","QCD1500_1","QCD1500_2","QCD2000_1","QCD2000_2",
 	"bGen700","bGen1000","bGen1500","bGen2000",
@@ -565,5 +566,5 @@ void HH4bReg(){
 	string dataPathC="/data7/chchen/80x_dsv/JetHT_runC/NCUGlobalTuples_";
 	string dataPathD="/data7/chchen/80x_dsv/JetHT_runD/NCUGlobalTuples_";
 	
-	for(int i=0;i<11;i++)TMVARegressionApplication(1,2,st1[i],fileName[i]);
+	for(int i=0;i<14;i++)TMVARegressionApplication(1,2,st1[i],fileName[i]);
 }
