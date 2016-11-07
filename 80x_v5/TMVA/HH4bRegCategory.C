@@ -268,14 +268,14 @@ void TMVARegressionApplication( int wMs,int wM, string st,string st2,string opti
 	double fixScaleNum[2]={0};
 	
 	TH1D* th2d[8];
-	th2d[0]=new TH1D("AK8PuppijetP4","AK8PuppijetP4",4000,1000,5000);	
-	th2d[1]=new TH1D("AK8PuppijetP4Reg","AK8PuppijetP4Reg",4000,1000,5000);	
-	th2d[2]=new TH1D("AK8PuppijetP4RegHCorr","AK8PuppijetP4RegHCorr",4000,1000,5000);	
+	th2d[0]=new TH1D("1a","1a",4000,1000,5000);	
+	th2d[1]=new TH1D("2a","2a",4000,1000,5000);	
+	th2d[2]=new TH1D("2b","2b",4000,1000,5000);	
 	
 	
-	th2d[3]=new TH1D("AK8PuppijetP4LL","AK8PuppijetP4LL",4000,1000,5000);	
-	th2d[4]=new TH1D("AK8PuppijetP4RegLL","AK8PuppijetP4RegLL",4000,1000,5000);	
-	th2d[5]=new TH1D("AK8PuppijetP4RegHCorrLL","AK8PuppijetP4RegHCorrLL",4000,1000,5000);	
+	th2d[3]=new TH1D("1aL","1aL",4000,1000,5000);	
+	th2d[4]=new TH1D("2aL","2aL",4000,1000,5000);	
+	th2d[5]=new TH1D("2bL","2bL",4000,1000,5000);	
 		
 	
 		
@@ -494,19 +494,16 @@ void TMVARegressionApplication( int wMs,int wM, string st,string st2,string opti
 			PUPPIweight[0]=getPUPPIweight(thisJet->Pt(),thisJet->Eta());
 			PUPPIweight[1]=getPUPPIweight(thatJet->Pt(),thatJet->Eta());
 			
-			TLorentzVector  thisJetHCorr, thatJetHCorr;
-			thisJetHCorr=(*thisJet)*PUPPIweight[0];
-			thatJetHCorr=(*thatJet)*PUPPIweight[1];
+			
 	
-	
-			double Mjjcase1= (thisJetHCorr+thatJetHCorr).M()+250
-									-(thisJetHCorr).M()-(thatJetHCorr).M();
+			double Mjja= ((*thisJet)+(*thisJet)).M()+250
+									-((*thisJet)).M()-((*thisJet)).M();
 									
 			TLorentzVector  thisJetReg, thatJetReg;
 			thisJetReg=(*thisJet)*varTemp[0];
 			thatJetReg=(*thatJet)*varTemp[1];
 			
-			double Mjjcase2= (thisJetReg+thatJetReg).M()+250
+			double Mjjb= (thisJetReg+thatJetReg).M()+250
 									-(thisJetReg).M()-(thatJetReg).M();
 			
 			double PUPPIweightOnRegressed[2]={0};			
@@ -525,32 +522,28 @@ void TMVARegressionApplication( int wMs,int wM, string st,string st2,string opti
 					
 					if(AK8PuppijetSDmass[0]*PUPPIweight[0]>bmin[j]&& AK8PuppijetSDmass[0]*PUPPIweight[0]<width[i]+bmin[j]
 					&&AK8PuppijetSDmass[1]*PUPPIweight[1]>bmin[j] && AK8PuppijetSDmass[1]*PUPPIweight[1]<width[i]+bmin[j] && nDSVTight==2) 
-					th3d[0][i][j]->Fill(Mjjcase1,PU_weight[0]);
+					th3d[0][i][j]->Fill(Mjja,PU_weight[0]);
 					
-					//if(fatjetPRmassL2L3Corr[0]*varTemp[0]>bmin[j] && fatjetPRmassL2L3Corr[0]*varTemp[0]<width[i]+bmin[j]
-					//&&fatjetPRmassL2L3Corr[1]*varTemp[1]>bmin[j] && fatjetPRmassL2L3Corr[1]*varTemp[1]<width[i]+bmin[j]  && nDSVTight==2)
-					if(AK8PuppijetSDmass[0]*varTemp[0]>bmin[j]&& AK8PuppijetSDmass[0]*varTemp[0]<width[i]+bmin[j]
-					&&AK8PuppijetSDmass[1]*varTemp[1]>bmin[j] && AK8PuppijetSDmass[1]*varTemp[1]<width[i]+bmin[j]  && nDSVTight==2)  
-					th3d[1][i][j]->Fill(Mjjcase2,PU_weight[0]);
+					if(AK8PuppijetSDmass[0]*varTemp[0]*PUPPIweightOnRegressed[0]>bmin[j]&& AK8PuppijetSDmass[0]*varTemp[0]*PUPPIweightOnRegressed[0]<width[i]+bmin[j]
+					&&AK8PuppijetSDmass[1]*varTemp[1]*PUPPIweightOnRegressed[1]>bmin[j] && AK8PuppijetSDmass[1]*varTemp[1]*PUPPIweightOnRegressed[1]<width[i]+bmin[j]&& nDSVTight==2)  
+					th3d[1][i][j]->Fill(Mjja,PU_weight[0]);
 					
 					if(AK8PuppijetSDmass[0]*varTemp[0]*PUPPIweightOnRegressed[0]>bmin[j]&& AK8PuppijetSDmass[0]*varTemp[0]*PUPPIweightOnRegressed[0]<width[i]+bmin[j]
 					&&AK8PuppijetSDmass[1]*varTemp[1]*PUPPIweightOnRegressed[1]>bmin[j] && AK8PuppijetSDmass[1]*varTemp[1]*PUPPIweightOnRegressed[1]<width[i]+bmin[j] && nDSVTight==2)  
-					th3d[2][i][j]->Fill(Mjjcase3,PU_weight[0]);
+					th3d[2][i][j]->Fill(Mjjb,PU_weight[0]);
 					
 					
 					if(AK8PuppijetSDmass[0]*PUPPIweight[0]>bmin[j]&& AK8PuppijetSDmass[0]*PUPPIweight[0]<width[i]+bmin[j]
 					&&AK8PuppijetSDmass[1]*PUPPIweight[1]>bmin[j] && AK8PuppijetSDmass[1]*PUPPIweight[1]<width[i]+bmin[j]&& (nDSVLoose==2 && !(nDSVTight==2))) 
-					th3d[3][i][j]->Fill(Mjjcase1,PU_weight[0]);
+					th3d[3][i][j]->Fill(Mjja,PU_weight[0]);
 					
-					//if(fatjetPRmassL2L3Corr[0]*varTemp[0]>bmin[j] && fatjetPRmassL2L3Corr[0]*varTemp[0]<width[i]+bmin[j]
-					//&&fatjetPRmassL2L3Corr[1]*varTemp[1]>bmin[j]&& fatjetPRmassL2L3Corr[1]*varTemp[1]<width[i]+bmin[j]  && (nDSVTight==1 && nDSVMed==1))
-					if(AK8PuppijetSDmass[0]*varTemp[0]>bmin[j]&& AK8PuppijetSDmass[0]*varTemp[0]<width[i]+bmin[j]
-					&&AK8PuppijetSDmass[1]*varTemp[1]>bmin[j] && AK8PuppijetSDmass[1]*varTemp[1]<width[i]+bmin[j]  && (nDSVLoose==2 && !(nDSVTight==2)))  
-					th3d[4][i][j]->Fill(Mjjcase2,PU_weight[0]);
+					if(AK8PuppijetSDmass[0]*varTemp[0]*PUPPIweightOnRegressed[0]>bmin[j]&& AK8PuppijetSDmass[0]*varTemp[0]*PUPPIweightOnRegressed[0]<width[i]+bmin[j]
+					&&AK8PuppijetSDmass[1]*varTemp[1]*PUPPIweightOnRegressed[1]>bmin[j] && AK8PuppijetSDmass[1]*varTemp[1]*PUPPIweightOnRegressed[1]<width[i]+bmin[j]  && (nDSVLoose==2 && !(nDSVTight==2)))  
+					th3d[4][i][j]->Fill(Mjja,PU_weight[0]);
 					
 					if(AK8PuppijetSDmass[0]*varTemp[0]*PUPPIweightOnRegressed[0]>bmin[j]&& AK8PuppijetSDmass[0]*varTemp[0]*PUPPIweightOnRegressed[0]<width[i]+bmin[j]
 					&&AK8PuppijetSDmass[1]*varTemp[1]*PUPPIweightOnRegressed[1]>bmin[j] && AK8PuppijetSDmass[1]*varTemp[1]*PUPPIweightOnRegressed[1]<width[i]+bmin[j] && (nDSVLoose==2 && !(nDSVTight==2)))  
-					th3d[5][i][j]->Fill(Mjjcase3,PU_weight[0]);
+					th3d[5][i][j]->Fill(Mjjb,PU_weight[0]);
 					
 				}
 			}
