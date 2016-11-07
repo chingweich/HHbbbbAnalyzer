@@ -496,8 +496,8 @@ void TMVARegressionApplication( int wMs,int wM, string st,string st2,string opti
 			
 			
 	
-			double Mjja= ((*thisJet)+(*thisJet)).M()+250
-									-((*thisJet)).M()-((*thisJet)).M();
+			double Mjja= ((*thisJet)+(*thatJet)).M()+250
+									-((*thisJet)).M()-((*thatJet)).M();
 									
 			TLorentzVector  thisJetReg, thatJetReg;
 			thisJetReg=(*thisJet)*varTemp[0];
