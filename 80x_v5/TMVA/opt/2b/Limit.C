@@ -102,7 +102,7 @@ void Limit(){
 			 tg1->SetFillColor(0);
 			 tg1->SetLineColor(m-1);
 			 leg->AddEntry(tg1,Form("%dto%d",bmin[m],bmin[m]+width[k]));
-			 tg1->SetMaximum(100);
+			 tg1->SetMaximum(20);
 			 tg1->SetMinimum(1);
 			 cout<<k<<","<<m<<endl;
 			// c1->SetLogy(1);
