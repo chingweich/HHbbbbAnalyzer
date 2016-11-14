@@ -353,7 +353,7 @@ cout<<Form("sf2/%s.root",st2.data())<<endl;
 				th_flavor[event_flavor][238+i]->Fill(tau21[i],scaleFactor);
 				th_flavor[event_flavor][240+i]->Fill(puppiTau21[i],scaleFactor);
 			}
-			
+			/*
 			if(!(puppiTau21[0]>0.6 || puppiTau21[1]>0.6)){
 				for (int i=0;i<2;i++){
 					
@@ -374,7 +374,7 @@ cout<<Form("sf2/%s.root",st2.data())<<endl;
 					th_flavor[event_flavor][265+i]->Fill(FATjetPuppiSDmassThea[i],scaleFactor);
 				}
 			}
-			
+			*/
 		
 		
 			if(AK8PuppijetSDmass[0]<50)continue;
@@ -399,7 +399,7 @@ cout<<Form("sf2/%s.root",st2.data())<<endl;
 			}
 			
 			//9.-----------------------------------------
-			if(puppiTau21[0]>0.6 || puppiTau21[1]>0.6) continue;
+			//if(puppiTau21[0]>0.6 || puppiTau21[1]>0.6) continue;
 			nPass[9]+=PU_weight[0];
 			
 			
