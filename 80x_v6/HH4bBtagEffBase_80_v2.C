@@ -83,15 +83,15 @@ cout<<Form("sf2/%s.root",st2.data())<<endl;
 			th5[i*5+k+40]=new TH1D(Form("deltaR_j%d_%db",i,k),Form("deltaR_j%d_%db",i,k),20,0,1);
 			th5[i*5+k+50]=new TH1D(Form("Pt_j%d_%db",i,k),Form("Pt_j%d_%db",i,k),200,0,2000);
 			th5[i*5+k+60]=new TH1D(Form("Eta_j%d_%db",i,k),Form("Eta_j%d_%db",i,k),60,-3,3);
-			th5[i*5+k+70]=new TH1D(Form("prMassL2L3_j%d_%db",i,k),Form("prMassL2L3_j%d_%db",i,k),15,90,150);
+			th5[i*5+k+70]=new TH1D(Form("prMassL2L3_j%d_%db",i,k),Form("prMassL2L3_j%d_%db",i,k),40,40,200);
 			th5[i*5+k+105]=new TH1D(Form("tau21_j%d_%db",i,k),Form("tau21_j%d_%db",i,k),25,0,1);
-			th5[i*5+k+120]=new TH1D(Form("PuppiSDMassL2L3_j%d_%db",i,k),Form("PuppiSDMassL2L3_j%d_%db",i,k),15,90,150);
+			th5[i*5+k+120]=new TH1D(Form("PuppiSDMassL2L3_j%d_%db",i,k),Form("PuppiSDMassL2L3_j%d_%db",i,k),40,40,200);
 			th5[i*5+k+130]=new TH1D(Form("puppiTau21_j%d_%db",i,k),Form("puppiTau21_j%d_%db",i,k),25,0,1);
 			th5[i*5+k+140]=new TH1D(Form("prMass_j%d_%db",i,k),Form("prMass_j%d_%db",i,k),15,90,150);
-			th5[i*5+k+150]=new TH1D(Form("PuppiSDMass_j%d_%db",i,k),Form("PuppiSDMass_j%d_%db",i,k),15,90,150);
+			th5[i*5+k+150]=new TH1D(Form("PuppiSDMass_j%d_%db",i,k),Form("PuppiSDMass_j%d_%db",i,k),40,40,200);
 			th5[i*5+k+170]=new TH1D(Form("doubleSV_j%d_%db",i,k),Form("doubleSV_j%d_%db",i,k),40,-1,1);
 			th5[i*5+k+184]=new TH1D(Form("AK8SV_j%d_%db",i,k),Form("AK8SV_j%d_%db",i,k),20,0,1);
-			th5[i*5+k+250]=new TH1D(Form("PuppiSDMassThea_j%d_%db",i,k),Form("PuppiSDMassThea_j%d_%db",i,k),15,90,150);
+			th5[i*5+k+250]=new TH1D(Form("PuppiSDMassThea_j%d_%db",i,k),Form("PuppiSDMassThea_j%d_%db",i,k),40,40,200);
 		}
 	}
 	for(int k=0;k<5;k++){
@@ -354,6 +354,27 @@ cout<<Form("sf2/%s.root",st2.data())<<endl;
 				th_flavor[event_flavor][240+i]->Fill(puppiTau21[i],scaleFactor);
 			}
 			
+			if(!(puppiTau21[0]>0.6 || puppiTau21[1]>0.6)){
+				for (int i=0;i<2;i++){
+					
+					th5[222+i]->Fill(FATjetPRmass[i],scaleFactor);
+					th5[224+i]->Fill(fatjetPRmassL2L3Corr[i],scaleFactor);
+					th5[226+i]->Fill(AK8PuppijetSDmass[i],scaleFactor);
+					th5[228+i]->Fill(FATjetPuppiSDmassL2L3Corr[i],scaleFactor);
+					th5[242+i]->Fill(tau21[i],scaleFactor);
+					th5[244+i]->Fill(puppiTau21[i],scaleFactor);
+					th5[265+i]->Fill(FATjetPuppiSDmassThea[i],scaleFactor);
+					
+					th_flavor[event_flavor][222+i]->Fill(FATjetPRmass[i],scaleFactor);
+					th_flavor[event_flavor][224+i]->Fill(fatjetPRmassL2L3Corr[i],scaleFactor);
+					th_flavor[event_flavor][226+i]->Fill(AK8PuppijetSDmass[i],scaleFactor);
+					th_flavor[event_flavor][228+i]->Fill(FATjetPuppiSDmassL2L3Corr[i],scaleFactor);
+					th_flavor[event_flavor][242+i]->Fill(tau21[i],scaleFactor);
+					th_flavor[event_flavor][244+i]->Fill(puppiTau21[i],scaleFactor);
+					th_flavor[event_flavor][265+i]->Fill(FATjetPuppiSDmassThea[i],scaleFactor);
+				}
+			}
+			
 		
 		
 			if(AK8PuppijetSDmass[0]<50)continue;
@@ -378,7 +399,7 @@ cout<<Form("sf2/%s.root",st2.data())<<endl;
 			}
 			
 			//9.-----------------------------------------
-			//if(tau21[0]>0.6 || tau21[1]>0.6) continue;
+			if(puppiTau21[0]>0.6 || puppiTau21[1]>0.6) continue;
 			nPass[9]+=PU_weight[0];
 			
 			
