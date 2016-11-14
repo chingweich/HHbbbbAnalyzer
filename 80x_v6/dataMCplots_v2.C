@@ -21,7 +21,7 @@ int isSetRange=0;
 
 void myPlot(vector< TH1D*> h_Z,
            vector< TH1D*> v_data,
-	    TH1D* h_data, TH1D* h_bkg,int option=0){
+	    TH1D* h_data, TH1D* h_bkg,int option=0,string xtitle=""){
 
   h_data->Reset();
   for(unsigned int i=0;i<v_data.size();i++)h_data->Add(v_data[i]);
@@ -71,6 +71,7 @@ leg->AddEntry(h_Zjets, "Z+Jets", "f");
   h_data->SetMarkerSize(1.5);
   h_data->GetYaxis()->SetTitleOffset(1.3);
   h_data->GetXaxis()->SetTitle("");
+ // h_stack->GetXaxis()->SetTitle("?");
   h_data->GetXaxis()->SetLabelOffset(999);
   h_data->GetXaxis()->SetLabelSize(0);
   
@@ -93,34 +94,32 @@ leg->AddEntry(h_Zjets, "Z+Jets", "f");
 	//if(isSetRange)h_stack->GetXaxis()->SetRangeUser(rangeUserDown,rangeUserUp);
 	//h_stack->GetXaxis()->SetRangeUser((bmin-0.5)*width+h_data->GetBinCenter(1),(bmax-0.5)*width+h_data->GetBinCenter(1));
 
-  if( h_data->GetMaximum() < h_stack->GetMaximum() && isSetRange==0 ){
+  
 	  h_stack->SetTitle(h_data->GetTitle());
-	h_stack->SetMaximum(h_data->GetMaximum()*1.3);
+	if(xtitle.find("Mass")!= std::string::npos &&xtitle.find("total")== std::string::npos
+	&& xtitle.find("no")== std::string::npos)h_stack->SetMaximum(h_stack->GetMaximum()*1.3);
     h_stack->Draw("histe");
    // h_stack->GetHistogram()->GetYaxis()->SetTitle("Event Numbers");
     h_stack->GetHistogram()->GetYaxis()->SetTitle("");
+    h_stack->GetHistogram()->GetXaxis()->SetTitle(Form("%s",xtitle.data()));
     h_stack->GetHistogram()->GetYaxis()->SetTitleSize(h_data->GetYaxis()->GetTitleSize());
     h_stack->GetHistogram()->GetYaxis()->SetLabelSize(h_data->GetYaxis()->GetLabelSize());
-    h_stack->GetHistogram()->GetYaxis()->SetTitleOffset(1.3);
-    h_stack->GetHistogram()->GetXaxis()->SetTickLength(0);
-    h_stack->GetHistogram()->GetXaxis()->SetLabelOffset(999);
-    h_data->Draw("elsame");
+    h_stack->GetHistogram()->GetYaxis()->SetTitleOffset(1.35);
+     h_stack->GetHistogram()->GetXaxis()->SetTitleSize(0.045);
+     h_stack->GetHistogram()->GetXaxis()->SetTitleFont(62);
+     if(isSetRange)h_stack->GetHistogram()->GetXaxis()->SetRangeUser(rangeUserDown,rangeUserUp);
+     
+     if(xtitle.find("M_{jj}")!= std::string::npos )h_stack->GetHistogram()->GetXaxis()->SetRangeUser(1000,3000);
+    //h_stack->GetHistogram()->GetXaxis()->SetTickLength(0);
+    //h_stack->GetHistogram()->GetXaxis()->SetLabelOffset(999);
+//h_data->Draw("elsame");
   
-  }
-    
-  else{
-
-   // h_data->GetYaxis()->SetTitle("Event Numbers");
-    h_data->GetYaxis()->SetTitle("");
-    h_data->Draw("el");
-    h_stack->Draw("histesame");
-    h_data->Draw("elsame");
-
-  }
+  
+   
 
     
   
-  leg->AddEntry(h_data, "Data", "lp");
+  //leg->AddEntry(h_data, "Data", "lp");
   leg->Draw();
 
   TLatex *lar = new TLatex();
@@ -129,7 +128,7 @@ leg->AddEntry(h_Zjets, "Z+Jets", "f");
   lar->SetTextSize(0.04);
   lar->SetLineWidth(5);
   //lar->DrawLatex(0.14, 0.94, "CMS #it{#bf{2015}}");
-  lar->DrawLatex(0.60, 0.94, "L = 12.9 fb^{-1} at #sqrt{s} = 13 TeV");
+  lar->DrawLatex(0.60, 0.94, "L = 27 fb^{-1} at #sqrt{s} = 13 TeV");
   
   
 
@@ -236,7 +235,7 @@ void dataMCplots_v2(){
  
   Float_t up_height     = 0.8;
   Float_t dw_correction = 1.455;
-  Float_t dw_height     = (1-up_height)*dw_correction;
+  Float_t dw_height     = 0;
 
   TCanvas c("c","",0,0,800,1600);
   c.Divide(1,2);
@@ -256,10 +255,6 @@ void dataMCplots_v2(){
   tf1[2]=TFile::Open("sf2/QCD1500.root");
   tf1[3]=TFile::Open("sf2/QCD2000.root");
   tf1[4]=TFile::Open("sf2/data.root");
-  tf1[5]=TFile::Open("sf2/bGen700.root");
-  tf1[6]=TFile::Open("sf2/bGen1000.root");
-  tf1[7]=TFile::Open("sf2/bGen1500.root");
-  tf1[8]=TFile::Open("sf2/bGen2000.root");
   
   TFile* tf2[10];
    tf2[0]=TFile::Open("sf2/B1400.root");
@@ -289,7 +284,7 @@ void dataMCplots_v2(){
 		h_name.push_back(Form("prMass_j%d_%db",i,k));  
 		h_name.push_back(Form("PuppiSDMass_j%d_%db",i,k));  
 		h_name.push_back(Form("doubleSV_j%d_%db",i,k));  
-		h_name.push_back(Form("FatSV_j%d_%db",i,k));  
+		h_name.push_back(Form("AK8SV_j%d_%db",i,k));  
 		}
 	}
 	for(int k=0;k<5;k++){
@@ -381,7 +376,7 @@ double Xsec[4]={6831,1207,119.9,25.24};
 			  th2=(TH1D* )tf1[k]->FindObjectAny(Form("%s_3b_%s",endfix.Data(),hadflv[j].data()));
  			  thh[k][j]->Add(th2);
 		  }
-		  thh[k][j]->Scale(fixNumber* 12883.846147301*Xsec[k]/th2->GetBinContent(1));
+		  thh[k][j]->Scale(fixNumber* 27000*Xsec[k]/th2->GetBinContent(1));
 		 // cout<<k<<","<<j<<","<<Form("%s_%s",h_name[i].data(),hadflv[j].data())<<","<<thh[k][j]->Integral()<<endl;
 	  }
 	  
@@ -421,7 +416,7 @@ vector<TH1D* > v2;
 	
 	for(int i=0;i<4;i++){
 		if(h_name[i].find("HT")!= std::string::npos)continue;
-		thh[3][i]->Scale(thh[4][0]->Integral()/temp_scale);
+		//thh[3][i]->Scale(thh[4][0]->Integral()/temp_scale);
 	}
 	
 	vd.push_back(thh[4][0]);
@@ -465,13 +460,58 @@ vector<TH1D* > v2;
 	cout<<h_name[i]<<endl;
 	
 	
+	
+	string tempName=h_name[i];
+	if(h_name[i].find("Eta")!= std::string::npos){
+		TString endfix2;
+		 endfix2=gSystem->GetFromPipe(Form("file=%s; test=${file##Eta}; echo \"${test}\"",h_name[i].data()));
+		 h_name[i]=Form("#eta%s",endfix2.Data());
+	}
+	
+	if(h_name[i].find("tau")!= std::string::npos){
+		TString endfix2;
+		 endfix2=gSystem->GetFromPipe(Form("file=%s; test=${file##tau}; echo \"${test}\"",h_name[i].data()));
+		 h_name[i]=Form("#tau%s",endfix2.Data());
+	}
+	
+	if (h_name[i].find("total")!= std::string::npos)h_name[i]="M_{jj}[GeV]";
+	
+	else if (h_name[i].find("_j0")!= std::string::npos){
+		TString endfix2;
+		 endfix2=gSystem->GetFromPipe(Form("file=%s; test=${file%%*_j0*}; echo \"${test}\"",h_name[i].data()));
+		 //cout<<endfix2<<endl;
+		 if (h_name[i].find("_sj0")!= std::string::npos) h_name[i]=Form("%s^{Jet0}_{subjet0}",endfix2.Data());
+		 else  if (h_name[i].find("_sj1")!= std::string::npos) h_name[i]=Form("%s^{Jet0}_{subjet1}",endfix2.Data());
+		 else h_name[i]=Form("%s^{Jet0}",endfix2.Data());
+	}
+	
+	else if (h_name[i].find("_j1")!= std::string::npos){
+		TString endfix2;
+		 endfix2=gSystem->GetFromPipe(Form("file=%s; test=${file%%*_j1*}; echo \"${test}\"",h_name[i].data()));
+		 //cout<<endfix2<<endl;
+		 if (h_name[i].find("_sj0")!= std::string::npos) h_name[i]=Form("%s^{Jet1}_{subjet0}",endfix2.Data());
+		 else  if (h_name[i].find("_sj1")!= std::string::npos) h_name[i]=Form("%s^{Jet1}_{subjet1}",endfix2.Data());
+		 else h_name[i]=Form("%s^{Jet1}",endfix2.Data());
+	}
+	
+    else if(h_name[i].find("Pt")!= std::string::npos||
+	//h_name[i].find("total")!= std::string::npos||
+	h_name[i].find("ass")!= std::string::npos)	h_name[i]=Form("%s[GeV]",endfix.Data());
+	
+	else h_name[i]=Form("%s",endfix.Data());
+	
+	
+	
+	
+	
+	
     myPlot(v2,
 vd,
-	   h_data, h_bkg,1);
+	   h_data, h_bkg,1,h_name[i]);
 
     c_up->RedrawAxis();
     
-    
+    h_name[i]=tempName;
     
     
     if(drawSignal){
@@ -486,7 +526,7 @@ vd,
   leg->SetFillColor(0);
   leg->SetFillStyle(0);
   leg->SetTextSize(0.04);
-		for(int k=0;k<4;k++){
+		for(int k=0;k<3;k++){
 			
 	    th_signal[k]=(TH1D*)tf2[k]->FindObjectAny(Form("%s",h_name[i].data()));
 	    leg->AddEntry(th_signal[k],Form("%s",legendS[k].data()));
@@ -512,11 +552,14 @@ vd,
 	    
 	     TH1D *th3=(TH1D* )tf2[k]->FindObjectAny("cutflow");
 	     //cout<<"k="<<k<<","<<th2->GetBinContent(1)<<","<<12.883846147301*xsec2[k]*200/th2->GetBinContent(1)<<endl;
-	     th_signal[k]->Scale(thh[4][0]->Integral()/(th_signal[k]->Integral()*2));
+	     //th_signal[k]->Scale(thh[4][0]->Integral()/(th_signal[k]->Integral()*2));
+	     th_signal[k]->Scale(27000* 50/th3->GetBinContent(1));
+	     /*
 	     if(h_name[i].find("deltaR")!= std::string::npos)th_signal[k]->Scale(0.5);
 	     if(h_name[i].find("noPr")!= std::string::npos &&
 	     h_name[i].find("noPr_")== std::string::npos&&
 	     h_name[i].find("tau21")== std::string::npos)th_signal[k]->Scale(0.4);
+	    */
 	    //if(k<3)th_signal[k]->Scale(10);
 	     cout<<th_signal[k]->Integral()<<",";
 	     th_signal[k]->Draw("same hist ");
@@ -532,7 +575,7 @@ vd,
 		  
 	
 		
-		  
+/*
     
     c_dw->cd();
 	string tempName=h_name[i];
@@ -577,6 +620,7 @@ vd,
 	
 	
 	h_name[i]=tempName;
+	*/
 	
 	if(h_name[i].find("Pt")!= std::string::npos)isSetRange=0;	
 	 if(h_name[i].find("total")!= std::string::npos)isSetRange=0;	

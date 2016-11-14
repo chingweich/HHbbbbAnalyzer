@@ -49,38 +49,38 @@ void HHbbbbBtagEff(int a,int b){
 
 	string st1[50]={
 		/*0-11*/
-		"/data7/chchen/80x_dsv/B/B1000.root",
-		"/data7/chchen/80x_dsv/B/B1200.root",
-		"/data7/chchen/80x_dsv/B/B1400.root",
-		"/data7/chchen/80x_dsv/B/B1600.root",
-		"/data7/chchen/80x_dsv/B/B1800.root",
-		"/data7/chchen/80x_dsv/B/B2000.root",
-		"/data7/chchen/80x_dsv/B/B2500.root",
-		"/data7/chchen/80x_dsv/B/B3000.root",
-		"/data7/chchen/80x_dsv/B/B3500.root",
-		"/data7/chchen/80x_dsv/B/B4000.root",
-		"/data7/chchen/80x_dsv/B/B4500.root",
+		"/data7/chchen/AK8subjetSDRawFactorNov2016/B/B1000.root",
+		"/data7/chchen/AK8subjetSDRawFactorNov2016/B/B1200.root",
+		"/data7/chchen/AK8subjetSDRawFactorNov2016/B/B1400.root",
+		"/data7/chchen/AK8subjetSDRawFactorNov2016/B/B1600.root",
+		"/data7/chchen/AK8subjetSDRawFactorNov2016/B/B1800.root",
+		"/data7/chchen/AK8subjetSDRawFactorNov2016/B/B2000.root",
+		"/data7/chchen/AK8subjetSDRawFactorNov2016/B/B2500.root",
+		"/data7/chchen/AK8subjetSDRawFactorNov2016/B/B3000.root",
+		"/data7/chchen/AK8subjetSDRawFactorNov2016/B/B3500.root",
+		"/data7/chchen/AK8subjetSDRawFactorNov2016/B/B4000.root",
+		"/data7/chchen/AK8subjetSDRawFactorNov2016/B/B4500.root",
 		/*12-21*/
-		"/data7/chchen/80x_dsv/R/R1000.root",
-		"/data7/chchen/80x_dsv/R/R1200.root",
-		"/data7/chchen/80x_dsv/R/R1400.root",
-		"/data7/chchen/80x_dsv/R/R1600.root",
-		"/data7/chchen/80x_dsv/R/R1800.root",
-		"/data7/chchen/80x_dsv/R/R2000.root",
-		"/data7/chchen/80x_dsv/R/R2500.root",
-		"/data7/chchen/80x_dsv/R/R3000.root",
-		"/data7/chchen/80x_dsv/R/R3500.root",
-		"/data7/chchen/80x_dsv/R/R4000.root",
-		"/data7/chchen/80x_dsv/R/R4500.root",
+		"/data7/chchen/AK8subjetSDRawFactorNov2016/R/R1000.root",
+		"/data7/chchen/AK8subjetSDRawFactorNov2016/R/R1200.root",
+		"/data7/chchen/AK8subjetSDRawFactorNov2016/R/R1400.root",
+		"/data7/chchen/AK8subjetSDRawFactorNov2016/R/R1600.root",
+		"/data7/chchen/AK8subjetSDRawFactorNov2016/R/R1800.root",
+		"/data7/chchen/AK8subjetSDRawFactorNov2016/R/R2000.root",
+		"/data7/chchen/AK8subjetSDRawFactorNov2016/R/R2500.root",
+		"/data7/chchen/AK8subjetSDRawFactorNov2016/R/R3000.root",
+		"/data7/chchen/AK8subjetSDRawFactorNov2016/R/R3500.root",
+		"/data7/chchen/AK8subjetSDRawFactorNov2016/R/R4000.root",
+		"/data7/chchen/AK8subjetSDRawFactorNov2016/R/R4500.root",
 		/*22-32*/
-		"/data7/chchen/80x_dsv/QCD/700/NCUGlobalTuples_",
-		"/data7/chchen/80x_dsv/QCD/700_1/NCUGlobalTuples_",
-		"/data7/chchen/80x_dsv/QCD/1000/NCUGlobalTuples_",
-		"/data7/chchen/80x_dsv/QCD/1000_1/NCUGlobalTuples_",
-		"/data7/chchen/80x_dsv/QCD/1500/NCUGlobalTuples_",
-		"/data7/chchen/80x_dsv/QCD/1500_1/NCUGlobalTuples_",
-		"/data7/chchen/80x_dsv/QCD/2000/NCUGlobalTuples_",
-		"/data7/chchen/80x_dsv/QCD/2000_1/NCUGlobalTuples_",	
+		"/data7/chchen/AK8subjetSDRawFactorNov2016/QCD/700_1/NCUGlobalTuples_",
+		"/data7/chchen/AK8subjetSDRawFactorNov2016/QCD/700_2/NCUGlobalTuples_",
+		"/data7/chchen/AK8subjetSDRawFactorNov2016/QCD/1000_1/NCUGlobalTuples_",
+		"/data7/chchen/AK8subjetSDRawFactorNov2016/QCD/1000_2/NCUGlobalTuples_",
+		"/data7/chchen/AK8subjetSDRawFactorNov2016/QCD/1500_1/NCUGlobalTuples_",
+		"/data7/chchen/AK8subjetSDRawFactorNov2016/QCD/1500_2/NCUGlobalTuples_",
+		"/data7/chchen/AK8subjetSDRawFactorNov2016/QCD/2000_1/NCUGlobalTuples_",
+		"/data7/chchen/AK8subjetSDRawFactorNov2016/QCD/2000_2/NCUGlobalTuples_",	
 		
 		
 		"/data7/chchen/AK8subjetSDRawFactorNov2016/JetHT/B/NCUGlobalTuples_",
@@ -95,10 +95,6 @@ void HHbbbbBtagEff(int a,int b){
 	
 	"dataB","dataC","dataD",
 	};
-	int aa[40]={119,225,40,80,31,62,17,33,27,12,5,3,9,3,2,3};
-	string dataPathB="/data7/chchen/80x_dsv/JetHT_runB/NCUGlobalTuples_";
-	string dataPathC="/data7/chchen/80x_dsv/JetHT_runC/NCUGlobalTuples_";
-	string dataPathD="/data7/chchen/80x_dsv/JetHT_runD/NCUGlobalTuples_";
 	
 	HH4bBtagEffBase_80_v2(b,b+1,st1[a],fileName[a]);	
 	/*
