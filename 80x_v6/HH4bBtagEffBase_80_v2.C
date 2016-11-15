@@ -83,15 +83,15 @@ cout<<Form("sf2/%s.root",st2.data())<<endl;
 			th5[i*5+k+40]=new TH1D(Form("deltaR_j%d_%db",i,k),Form("deltaR_j%d_%db",i,k),20,0,1);
 			th5[i*5+k+50]=new TH1D(Form("Pt_j%d_%db",i,k),Form("Pt_j%d_%db",i,k),200,0,2000);
 			th5[i*5+k+60]=new TH1D(Form("Eta_j%d_%db",i,k),Form("Eta_j%d_%db",i,k),60,-3,3);
-			th5[i*5+k+70]=new TH1D(Form("prMassL2L3_j%d_%db",i,k),Form("prMassL2L3_j%d_%db",i,k),10,40,200);
+			th5[i*5+k+70]=new TH1D(Form("prMassL2L3_j%d_%db",i,k),Form("prMassL2L3_j%d_%db",i,k),16,40,200);
 			th5[i*5+k+105]=new TH1D(Form("tau21_j%d_%db",i,k),Form("tau21_j%d_%db",i,k),25,0,1);
-			th5[i*5+k+120]=new TH1D(Form("PuppiSDMassL2L3_j%d_%db",i,k),Form("PuppiSDMassL2L3_j%d_%db",i,k),10,40,200);
+			th5[i*5+k+120]=new TH1D(Form("PuppiSDMassL2L3_j%d_%db",i,k),Form("PuppiSDMassL2L3_j%d_%db",i,k),16,40,200);
 			th5[i*5+k+130]=new TH1D(Form("puppiTau21_j%d_%db",i,k),Form("puppiTau21_j%d_%db",i,k),25,0,1);
-			th5[i*5+k+140]=new TH1D(Form("prMass_j%d_%db",i,k),Form("prMass_j%d_%db",i,k),10,40,200);
-			th5[i*5+k+150]=new TH1D(Form("PuppiSDMass_j%d_%db",i,k),Form("PuppiSDMass_j%d_%db",i,k),10,40,200);
+			th5[i*5+k+140]=new TH1D(Form("prMass_j%d_%db",i,k),Form("prMass_j%d_%db",i,k),16,40,200);
+			th5[i*5+k+150]=new TH1D(Form("PuppiSDMass_j%d_%db",i,k),Form("PuppiSDMass_j%d_%db",i,k),16,40,200);
 			th5[i*5+k+170]=new TH1D(Form("doubleSV_j%d_%db",i,k),Form("doubleSV_j%d_%db",i,k),40,-1,1);
 			th5[i*5+k+184]=new TH1D(Form("AK8SV_j%d_%db",i,k),Form("AK8SV_j%d_%db",i,k),20,0,1);
-			th5[i*5+k+250]=new TH1D(Form("PuppiSDMassThea_j%d_%db",i,k),Form("PuppiSDMassThea_j%d_%db",i,k),10,40,200);
+			th5[i*5+k+250]=new TH1D(Form("PuppiSDMassThea_j%d_%db",i,k),Form("PuppiSDMassThea_j%d_%db",i,k),16,40,200);
 		}
 	}
 	for(int k=0;k<5;k++){
