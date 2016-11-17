@@ -30,7 +30,7 @@
 
 //other including
 //#include "setNCUStyle.C"
-#include "../untuplizer.h"
+#include "../../untuplizer.h"
 //#include "jetEnergyScale.h"
 
 
@@ -41,8 +41,8 @@
 #include "TMVA/Tools.h"
 #include "TMVA/Reader.h"
 
-#define  nWidth 5
-#define  nBmin 11
+#define  nWidth 4
+#define  nBmin 4
 
 #define nMass 3
 #define nCat 4
@@ -268,6 +268,27 @@ void TMVARegressionApplication( int wMs,int wM, string st,string st2,string opti
 	string catName[nCat]={"PP","PF","FP","FF"};
 	string tau21Name[2]={"withTau21","woTau21"};
 	
+	string catNameShort[nCat]={"P","F"};
+	string looseTight[2]={"loose","tight"};
+	TF1 *fa[nMass][2][2][2];
+	
+	for(int i=0;i<nMass;i++){
+		for(int j=0;j<2;j++){
+			for(int k=0;k<2;k++){
+				for(int w=0;w<2;w++){
+					fa[i][j][k][w] = new TF1("fa","[0]+[1]*x+[2]*x*x+[3]*pow(x,3)",-3,3);
+					ifstream myfile (Form("PFRatio/%s_%s_%s_%s.txt",looseTight[w].data(),massName[i].data(),catNameShort[j].data(),tau21Name[k].data()));
+					double para[4];
+					for(int m=0;m<4;m++){
+						myfile>>para[m];
+					}
+					fa[i][j][k][w]->SetParameters(para[0],para[1],para[2],para[3]);
+				}
+			}
+		}
+	}
+	
+	/*
 	TH1D* th2[nMass][nCat][2];
 	TH1D* th3[nMass][nCat][2];
 	for(int i=0;i<nMass;i++){
@@ -281,7 +302,50 @@ void TMVARegressionApplication( int wMs,int wM, string st,string st2,string opti
 			}
 		}
 	}
+	*/
+	TH1D* th2d[14];
 	
+	th2d[0]=new TH1D("0a","0a",4000,1000,5000);	
+	th2d[1]=new TH1D("0c","0c",4000,1000,5000);
+	th2d[2]=new TH1D("1a","1a",4000,1000,5000);	
+	th2d[3]=new TH1D("1c","1c",4000,1000,5000);	
+	th2d[4]=new TH1D("2a","2a",4000,1000,5000);	
+	th2d[5]=new TH1D("2b","2b",4000,1000,5000);	
+	th2d[6]=new TH1D("2d","2d",4000,1000,5000);	
+	
+	
+	th2d[7]=new TH1D("0aL","0aL",4000,1000,5000);		
+	th2d[8]=new TH1D("0cL","0cL",4000,1000,5000);		
+	th2d[9]=new TH1D("1aL","1aL",4000,1000,5000);		
+	th2d[10]=new TH1D("1cL","1cL",4000,1000,5000);		
+	th2d[11]=new TH1D("2aL","2aL",4000,1000,5000);	
+	th2d[12]=new TH1D("2bL","2bL",4000,1000,5000);	
+	th2d[13]=new TH1D("2dL","2dL",4000,1000,5000);	
+		
+	
+		
+	
+	//int nWidth=5,nBmin=11;
+	 int width [nWidth]={25,30,35,40};
+	 int bmin[nBmin]={100,105,110,115};
+	 
+	
+	 TH1D* th3d[14][nWidth][nBmin][2];
+	 TH1D* th3f[14][nWidth][nBmin][2];
+	 TH1D* th3v[14][nWidth][nBmin][2];
+	 
+	 for(int i=0;i<nWidth;i++){
+		 for(int j=0;j<nBmin;j++){
+			 for(int k=0;k<2;k++){
+				  for(int l=0;l<14;l++){
+					  th3d[l][i][j][k]=(TH1D*) th2d[l]->Clone(Form("%s_%d_%d_%s",th2d[l]->GetTitle(),bmin[j],width[i]+bmin[j],tau21Name[k].data()));
+					  th3f[l][i][j][k]=(TH1D*) th2d[l]->Clone(Form("fill_%s_%d_%d_%s",th2d[l]->GetTitle(),bmin[j],width[i]+bmin[j],tau21Name[k].data()));
+					  th3v[l][i][j][k]=(TH1D*) th2d[l]->Clone(Form("valid_%s_%d_%d_%s",th2d[l]->GetTitle(),bmin[j],width[i]+bmin[j],tau21Name[k].data()));
+					  
+				  }
+			 }
+		 }
+	 }
    
    for (int w=wMs;w<wM;w++){
 		if(w%20==0)cout<<w<<endl;
@@ -435,72 +499,29 @@ void TMVARegressionApplication( int wMs,int wM, string st,string st2,string opti
 			PUPPIweight[0]=getPUPPIweight(thisJet->Pt(),thisJet->Eta());
 			PUPPIweight[1]=getPUPPIweight(thatJet->Pt(),thatJet->Eta());
 			
-			double PUPPIweightThea[2]={0};
-			PUPPIweightThea[0]=getPUPPIweight_o(thisJet->Pt(),thisJet->Eta());
-			PUPPIweightThea[1]=getPUPPIweight_o(thatJet->Pt(),thatJet->Eta());
 			
-			
+	
+			double Mjja= ((*thisJet)+(*thatJet)).M()+250
+									-((*thisJet)).M()-((*thatJet)).M();
+									
 			TLorentzVector  thisJetReg, thatJetReg;
 			thisJetReg=(*thisJet)*varTemp[0];
 			thatJetReg=(*thatJet)*varTemp[1];
+			
+			double Mjjb= (thisJetReg+thatJetReg).M()+250
+									-(thisJetReg).M()-(thatJetReg).M();
+			
 			double PUPPIweightOnRegressed[2]={0};			
 			PUPPIweightOnRegressed[0]=getPUPPIweightOnRegressed(thisJetReg.Pt(),thisJetReg.Eta());
 			PUPPIweightOnRegressed[1]=getPUPPIweightOnRegressed(thatJetReg.Pt(),thatJetReg.Eta());
 			
-			double mass_j0=0,mass_j1=0;
-			
-			for(int i=0;i<nMass;i++){
-				if(i==0){
-					mass_j0=AK8PuppijetSDmass[0]*PUPPIweightThea[0];
-					mass_j1=AK8PuppijetSDmass[1]*PUPPIweightThea[1];
+			for(int i=0;i<nWidth;i++){
+				for(int j=0;j<nBmin;j++){
+					
 				}
-				else if (i==1){
-					mass_j0=AK8PuppijetSDmass[0]*PUPPIweight[0];
-					mass_j1=AK8PuppijetSDmass[1]*PUPPIweight[1];
-				}
-				else {
-					mass_j0=AK8PuppijetSDmass[0]*varTemp[0]*PUPPIweightOnRegressed[0];
-					mass_j1=AK8PuppijetSDmass[1]*varTemp[1]*PUPPIweightOnRegressed[1];
-				}
-				
-				if(mass_j1<50)continue;
-				if(mass_j0>100 && mass_j0<145)continue;
-				
-				//cout<<mass_j0<<","<<mass_j1<<",stat="<<looseStat<<","<<tightStat<<endl;
-				
-				th2[i][looseStat][1]->Fill(mass_j0);
-				th3[i][tightStat][1]->Fill(mass_j0);
 			}
 			
 			
-			Float_t*  AK8PuppijetTau1 = data.GetPtrFloat("AK8PuppijetTau1");
-			Float_t*  AK8PuppijetTau2 = data.GetPtrFloat("AK8PuppijetTau2");
-			double puppiTau21[2];
-			puppiTau21[0]=(AK8PuppijetTau2[0]/AK8PuppijetTau1[0]),puppiTau21[1]=(AK8PuppijetTau2[1]/AK8PuppijetTau1[1]);
-			if(puppiTau21[0]>0.6 || puppiTau21[1]>0.6) continue;
-			
-			
-			for(int i=0;i<nMass;i++){
-				if(i==0){
-					mass_j0=AK8PuppijetSDmass[0]*PUPPIweightThea[0];
-					mass_j1=AK8PuppijetSDmass[1]*PUPPIweightThea[1];
-				}
-				else if (i==1){
-					mass_j0=AK8PuppijetSDmass[0]*PUPPIweight[0];
-					mass_j1=AK8PuppijetSDmass[1]*PUPPIweight[1];
-				}
-				else {
-					mass_j0=AK8PuppijetSDmass[0]*varTemp[0]*PUPPIweightOnRegressed[0];
-					mass_j1=AK8PuppijetSDmass[1]*varTemp[1]*PUPPIweightOnRegressed[1];
-				}
-				
-				if(mass_j1<50)continue;
-				if(mass_j0>100 && mass_j0<145)continue;
-				
-				
-				th2[i][looseStat][0]->Fill(mass_j0);
-				th3[i][tightStat][0]->Fill(mass_j0);
-			}
 			
 			
 		}
@@ -511,31 +532,39 @@ void TMVARegressionApplication( int wMs,int wM, string st,string st2,string opti
 
 	TFile* outFile;//= new TFile(Form("PFRatio/%s.root",st2.data()),"recreate");
 	outFile= new TFile(Form("PFRatio/%s/%d.root",st2.data(),wMs),"recreate");
-	for(int i=0;i<nMass;i++){
-		for(int j=0;j<nCat;j++){
-			for(int k=0;k<2;k++){
-				th2[i][j][k]->Write();
-				th3[i][j][k]->Write();
-			}
-		}
-	}
+	for(int i=0;i<nWidth;i++){
+		 for(int j=0;j<nBmin;j++){
+			 for(int k=0;k<2;k++){
+				  for(int l=0;l<14;l++){
+					  th3d[l][i][j][k]->Write();
+					  th3f[l][i][j][k]->Write();
+					  th3v[l][i][j][k]->Write();
+					  
+				  }
+			 }
+		 }
+	 }
 	outFile->Close();
 	
-	for(int i=0;i<nMass;i++){
-		for(int j=0;j<nCat;j++){
-			for(int k=0;k<2;k++){
-				delete th2[i][j][k];
-				delete th3[i][j][k];
-			}
-		}
-	}
+	for(int i=0;i<nWidth;i++){
+		 for(int j=0;j<nBmin;j++){
+			 for(int k=0;k<2;k++){
+				  for(int l=0;l<14;l++){
+					  delete th3d[l][i][j][k];
+					  delete th3f[l][i][j][k];
+					  delete th3v[l][i][j][k];
+					  
+				  }
+			 }
+		 }
+	 }
   
    delete reader;
     
    
 }
 
-void HH4bRegCategory(int a,int b){
+void HH4bRegCategoryFill(int a,int b){
 
 	string st1[40]={
 		"/data7/chchen/AK8subjetSDRawFactorNov2016/JetHT/B/NCUGlobalTuples_",
