@@ -354,11 +354,13 @@ void TMVARegressionApplication( int wMs,int wM, string st,string st2,string opti
 		else f = TFile::Open(st.data());
 		if (!f || !f->IsOpen())continue;
 		
-		TDirectory * dir;
+		/*TDirectory * dir;
 		if (nameRoot!=1)dir = (TDirectory*)f->Get(Form("%s%d.root:/tree",st.data(),w));
 		else dir = (TDirectory*)f->Get(Form("%s:/tree",st.data()));
 		
 		dir->GetObject("treeMaker",tree);
+		*/
+		tree=(TTree*)f->Get("treeMaker");
 		TreeReader data(tree);
 		total+=data.GetEntriesFast();
 		for(Long64_t jEntry=0; jEntry<data.GetEntriesFast() ;jEntry++){
@@ -457,6 +459,8 @@ void TMVARegressionApplication( int wMs,int wM, string st,string st2,string opti
 			
 			Float_t*  AK8PuppijetSDmass = data.GetPtrFloat("AK8PuppijetSDmass");
 			
+			if(AK8PuppijetSDmass[0]<50||AK8PuppijetSDmass[1]<50)continue;
+			
 			Int_t* AK8Puppijet_nSV=data.GetPtrInt("AK8Puppijet_nSV");
 			vector<float>   *AK8Puppijet_SVMass  =  data.GetPtrVectorFloat("AK8Puppijet_SVMass");
 			int nEle= data.GetInt("nEle");
@@ -499,7 +503,9 @@ void TMVARegressionApplication( int wMs,int wM, string st,string st2,string opti
 			PUPPIweight[0]=getPUPPIweight(thisJet->Pt(),thisJet->Eta());
 			PUPPIweight[1]=getPUPPIweight(thatJet->Pt(),thatJet->Eta());
 			
-			
+			double PUPPIweightThea[2]={0};
+			PUPPIweightThea[0]=getPUPPIweight_o(thisJet->Pt(),thisJet->Eta());
+			PUPPIweightThea[1]=getPUPPIweight_o(thatJet->Pt(),thatJet->Eta());
 	
 			double Mjja= ((*thisJet)+(*thatJet)).M()+250
 									-((*thisJet)).M()-((*thatJet)).M();
@@ -515,12 +521,101 @@ void TMVARegressionApplication( int wMs,int wM, string st,string st2,string opti
 			PUPPIweightOnRegressed[0]=getPUPPIweightOnRegressed(thisJetReg.Pt(),thisJetReg.Eta());
 			PUPPIweightOnRegressed[1]=getPUPPIweightOnRegressed(thatJetReg.Pt(),thatJetReg.Eta());
 			
-			for(int i=0;i<nWidth;i++){
-				for(int j=0;j<nBmin;j++){
-					
+			vector<float>   *subjetSDPx  =  data.GetPtrVectorFloat("AK8PuppisubjetSDPx");
+			vector<float>   *subjetSDPy  =  data.GetPtrVectorFloat("AK8PuppisubjetSDPy");
+			vector<float>   *subjetSDPz  =  data.GetPtrVectorFloat("AK8PuppisubjetSDPz");
+			vector<float>   *subjetSDE   =  data.GetPtrVectorFloat("AK8PuppisubjetSDE");
+			vector<float>   *AK8PuppisubjetSDRawFactor =  data.GetPtrVectorFloat("AK8PuppisubjetSDRawFactor");
+			
+			TLorentzVector thisSDJet, thatSDJet;
+			TLorentzVector* subjetP4[2][2];
+			for(int i=0;i<2;i++){
+				for(int j=0;j<2;j++){
+					subjetP4[i][j]=new TLorentzVector(0,0,0,0);
+					subjetP4[i][j]->SetPxPyPzE(subjetSDPx[i][j],subjetSDPy[i][j],subjetSDPz[i][j],subjetSDE[i][j]);
+				//	subjetP4[i][j]*=AK8PuppisubjetSDRawFactor[i][j];
 				}
 			}
+			thisSDJet=(*subjetP4[0][0])*AK8PuppisubjetSDRawFactor[0][0]+(*subjetP4[0][1])*AK8PuppisubjetSDRawFactor[0][1];
+			thatSDJet=(*subjetP4[1][0])*AK8PuppisubjetSDRawFactor[1][0]+(*subjetP4[1][1])*AK8PuppisubjetSDRawFactor[1][1];
+			//thatSDJet=(*subjetP4[1][0])+(*subjetP4[1][1]);
+			double Mjjc= ((thisSDJet)+(thatSDJet)).M()+250
+									-((thisSDJet)).M()-((thatSDJet)).M();
+									
+			thisSDJet*=	varTemp[0]*PUPPIweightOnRegressed[0];			
+			thatSDJet*=	varTemp[1]*PUPPIweightOnRegressed[1];			
+			double Mjjd= ((thisSDJet)+(thatSDJet)).M()+250
+									-((thisSDJet)).M()-((thatSDJet)).M();
 			
+			
+			Float_t*  AK8PuppijetTau1 = data.GetPtrFloat("AK8PuppijetTau1");
+			Float_t*  AK8PuppijetTau2 = data.GetPtrFloat("AK8PuppijetTau2");
+			double puppiTau21[2];
+			puppiTau21[0]=(AK8PuppijetTau2[0]/AK8PuppijetTau1[0]),puppiTau21[1]=(AK8PuppijetTau2[1]/AK8PuppijetTau1[1]);
+			
+			double mass_j0,mass_j1,MjjLoop;
+			int massCat;
+			for(int k=0;k<7;k++){
+				if(k==0||k==1){
+					mass_j0=AK8PuppijetSDmass[0]*PUPPIweightThea[0];
+					mass_j1=AK8PuppijetSDmass[1]*PUPPIweightThea[1];
+					massCat=0;
+				}
+				else if (k==2||k==3){
+					mass_j0=AK8PuppijetSDmass[0]*PUPPIweight[0];
+					mass_j1=AK8PuppijetSDmass[1]*PUPPIweight[1];
+					massCat=1;
+				}
+				
+				else{
+					mass_j0=AK8PuppijetSDmass[0]*varTemp[0]*PUPPIweightOnRegressed[0];
+					mass_j1=AK8PuppijetSDmass[1]*varTemp[1]*PUPPIweightOnRegressed[1];
+					massCat=2;
+				} 
+				
+				if(k==0||k==2||k==4)MjjLoop=Mjja;
+				else if (k==1||k==3)MjjLoop=Mjjc;
+				else if (k==5)MjjLoop=Mjjb;
+				else MjjLoop=Mjjd;
+				
+				
+				//cout<<mass_j0<<","<<mass_j1<<",k="<<k<<endl;
+				for(int i=0;i<nWidth;i++){
+					for(int j=0;j<nBmin;j++){
+						if(mass_j0<bmin[j] ||mass_j0>width[i]+bmin[j]
+						||mass_j1<bmin[j] ||mass_j1>width[i]+bmin[j] )continue;
+						
+						for(int m=0;m<2;m++){
+							if(m==0 && (puppiTau21[0]>0.6 || puppiTau21[1]>0.6))continue;
+							double tightPFRatio=0,loosePFRatio=0;
+							tightPFRatio=fa[massCat][0][m][1]->Eval(mass_j0);
+							loosePFRatio=fa[massCat][0][m][0]->Eval(mass_j0);
+							if(tightStat==2){
+								th3d[k][i][j][m]->Fill(MjjLoop,tightPFRatio);
+							}
+							else if (tightStat==1){
+								th3f[k][i][j][m]->Fill(MjjLoop);
+							}
+							else if(tightStat==3){
+								tightPFRatio=fa[massCat][1][m][1]->Eval(mass_j0);
+								th3v[k][i][j][m]->Fill(MjjLoop,tightPFRatio);
+							}
+							
+							if(looseStat==2){
+								th3d[k+7][i][j][m]->Fill(MjjLoop,loosePFRatio);
+							}
+							else if (looseStat==1){
+								th3f[k+7][i][j][m]->Fill(MjjLoop);
+							}
+							else if(looseStat==3){
+								loosePFRatio=fa[massCat][1][m][0]->Eval(mass_j0);
+								th3v[k+7][i][j][m]->Fill(MjjLoop,loosePFRatio);
+							}
+						}
+						
+					}
+				}
+			}
 			
 			
 			
@@ -531,7 +626,7 @@ void TMVARegressionApplication( int wMs,int wM, string st,string st2,string opti
    
 
 	TFile* outFile;//= new TFile(Form("PFRatio/%s.root",st2.data()),"recreate");
-	outFile= new TFile(Form("PFRatio/%s/%d.root",st2.data(),wMs),"recreate");
+	outFile= new TFile(Form("MjjVC/%s/%d.root",st2.data(),wMs),"recreate");
 	for(int i=0;i<nWidth;i++){
 		 for(int j=0;j<nBmin;j++){
 			 for(int k=0;k<2;k++){
@@ -567,13 +662,13 @@ void TMVARegressionApplication( int wMs,int wM, string st,string st2,string opti
 void HH4bRegCategoryFill(int a,int b){
 
 	string st1[40]={
-		"/data7/chchen/AK8subjetSDRawFactorNov2016/JetHT/B/NCUGlobalTuples_",
-		"/data7/chchen/AK8subjetSDRawFactorNov2016/JetHT/C/NCUGlobalTuples_",
-		"/data7/chchen/AK8subjetSDRawFactorNov2016/JetHT/D/NCUGlobalTuples_",
-		"/data7/chchen/AK8subjetSDRawFactorNov2016/JetHT/E/NCUGlobalTuples_",
-		"/data7/chchen/AK8subjetSDRawFactorNov2016/JetHT/F/NCUGlobalTuples_",
-		"/data7/chchen/AK8subjetSDRawFactorNov2016/JetHT/G/NCUGlobalTuples_",
-		"/data7/chchen/AK8subjetSDRawFactorNov2016/JetHT/H/NCUGlobalTuples_",
+		"/data7/chchen/AK8subjetSDRawFactorNov2016/JetHT/B/skimmed/NCUGlobalTuples_",
+		"/data7/chchen/AK8subjetSDRawFactorNov2016/JetHT/C/skimmed/NCUGlobalTuples_",
+		"/data7/chchen/AK8subjetSDRawFactorNov2016/JetHT/D/skimmed/NCUGlobalTuples_",
+		"/data7/chchen/AK8subjetSDRawFactorNov2016/JetHT/E/skimmed/NCUGlobalTuples_",
+		"/data7/chchen/AK8subjetSDRawFactorNov2016/JetHT/F/skimmed/NCUGlobalTuples_",
+		"/data7/chchen/AK8subjetSDRawFactorNov2016/JetHT/G/skimmed/NCUGlobalTuples_",
+		"/data7/chchen/AK8subjetSDRawFactorNov2016/JetHT/H/skimmed/NCUGlobalTuples_",
 	};
 	string  fileName[40]={
 	"dataB",
