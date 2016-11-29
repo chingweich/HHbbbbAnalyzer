@@ -283,7 +283,6 @@ void TMVARegressionApplication( int wMs,int wM, string st,string st2,string opti
 						myfile>>para[m];
 					}
 					fa[i][j][k][w]->SetParameters(para[0],para[1],para[2],para[3]);
-					cout<<"i="<<i<<",j="<<j<<",k="<<k<<",w="<<w<<",eval="<<fa[i][j][k][w]->Eval(125)<<endl;
 				}
 			}
 		}
@@ -687,7 +686,7 @@ void TMVARegressionApplication( int wMs,int wM, string st,string st2,string opti
 							}
 							else if(tlStat==3){
 								tlPFRatio=fa[massCat][1][m][2]->Eval(mass_j0);
-								//if(i==0 && j==0)cout<<massCat<<","<<m<<","<<tlPFRatio<<endl;
+								if(i==0 && j==0)cout<<massCat<<","<<m<<","<<tlPFRatio<<endl;
 								th3v[k+14][i][j][m]->Fill(MjjLoop,tlPFRatio);
 							}
 							else if (tlStat==0){
