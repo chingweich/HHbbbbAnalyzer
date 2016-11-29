@@ -266,16 +266,16 @@ void TMVARegressionApplication( int wMs,int wM, string st,string st2,string opti
 	
 	string massName[nMass]={"Thea","HCorr","Reg"};
 	string catName[nCat]={"PP","PF","FP","FF"};
-	string tau21Name[2]={"withTau21","woTau21"};
+	string tau21Name[3]={"withTau21","woTau21","antiTau21"};
 	
 	string catNameShort[nCat]={"P","F"};
-	string looseTight[2]={"loose","tight"};
+	string looseTight[3]={"loose","tight","tl"};
 	TF1 *fa[nMass][2][2][2];
 	
 	for(int i=0;i<nMass;i++){
 		for(int j=0;j<2;j++){
-			for(int k=0;k<2;k++){
-				for(int w=0;w<2;w++){
+			for(int k=0;k<3;k++){
+				for(int w=0;w<3;w++){
 					fa[i][j][k][w] = new TF1("fa","[0]+[1]*x+[2]*x*x+[3]*pow(x,3)",-3,3);
 					ifstream myfile (Form("PFRatio/%s_%s_%s_%s.txt",looseTight[w].data(),massName[i].data(),catNameShort[j].data(),tau21Name[k].data()));
 					double para[4];
@@ -283,6 +283,7 @@ void TMVARegressionApplication( int wMs,int wM, string st,string st2,string opti
 						myfile>>para[m];
 					}
 					fa[i][j][k][w]->SetParameters(para[0],para[1],para[2],para[3]);
+					cout<<"i="<<i<<",j="<<j<<",k="<<k<<",w="<<w<<",eval="<<fa[i][j][k][w]->Eval(125)<<endl;
 				}
 			}
 		}
@@ -303,7 +304,7 @@ void TMVARegressionApplication( int wMs,int wM, string st,string st2,string opti
 		}
 	}
 	*/
-	TH1D* th2d[14];
+	TH1D* th2d[21];
 	
 	th2d[0]=new TH1D("0a","0a",4000,1000,5000);	
 	th2d[1]=new TH1D("0c","0c",4000,1000,5000);
@@ -322,7 +323,13 @@ void TMVARegressionApplication( int wMs,int wM, string st,string st2,string opti
 	th2d[12]=new TH1D("2bL","2bL",4000,1000,5000);	
 	th2d[13]=new TH1D("2dL","2dL",4000,1000,5000);	
 		
-	
+	th2d[14]=new TH1D("0aTL","0aTL",4000,1000,5000);		
+	th2d[15]=new TH1D("0cTL","0cTL",4000,1000,5000);		
+	th2d[16]=new TH1D("1aTL","1aTL",4000,1000,5000);		
+	th2d[17]=new TH1D("1cTL","1cTL",4000,1000,5000);		
+	th2d[18]=new TH1D("2aTL","2aTL",4000,1000,5000);	
+	th2d[19]=new TH1D("2bTL","2bTL",4000,1000,5000);	
+	th2d[20]=new TH1D("2dTL","2dTL",4000,1000,5000);	
 		
 	
 	//int nWidth=5,nBmin=11;
@@ -330,17 +337,28 @@ void TMVARegressionApplication( int wMs,int wM, string st,string st2,string opti
 	 int bmin[nBmin]={100,105,110,115};
 	 
 	
-	 TH1D* th3d[14][nWidth][nBmin][2];
-	 TH1D* th3f[14][nWidth][nBmin][2];
-	 TH1D* th3v[14][nWidth][nBmin][2];
+	 TH1D* th3d[21][nWidth][nBmin][3];
+	 TH1D* th3p[21][nWidth][nBmin][3];
+	 TH1D* th3f[21][nWidth][nBmin][3];
+	 TH1D* th3v[21][nWidth][nBmin][3];
+	 
 	 
 	 for(int i=0;i<nWidth;i++){
 		 for(int j=0;j<nBmin;j++){
-			 for(int k=0;k<2;k++){
-				  for(int l=0;l<14;l++){
+			 for(int k=0;k<3;k++){
+				  for(int l=0;l<21;l++){
 					  th3d[l][i][j][k]=(TH1D*) th2d[l]->Clone(Form("%s_%d_%d_%s",th2d[l]->GetTitle(),bmin[j],width[i]+bmin[j],tau21Name[k].data()));
+					  th3p[l][i][j][k]=(TH1D*) th2d[l]->Clone(Form("pp_%s_%d_%d_%s",th2d[l]->GetTitle(),bmin[j],width[i]+bmin[j],tau21Name[k].data()));
 					  th3f[l][i][j][k]=(TH1D*) th2d[l]->Clone(Form("fill_%s_%d_%d_%s",th2d[l]->GetTitle(),bmin[j],width[i]+bmin[j],tau21Name[k].data()));
 					  th3v[l][i][j][k]=(TH1D*) th2d[l]->Clone(Form("valid_%s_%d_%d_%s",th2d[l]->GetTitle(),bmin[j],width[i]+bmin[j],tau21Name[k].data()));
+					  
+					 
+					  
+					  th3d[l][i][j][k]->Sumw2();
+					  th3p[l][i][j][k]->Sumw2();
+					  th3f[l][i][j][k]->Sumw2();
+					  th3v[l][i][j][k]->Sumw2();
+					  
 					  
 				  }
 			 }
@@ -406,8 +424,8 @@ void TMVARegressionApplication( int wMs,int wM, string st,string st2,string opti
 			
 			//3. Pt 
 			if(thisJet->Pt()>99998 ||thatJet->Pt()>99998 )continue;
-			if(thisJet->Pt()<300)continue;
-			if(thatJet->Pt()<300)continue;
+			if(thisJet->Pt()<200)continue;
+			if(thatJet->Pt()<200)continue;
 			nPass[3]++;
 			//4tightId-----------------------------------------
 			vector<bool>    &AK8PuppijetPassIDTight = *((vector<bool>*) data.GetPtr("AK8PuppijetPassIDTight"));
@@ -443,6 +461,7 @@ void TMVARegressionApplication( int wMs,int wM, string st,string st2,string opti
 			
 			int looseStat=-1;
 			int tightStat=-1;
+			int tlStat=-1;
 			
 			if(AK8Puppijet_DoubleSV[0]>0.3 && AK8Puppijet_DoubleSV[1]>0.3)looseStat=0;
 			else if(AK8Puppijet_DoubleSV[0]>0.3 && AK8Puppijet_DoubleSV[1]<0.3)looseStat=1;
@@ -451,8 +470,15 @@ void TMVARegressionApplication( int wMs,int wM, string st,string st2,string opti
 			
 			if(AK8Puppijet_DoubleSV[0]>0.8 && AK8Puppijet_DoubleSV[1]>0.8)tightStat=0;
 			else if(AK8Puppijet_DoubleSV[0]>0.8 && AK8Puppijet_DoubleSV[1]<0.8)tightStat=1;
-			else if(AK8Puppijet_DoubleSV[0]<0.8 && AK8Puppijet_DoubleSV[1]>0.8)tightStat=2;
-			else tightStat=3;
+			else if(AK8Puppijet_DoubleSV[0]<0.3 && AK8Puppijet_DoubleSV[1]>0.8)tightStat=2;
+			else if(AK8Puppijet_DoubleSV[0]<0.3 && AK8Puppijet_DoubleSV[1]<0.8)tightStat=3;
+			else tightStat=-1;
+			
+			if(AK8Puppijet_DoubleSV[0]>0.8 && AK8Puppijet_DoubleSV[1]>0.3)tlStat=0;
+			else if(AK8Puppijet_DoubleSV[0]>0.8 && AK8Puppijet_DoubleSV[1]<0.3)tlStat=1;
+			else if(AK8Puppijet_DoubleSV[0]<0.3 && AK8Puppijet_DoubleSV[1]>0.3)tlStat=2;
+			else if(AK8Puppijet_DoubleSV[0]<0.3 && AK8Puppijet_DoubleSV[1]<0.3)tlStat=3;
+			else tlStat=-1;
 			
 			
 			double varTemp[2];
@@ -539,11 +565,15 @@ void TMVARegressionApplication( int wMs,int wM, string st,string st2,string opti
 			thisSDJet=(*subjetP4[0][0])*AK8PuppisubjetSDRawFactor[0][0]+(*subjetP4[0][1])*AK8PuppisubjetSDRawFactor[0][1];
 			thatSDJet=(*subjetP4[1][0])*AK8PuppisubjetSDRawFactor[1][0]+(*subjetP4[1][1])*AK8PuppisubjetSDRawFactor[1][1];
 			//thatSDJet=(*subjetP4[1][0])+(*subjetP4[1][1]);
-			double Mjjc= ((thisSDJet)+(thatSDJet)).M()+250
-									-((thisSDJet)).M()-((thatSDJet)).M();
-									
-			thisSDJet*=	varTemp[0]*PUPPIweightOnRegressed[0];			
-			thatSDJet*=	varTemp[1]*PUPPIweightOnRegressed[1];			
+			TLorentzVector thisSDJetReg, thatSDJetReg;			
+			thisSDJetReg=	thisSDJet*varTemp[0]*PUPPIweightOnRegressed[0];			
+			thatSDJetReg=	thatSDJet*varTemp[1]*PUPPIweightOnRegressed[1];			
+			
+			
+			//double Mjjc= ((thisSDJet)+(thatSDJet)).M()+250
+			//						-((thisSDJet)).M()-((thatSDJet)).M();
+			
+			
 			double Mjjd= ((thisSDJet)+(thatSDJet)).M()+250
 									-((thisSDJet)).M()-((thatSDJet)).M();
 			
@@ -556,6 +586,29 @@ void TMVARegressionApplication( int wMs,int wM, string st,string st2,string opti
 			double mass_j0,mass_j1,MjjLoop;
 			int massCat;
 			for(int k=0;k<7;k++){
+				
+				if(k==0||k==2||k==4){
+					if(thisJet->Pt()<300)continue;
+					if(thatJet->Pt()<300)continue;
+				}
+				else if (k==1){
+					if((thisSDJet*PUPPIweightThea[0]).Pt()<300)continue;
+					if((thatSDJet*PUPPIweightThea[1]).Pt()<300)continue;
+				}
+				else if (k==3){
+					if((thisSDJet*PUPPIweight[0]).Pt()<300)continue;
+					if((thatSDJet*PUPPIweight[1]).Pt()<300)continue;
+				}
+				else if (k==5){
+					if(thisJetReg.Pt()<300)continue;
+					if(thatJetReg.Pt()<300)continue;
+				}
+				else{
+					if(thisSDJetReg.Pt()<300)continue;
+					if(thatSDJetReg.Pt()<300)continue;
+				}
+				
+				
 				if(k==0||k==1){
 					mass_j0=AK8PuppijetSDmass[0]*PUPPIweightThea[0];
 					mass_j1=AK8PuppijetSDmass[1]*PUPPIweightThea[1];
@@ -573,10 +626,15 @@ void TMVARegressionApplication( int wMs,int wM, string st,string st2,string opti
 					massCat=2;
 				} 
 				
+				
+				
 				if(k==0||k==2||k==4)MjjLoop=Mjja;
-				else if (k==1||k==3)MjjLoop=Mjjc;
+				else if (k==1)MjjLoop=((thisSDJet)*PUPPIweightThea[0]+(thatSDJet)*PUPPIweightThea[1]).M()+250-((thisSDJet)*PUPPIweightThea[0]).M()-((thatSDJet)*PUPPIweightThea[1]).M();
+				else if (k==3)MjjLoop=((thisSDJet)*PUPPIweight[0]+(thatSDJet)*PUPPIweight[1]).M()+250-((thisSDJet)*PUPPIweight[0]).M()-((thatSDJet)*PUPPIweight[1]).M();
 				else if (k==5)MjjLoop=Mjjb;
 				else MjjLoop=Mjjd;
+				
+				
 				
 				
 				//cout<<mass_j0<<","<<mass_j1<<",k="<<k<<endl;
@@ -585,11 +643,14 @@ void TMVARegressionApplication( int wMs,int wM, string st,string st2,string opti
 						if(mass_j0<bmin[j] ||mass_j0>width[i]+bmin[j]
 						||mass_j1<bmin[j] ||mass_j1>width[i]+bmin[j] )continue;
 						
-						for(int m=0;m<2;m++){
+						for(int m=0;m<3;m++){
 							if(m==0 && (puppiTau21[0]>0.6 || puppiTau21[1]>0.6))continue;
-							double tightPFRatio=0,loosePFRatio=0;
+							if(m==2 && (puppiTau21[0]<0.6 || puppiTau21[1]>0.6))continue;
+							double tightPFRatio=0,loosePFRatio=0,tlPFRatio=0;
 							tightPFRatio=fa[massCat][0][m][1]->Eval(mass_j0);
 							loosePFRatio=fa[massCat][0][m][0]->Eval(mass_j0);
+							tlPFRatio=fa[massCat][0][m][2]->Eval(mass_j0);
+							
 							if(tightStat==2){
 								th3d[k][i][j][m]->Fill(MjjLoop,tightPFRatio);
 							}
@@ -599,6 +660,9 @@ void TMVARegressionApplication( int wMs,int wM, string st,string st2,string opti
 							else if(tightStat==3){
 								tightPFRatio=fa[massCat][1][m][1]->Eval(mass_j0);
 								th3v[k][i][j][m]->Fill(MjjLoop,tightPFRatio);
+							}
+							else if (tightStat==0){
+								th3p[k][i][j][m]->Fill(MjjLoop);
 							}
 							
 							if(looseStat==2){
@@ -610,6 +674,24 @@ void TMVARegressionApplication( int wMs,int wM, string st,string st2,string opti
 							else if(looseStat==3){
 								loosePFRatio=fa[massCat][1][m][0]->Eval(mass_j0);
 								th3v[k+7][i][j][m]->Fill(MjjLoop,loosePFRatio);
+							}
+							else if (looseStat==0){
+								th3p[k+7][i][j][m]->Fill(MjjLoop);
+							}
+							
+							if(tlStat==2){
+								th3d[k+14][i][j][m]->Fill(MjjLoop,tlPFRatio);
+							}
+							else if (tlStat==1){
+								th3f[k+14][i][j][m]->Fill(MjjLoop);
+							}
+							else if(tlStat==3){
+								tlPFRatio=fa[massCat][1][m][2]->Eval(mass_j0);
+								//if(i==0 && j==0)cout<<massCat<<","<<m<<","<<tlPFRatio<<endl;
+								th3v[k+14][i][j][m]->Fill(MjjLoop,tlPFRatio);
+							}
+							else if (tlStat==0){
+								th3p[k+14][i][j][m]->Fill(MjjLoop);
 							}
 						}
 						
@@ -629,11 +711,13 @@ void TMVARegressionApplication( int wMs,int wM, string st,string st2,string opti
 	outFile= new TFile(Form("MjjVC/%s/%d.root",st2.data(),wMs),"recreate");
 	for(int i=0;i<nWidth;i++){
 		 for(int j=0;j<nBmin;j++){
-			 for(int k=0;k<2;k++){
-				  for(int l=0;l<14;l++){
+			 for(int k=0;k<3;k++){
+				  for(int l=0;l<21;l++){
 					  th3d[l][i][j][k]->Write();
+					  th3p[l][i][j][k]->Write();
 					  th3f[l][i][j][k]->Write();
 					  th3v[l][i][j][k]->Write();
+					  
 					  
 				  }
 			 }
@@ -643,11 +727,13 @@ void TMVARegressionApplication( int wMs,int wM, string st,string st2,string opti
 	
 	for(int i=0;i<nWidth;i++){
 		 for(int j=0;j<nBmin;j++){
-			 for(int k=0;k<2;k++){
-				  for(int l=0;l<14;l++){
+			 for(int k=0;k<3;k++){
+				  for(int l=0;l<21;l++){
 					  delete th3d[l][i][j][k];
+					  delete th3p[l][i][j][k];
 					  delete th3f[l][i][j][k];
 					  delete th3v[l][i][j][k];
+					  
 					  
 				  }
 			 }
