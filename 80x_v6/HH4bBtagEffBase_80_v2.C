@@ -50,7 +50,7 @@ cout<<Form("sf2/%s.root",st2.data())<<endl;
 	(st2.find("bGen")!= std::string::npos)||
 	(st2.find("bEnriched")!= std::string::npos))nameRoot=0;
 	if(st2.find("data")!= std::string::npos)nameRoot=2;
-	
+	cout<<"nameRoot="<<nameRoot<<endl;
 	//option-----------------------------------------------------------
 	int JESOption=0;
 	if(option.find("JESUp")!= std::string::npos)JESOption=1;
@@ -59,7 +59,7 @@ cout<<Form("sf2/%s.root",st2.data())<<endl;
 	if(option.find("BtagDown")!= std::string::npos)JESOption=4;
 	if(option.find("tau21Up")!= std::string::npos)JESOption=5;
 	if(option.find("tau21Down")!= std::string::npos)JESOption=6;
-	cout<<"JESOption = "<<JESOption<<endl;
+	//cout<<"JESOption = "<<JESOption<<endl;
 	bool printHighPtSubjet=0;
 	bool isFast=1;
 	//tuple tree and cutflow variables------------------------------------------------------------------------------------
@@ -102,7 +102,7 @@ cout<<Form("sf2/%s.root",st2.data())<<endl;
 		th5[k+260]=new TH1D(Form("HT_%db",k),Form("HT_%db",k),500,500,3000);
 	}
 	th5[180]= new TH1D("h_nvtx","h_nvtx",60,0,60);
-	th5[181]= new TH1D("h_ntrue","h_ntrue",60,0,60);
+	th5[181]= new TH1D("h_nvtx_wosf","h_nvtx_wosf",60,0,60);
 	th5[182]= new TH1D("h_nvtx_cut","h_nvtx_cut",60,0,60);
 	th5[183]= new TH1D("h_ntrue_cut","h_ntrue_cut",60,0,60);
 	
@@ -202,7 +202,8 @@ cout<<Form("sf2/%s.root",st2.data())<<endl;
 			for(int it=0; it< data.GetPtrStringSize();it++){
 				std::string thisTrig= trigName[it];
 				bool results = trigResult[it];
-				if( ((thisTrig.find("HLT_PFHT800")!= std::string::npos
+				if( ((thisTrig.find("HLT_PFHT800")!= std::string::npos||
+					thisTrig.find("HLT_AK8DiPFJet300_200_TrimMass30_BTagCSV_p20")!= std::string::npos
 						) && results==1)){
 					passTrigger=true;
 					break;
@@ -273,7 +274,7 @@ cout<<Form("sf2/%s.root",st2.data())<<endl;
 			else event_flavor=3;
 			
 			th5[180]->Fill(nVtx,PU_weight[0]);
-			th5[181]->Fill(ntrue,PU_weight[0]);
+			th5[181]->Fill(nVtx);
 			
 			th_flavor[event_flavor][180]->Fill(nVtx,PU_weight[0]);
 			th_flavor[event_flavor][181]->Fill(ntrue,PU_weight[0]);
@@ -320,7 +321,7 @@ cout<<Form("sf2/%s.root",st2.data())<<endl;
 			}
 			
 			double scaleFactor=PU_weight[0];
-			
+			if(nameRoot==2)scaleFactor=1;
 			Float_t  FATjetPuppiSDmassThea[2] ={0};
 			FATjetPuppiSDmassThea[0]=AK8PuppijetSDmass[0]*getPUPPIweight(thisJet->Pt(),thisJet->Eta());
 			FATjetPuppiSDmassThea[1]=AK8PuppijetSDmass[1]*getPUPPIweight(thatJet->Pt(),thatJet->Eta());
@@ -353,7 +354,7 @@ cout<<Form("sf2/%s.root",st2.data())<<endl;
 				th_flavor[event_flavor][238+i]->Fill(tau21[i],scaleFactor);
 				th_flavor[event_flavor][240+i]->Fill(puppiTau21[i],scaleFactor);
 			}
-			/*
+			
 			if(!(puppiTau21[0]>0.6 || puppiTau21[1]>0.6)){
 				for (int i=0;i<2;i++){
 					
@@ -374,7 +375,7 @@ cout<<Form("sf2/%s.root",st2.data())<<endl;
 					th_flavor[event_flavor][265+i]->Fill(FATjetPuppiSDmassThea[i],scaleFactor);
 				}
 			}
-			*/
+			
 		
 		
 			if(AK8PuppijetSDmass[0]<50)continue;
@@ -399,7 +400,7 @@ cout<<Form("sf2/%s.root",st2.data())<<endl;
 			}
 			
 			//9.-----------------------------------------
-			//if(puppiTau21[0]>0.6 || puppiTau21[1]>0.6) continue;
+			if(puppiTau21[0]>0.6 || puppiTau21[1]>0.6) continue;
 			nPass[9]+=PU_weight[0];
 			
 			
