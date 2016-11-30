@@ -64,7 +64,7 @@ void Limit(){
 			 tg1->SetMinimum(0.5);
 			// cout<<k<<","<<m<<endl;
 			 //c1->SetLogy(1);
-			 if(h==1)tg1->Draw("APL");
+			 if(h==0)tg1->Draw("APL");
 			 else tg1->Draw("PL same");
 	}
   
