@@ -38,7 +38,7 @@ void LimitTau21(){
 	int bmin[nBmin]={100,105,110,115};
 	string  masspoint[11]={"1000","1200","1400","1600","1800","2000","2500","3000","3500","4000","4500"};
 	
-	TLegend *leg = new TLegend(0.75, 0.68, 0.96, 0.95);
+	TLegend *leg = new TLegend(0.65, 0.58, 0.88, 0.88);
   
   leg->SetBorderSize(0);
   leg->SetFillColor(0);
