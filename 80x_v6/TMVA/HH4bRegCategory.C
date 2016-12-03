@@ -56,8 +56,8 @@ double barrleMean[13]={1.16593,1.1533,1.14748,1.14386,1.13825,1.13982,1.14124,1.
 double endcapMean[13]={1.32643,1.29727,1.27819,1.25759,1.25419,1.23614,1.22092,1.22342,1.23004,1.22335,1.22874};
 double barrlex[13]={325.254,364.602,407.173,452.286,540.273,627.553,714.669,799.949,883.213,1097.31,1310.44,1728.48,1937.44};
 double endcapx[13]={300.721,337.376,374.014,408.777,472.758,531.384,589.311,637.263,683.63,804.23,910.163,1081.75,1176.51};
-TGraph* tg1=new TGraph(13,barrlex,barrleMean);
-TGraph* tg2=new TGraph(13,endcapx,endcapMean);
+TGraph* tg1=new TGraph(11,barrlex,barrleMean);
+TGraph* tg2=new TGraph(11,endcapx,endcapMean);
 
   float totalWeight=1;
    if( fabs(puppieta)  <= 1.3 ){
@@ -76,8 +76,8 @@ double barrleMean[13]={0.983602,1.01681,1.0416,1.06712,1.09811,1.09607,1.05727,1
 double endcapMean[13]={1.09957,1.1156,1.12732,1.1481,1.16446,1.15879,1.14886,1.15286,1.16249,1.17772,1.17944};
 double barrlex[13]={382.737,416.886,450.274,487.441,568.772,665.847,761.498,842.68,919.298,1152.37,1345.38};
 double endcapx[13]={355.246,390.192,421.469,449.83,508.275,567.493,624.998,673.756,715.198,830.788,933.179};
-TGraph* tg1=new TGraph(13,barrlex,barrleMean);
-TGraph* tg2=new TGraph(13,endcapx,endcapMean);
+TGraph* tg1=new TGraph(11,barrlex,barrleMean);
+TGraph* tg2=new TGraph(11,endcapx,endcapMean);
 
   float totalWeight=1;
    if( fabs(puppieta)  <= 1.3 ){
@@ -266,18 +266,21 @@ void TMVARegressionApplication( int wMs,int wM, string st,string st2,string opti
 	
 	string massName[nMass]={"Thea","HCorr","Reg"};
 	string catName[nCat]={"PP","PF","FP","FF"};
-	string tau21Name[2]={"withTau21","woTau21"};
+	string tau21Name[3]={"withTau21","woTau21","antiTau21"};
 	
-	TH1D* th2[nMass][nCat][2];
-	TH1D* th3[nMass][nCat][2];
+	TH1D* th2[nMass][nCat][3];
+	TH1D* th3[nMass][nCat][3];
+	TH1D* th4[nMass][nCat][3];
 	for(int i=0;i<nMass;i++){
 		for(int j=0;j<nCat;j++){
-			for(int k=0;k<2;k++){
+			for(int k=0;k<3;k++){
 				th2[i][j][k]=(TH1D*)th1->Clone(Form("loose_%s_%s_%s",massName[i].data(),catName[j].data(),tau21Name[k].data()));
 				th3[i][j][k]=(TH1D*)th1->Clone(Form("tight_%s_%s_%s",massName[i].data(),catName[j].data(),tau21Name[k].data()));
+				th4[i][j][k]=(TH1D*)th1->Clone(Form("tl_%s_%s_%s",massName[i].data(),catName[j].data(),tau21Name[k].data()));
 				
 				th2[i][j][k]->Sumw2();
 				th3[i][j][k]->Sumw2();
+				th4[i][j][k]->Sumw2();
 			}
 		}
 	}
@@ -290,11 +293,13 @@ void TMVARegressionApplication( int wMs,int wM, string st,string st2,string opti
 		else f = TFile::Open(st.data());
 		if (!f || !f->IsOpen())continue;
 		
-		TDirectory * dir;
+/*TDirectory * dir;
 		if (nameRoot!=1)dir = (TDirectory*)f->Get(Form("%s%d.root:/tree",st.data(),w));
 		else dir = (TDirectory*)f->Get(Form("%s:/tree",st.data()));
 		
 		dir->GetObject("treeMaker",tree);
+		*/
+		tree=(TTree*)f->Get("treeMaker");
 		TreeReader data(tree);
 		total+=data.GetEntriesFast();
 		for(Long64_t jEntry=0; jEntry<data.GetEntriesFast() ;jEntry++){
@@ -377,6 +382,7 @@ void TMVARegressionApplication( int wMs,int wM, string st,string st2,string opti
 			
 			int looseStat=-1;
 			int tightStat=-1;
+			int tlStat=-1;
 			
 			if(AK8Puppijet_DoubleSV[0]>0.3 && AK8Puppijet_DoubleSV[1]>0.3)looseStat=0;
 			else if(AK8Puppijet_DoubleSV[0]>0.3 && AK8Puppijet_DoubleSV[1]<0.3)looseStat=1;
@@ -385,9 +391,15 @@ void TMVARegressionApplication( int wMs,int wM, string st,string st2,string opti
 			
 			if(AK8Puppijet_DoubleSV[0]>0.8 && AK8Puppijet_DoubleSV[1]>0.8)tightStat=0;
 			else if(AK8Puppijet_DoubleSV[0]>0.8 && AK8Puppijet_DoubleSV[1]<0.8)tightStat=1;
-			else if(AK8Puppijet_DoubleSV[0]<0.8 && AK8Puppijet_DoubleSV[1]>0.8)tightStat=2;
-			else tightStat=3;
+			else if(AK8Puppijet_DoubleSV[0]<0.3 && AK8Puppijet_DoubleSV[1]>0.8)tightStat=2;
+			else if(AK8Puppijet_DoubleSV[0]<0.3 && AK8Puppijet_DoubleSV[1]<0.8)tightStat=3;
+			else tightStat=-1;
 			
+			if(AK8Puppijet_DoubleSV[0]>0.8 && AK8Puppijet_DoubleSV[1]>0.3)tlStat=0;
+			else if(AK8Puppijet_DoubleSV[0]>0.8 && AK8Puppijet_DoubleSV[1]<0.3)tlStat=1;
+			else if(AK8Puppijet_DoubleSV[0]<0.3 && AK8Puppijet_DoubleSV[1]>0.3)tlStat=2;
+			else if(AK8Puppijet_DoubleSV[0]<0.3 && AK8Puppijet_DoubleSV[1]<0.3)tlStat=3;
+			else tlStat=-1;
 			
 			double varTemp[2];
 			
@@ -469,7 +481,8 @@ void TMVARegressionApplication( int wMs,int wM, string st,string st2,string opti
 				//cout<<mass_j0<<","<<mass_j1<<",stat="<<looseStat<<","<<tightStat<<endl;
 				
 				th2[i][looseStat][1]->Fill(mass_j0);
-				th3[i][tightStat][1]->Fill(mass_j0);
+				if(tightStat>=0)th3[i][tightStat][1]->Fill(mass_j0);
+				if(tlStat>=0)th4[i][tlStat][1]->Fill(mass_j0);
 			}
 			
 			
@@ -477,6 +490,32 @@ void TMVARegressionApplication( int wMs,int wM, string st,string st2,string opti
 			Float_t*  AK8PuppijetTau2 = data.GetPtrFloat("AK8PuppijetTau2");
 			double puppiTau21[2];
 			puppiTau21[0]=(AK8PuppijetTau2[0]/AK8PuppijetTau1[0]),puppiTau21[1]=(AK8PuppijetTau2[1]/AK8PuppijetTau1[1]);
+			
+			if(puppiTau21[0]>0.6 && puppiTau21[1]<0.6){
+				for(int i=0;i<nMass;i++){
+				if(i==0){
+					mass_j0=AK8PuppijetSDmass[0]*PUPPIweightThea[0];
+					mass_j1=AK8PuppijetSDmass[1]*PUPPIweightThea[1];
+				}
+				else if (i==1){
+					mass_j0=AK8PuppijetSDmass[0]*PUPPIweight[0];
+					mass_j1=AK8PuppijetSDmass[1]*PUPPIweight[1];
+				}
+				else {
+					mass_j0=AK8PuppijetSDmass[0]*varTemp[0]*PUPPIweightOnRegressed[0];
+					mass_j1=AK8PuppijetSDmass[1]*varTemp[1]*PUPPIweightOnRegressed[1];
+				}
+				
+				if(mass_j1<50)continue;
+				if(mass_j0>100 && mass_j0<145)continue;
+				
+				
+				th2[i][looseStat][2]->Fill(mass_j0);
+				if(tightStat>=0)th3[i][tightStat][2]->Fill(mass_j0);
+				if(tlStat>=0)th4[i][tlStat][2]->Fill(mass_j0);
+			}
+			}
+			
 			if(puppiTau21[0]>0.6 || puppiTau21[1]>0.6) continue;
 			
 			
@@ -499,7 +538,8 @@ void TMVARegressionApplication( int wMs,int wM, string st,string st2,string opti
 				
 				
 				th2[i][looseStat][0]->Fill(mass_j0);
-				th3[i][tightStat][0]->Fill(mass_j0);
+				if(tightStat>=0)th3[i][tightStat][0]->Fill(mass_j0);
+				if(tlStat>=0)th4[i][tlStat][0]->Fill(mass_j0);
 			}
 			
 			
@@ -513,9 +553,10 @@ void TMVARegressionApplication( int wMs,int wM, string st,string st2,string opti
 	outFile= new TFile(Form("PFRatio/%s/%d.root",st2.data(),wMs),"recreate");
 	for(int i=0;i<nMass;i++){
 		for(int j=0;j<nCat;j++){
-			for(int k=0;k<2;k++){
+			for(int k=0;k<3;k++){
 				th2[i][j][k]->Write();
 				th3[i][j][k]->Write();
+				th4[i][j][k]->Write();
 			}
 		}
 	}
@@ -526,6 +567,7 @@ void TMVARegressionApplication( int wMs,int wM, string st,string st2,string opti
 			for(int k=0;k<2;k++){
 				delete th2[i][j][k];
 				delete th3[i][j][k];
+				delete th4[i][j][k];
 			}
 		}
 	}
@@ -538,13 +580,13 @@ void TMVARegressionApplication( int wMs,int wM, string st,string st2,string opti
 void HH4bRegCategory(int a,int b){
 
 	string st1[40]={
-		"/data7/chchen/AK8subjetSDRawFactorNov2016/JetHT/B/NCUGlobalTuples_",
-		"/data7/chchen/AK8subjetSDRawFactorNov2016/JetHT/C/NCUGlobalTuples_",
-		"/data7/chchen/AK8subjetSDRawFactorNov2016/JetHT/D/NCUGlobalTuples_",
-		"/data7/chchen/AK8subjetSDRawFactorNov2016/JetHT/E/NCUGlobalTuples_",
-		"/data7/chchen/AK8subjetSDRawFactorNov2016/JetHT/F/NCUGlobalTuples_",
-		"/data7/chchen/AK8subjetSDRawFactorNov2016/JetHT/G/NCUGlobalTuples_",
-		"/data7/chchen/AK8subjetSDRawFactorNov2016/JetHT/H/NCUGlobalTuples_",
+		"/data7/chchen/AK8subjetSDRawFactorNov2016/JetHT/B/skimmed/NCUGlobalTuples_",
+		"/data7/chchen/AK8subjetSDRawFactorNov2016/JetHT/C/skimmed/NCUGlobalTuples_",
+		"/data7/chchen/AK8subjetSDRawFactorNov2016/JetHT/D/skimmed/NCUGlobalTuples_",
+		"/data7/chchen/AK8subjetSDRawFactorNov2016/JetHT/E/skimmed/NCUGlobalTuples_",
+		"/data7/chchen/AK8subjetSDRawFactorNov2016/JetHT/F/skimmed/NCUGlobalTuples_",
+		"/data7/chchen/AK8subjetSDRawFactorNov2016/JetHT/G/skimmed/NCUGlobalTuples_",
+		"/data7/chchen/AK8subjetSDRawFactorNov2016/JetHT/H/skimmed/NCUGlobalTuples_",
 	};
 	string  fileName[40]={
 	"dataB",

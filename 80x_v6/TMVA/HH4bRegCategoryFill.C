@@ -270,7 +270,7 @@ void TMVARegressionApplication( int wMs,int wM, string st,string st2,string opti
 	
 	string catNameShort[nCat]={"P","F"};
 	string looseTight[3]={"loose","tight","tl"};
-	TF1 *fa[nMass][2][2][2];
+	TF1 *fa[nMass][2][3][3];
 	
 	for(int i=0;i<nMass;i++){
 		for(int j=0;j<2;j++){
@@ -686,7 +686,7 @@ void TMVARegressionApplication( int wMs,int wM, string st,string st2,string opti
 							}
 							else if(tlStat==3){
 								tlPFRatio=fa[massCat][1][m][2]->Eval(mass_j0);
-								if(i==0 && j==0)cout<<massCat<<","<<m<<","<<tlPFRatio<<endl;
+								//if(i==0 && j==0)cout<<massCat<<","<<m<<","<<tlPFRatio<<endl;
 								th3v[k+14][i][j][m]->Fill(MjjLoop,tlPFRatio);
 							}
 							else if (tlStat==0){
