@@ -118,6 +118,11 @@
 ./draw_C.so: /home/neutron/root/include/TClonesArray.h
 ./draw_C.so: /home/neutron/root/include/TObjArray.h
 ./draw_C.so: /usr/include/c++/6/fstream /usr/include/c++/6/sstream
-./draw_C.so: ../../../setNCUStyle.C
+./draw_C.so: ../../../setNCUStyle.C /home/neutron/root/include/TF1.h
+./draw_C.so: /home/neutron/root/include/TFormula.h
+./draw_C.so: /home/neutron/root/include/TBits.h
+./draw_C.so: /home/neutron/root/include/TMethodCall.h /usr/include/c++/6/list
+./draw_C.so: /usr/include/c++/6/map
+./draw_C.so: /home/neutron/root/include/Math/ParamFunctor.h
 ./draw_C.so: /home/neutron/root/include/RVersion.h /home/neutron/root/include/RConfig.h /home/neutron/root/include/TClass.h /home/neutron/root/include/TDictAttributeMap.h /home/neutron/root/include/TInterpreter.h /home/neutron/root/include/TROOT.h /home/neutron/root/include/TBuffer.h /home/neutron/root/include/TMemberInspector.h /home/neutron/root/include/TError.h /home/neutron/root/include/RtypesImp.h /home/neutron/root/include/TIsAProxy.h /home/neutron/root/include/TFileMergeInfo.h /home/neutron/root/include/TCollectionProxyInfo.h
 draw_C__ROOTBUILDVERSION= 6.06/06
