@@ -60,7 +60,8 @@ void draw(){
 				tf1[0]=new TF1("fa1","gaus(125)",50,150);
 				if(j<1)th1[j]->Fit(tf1[0],"","",70,140);
 				else th1[j]->Fit(tf1[0],"","",85,150);
-				
+				  gStyle->SetOptStat(0);
+		gStyle->SetOptFit(0);
 				
 				leg->AddEntry(th1[j],Form("%s",massName[j].data()));
 				leg->AddEntry((TObject*)0, Form("Mean=%f",tf1[0]->GetParameter(1)),"");
@@ -93,7 +94,8 @@ void draw(){
 				th1[j]->SetTitle(Form("%s",masspoint[i].data()));
 				if(j==0)th1[0]->Draw();
 				else th1[j]->Draw("same");
-				
+				  gStyle->SetOptStat(0);
+		gStyle->SetOptFit(0);
 				TF1 *tf1[4];
 				tf1[0]=new TF1("fa1","gaus(125)",50,150);
 				if(j<1)th1[j]->Fit(tf1[0],"","",70,140);
