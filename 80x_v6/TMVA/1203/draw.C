@@ -42,7 +42,7 @@ void draw(){
 		TH1D* th1[3];
 		
 		
-	TLegend *leg = new TLegend(0.75, 0.68, 0.96, 0.95);
+		TLegend *leg = new TLegend(0.15, 0.48, 0.46, 0.88);
   
   leg->SetBorderSize(0);
   leg->SetFillColor(0);
@@ -56,7 +56,15 @@ void draw(){
 				th1[j]->SetTitle(Form("%s",masspoint[i].data()));
 				if(j==0)th1[0]->Draw();
 				else th1[j]->Draw("same");
+				TF1 *tf1[4];
+				tf1[0]=new TF1("fa1","gaus(125)",50,150);
+				if(j<1)th1[j]->Fit(tf1[0],"","",70,140);
+				else th1[j]->Fit(tf1[0],"","",85,150);
+				
+				
 				leg->AddEntry(th1[j],Form("%s",massName[j].data()));
+				leg->AddEntry((TObject*)0, Form("Mean=%f",tf1[0]->GetParameter(1)),"");
+				leg->AddEntry((TObject*)0, Form("#sigma=%f",tf1[0]->GetParameter(2)),"");
 		}
 		leg->Draw("same");
 		
@@ -87,10 +95,9 @@ void draw(){
 				else th1[j]->Draw("same");
 				
 				TF1 *tf1[4];
-				tf1[0]=new TF1("fa1","gaus(25000)",50,150);
-				if(i<2)th1[j]->Fit(tf1[0],"","",70,125);
-				else th1[j]->Fit(tf1[0],"","",85,140);
-				
+				tf1[0]=new TF1("fa1","gaus(125)",50,150);
+				if(j<1)th1[j]->Fit(tf1[0],"","",70,140);
+				else th1[j]->Fit(tf1[0],"","",85,150);
 				
 				leg->AddEntry(th1[j],Form("%s",massName[j].data()));
 				leg->AddEntry((TObject*)0, Form("Mean=%f",tf1[0]->GetParameter(1)),"");
