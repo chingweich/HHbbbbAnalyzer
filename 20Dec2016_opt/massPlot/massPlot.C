@@ -71,6 +71,8 @@ void massPlot(){
 		tf1->SetLineColor(i+1);
 		th1[i]->Fit(tf1,"","",90,150);
 		
+		gStyle->SetOptStat(0);
+		gStyle->SetOptFit(0);
 		leg->AddEntry((TObject*) 0,Form("mean=%f",tf1->GetParameter(1)),"");
 		leg->AddEntry((TObject*) 0,Form("#sigma=%f",tf1->GetParameter(2)),"");
 		leg->AddEntry((TObject*) 0,Form("#sigma/mean=%f",tf1->GetParameter(2)/tf1->GetParameter(1)),"");
@@ -99,6 +101,8 @@ leg->Clear();
 		tf1->SetLineColor(i+1);
 		th1[i]->Fit(tf1,"","",90,150);
 		
+		gStyle->SetOptStat(0);
+		gStyle->SetOptFit(0);
 		leg->AddEntry((TObject*) 0,Form("mean=%f",tf1->GetParameter(1)),"");
 		leg->AddEntry((TObject*) 0,Form("#sigma=%f",tf1->GetParameter(2)),"");
 		leg->AddEntry((TObject*) 0,Form("#sigma/mean=%f",tf1->GetParameter(2)/tf1->GetParameter(1)),"");
