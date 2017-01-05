@@ -2,32 +2,32 @@
 #include <TH1.h>
 #include <TH1F.h>
 #include <TH1D.h>
-#include <TH2D.h>
-#include <TGraph.h>
-#include <TGraphErrors.h>
+//#include <TH2D.h>
+//#include <TGraph.h>
+//#include <TGraphErrors.h>
 
 //vector ,string ,stream
 #include <vector>
 #include <string>
 #include <iostream>
-#include <fstream>
-#include <sstream>
+//#include <fstream>
+//#include <sstream>
 
 //root feature
-#include <TLegend.h>
-#include <TRandom.h>
+//#include <TLegend.h>
+//#include <TRandom.h>
 #include <TLorentzVector.h>
 #include <TROOT.h>
 #include <TFile.h>
-#include <TCanvas.h>
-#include "TSystem.h"
-#include "TStyle.h"
+//#include <TCanvas.h>
+//#include "TSystem.h"
+//#include "TStyle.h"
 #include <TClonesArray.h>
 #include <TSystem.h>
 #include <TF1.h>
 //math 
-#include <cmath>
-#include <algorithm>
+//#include <cmath>
+//#include <algorithm>
 
 //other including
 //#include "setNCUStyle.C"
