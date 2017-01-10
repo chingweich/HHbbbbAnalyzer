@@ -10,7 +10,9 @@
 #include <TGraph.h>
 #include <TGraphErrors.h>
 #include <TH1F.h>
+#include <TF1.h>
 #include <TH1.h>
+#include <TLatex.h>
 #include <TCanvas.h>
 #include <TROOT.h>
 #include <TObject.h>
@@ -54,13 +56,13 @@ void massPlot(){
 	setNCUStyle(true);
 	c1 = new TCanvas("c1","",800,600);
 	
-		TLegend *leg = new TLegend(0.20, 0.33, 0.35, 0.88);
+		TLegend *leg = new TLegend(0.18, 0.35, 0.35, 0.78);
   
   leg->SetBorderSize(0);
   leg->SetFillColor(0);
   leg->SetFillStyle(0);
   leg->SetTextSize(0.04);
-  string st[3]={"raw","Thea","Higgs"};
+  string st[3]={"raw","W","Higgs"};
 	for(int i=0;i<3;i++){
 		leg->AddEntry(th1[i],Form("%s",st[i].data()));
 		th1[i]->SetLineColor(i+1);
@@ -84,6 +86,8 @@ void massPlot(){
 		else th1[i]->Draw("same");
 	}
 	leg->Draw("same");
+	
+	
 	c1->Print("j0.pdf");
 	
 	th1[0]=massPlotBase("BulkGrav_M-2000_0.root","jet2_puppi_msoftdrop");
@@ -115,5 +119,47 @@ leg->Clear();
 	}
 	leg->Draw("same");
 	c1->Print("j1.pdf");
+	
+	
+	TH1D* th2[3];
+	th2[0]=massPlotBase("BulkGrav_M-2000_0.root","jet1_puppi_msoftdrop");
+	th2[1]=massPlotBase("BulkGrav_M-2000_0.root","jet1_puppi_msoftdrop_TheaCorr");
+	th2[2]=massPlotBase("HCorr.root","jet1_puppi_msoftdrop_TheaCorr");
+	
+	for(int i=0;i<3;i++)th1[i]->Add(th2[i]);
+	
+	leg->Clear();
+	for(int i=0;i<3;i++){
+		leg->AddEntry(th1[i],Form("%s",st[i].data()));
+		th1[i]->SetLineColor(i+1);
+		th1[i]->SetLineWidth(3);
+		th1[i]->SetXTitle("PUPPI soft drop mass (both jets) [GeV]");
+		th1[i]->SetMarkerSize(0);
+		TF1 *tf1;
+		tf1=new TF1("fa1","gaus(25000)",90,150);
+		tf1->SetLineColor(i+1);
+		th1[i]->Fit(tf1,"","",90,150);
+		
+		gStyle->SetOptStat(0);
+		gStyle->SetOptFit(0);
+		leg->AddEntry((TObject*) 0,Form("mean=%f",tf1->GetParameter(1)),"");
+		leg->AddEntry((TObject*) 0,Form("#sigma=%f",tf1->GetParameter(2)),"");
+		leg->AddEntry((TObject*) 0,Form("#sigma/mean=%f",tf1->GetParameter(2)/tf1->GetParameter(1)),"");
+		if(i==0)th1[i]->Draw("");
+		else th1[i]->Draw("same");
+	}
+	for(int i=0;i<3;i++){
+		if(i==0)th1[i]->Draw("");
+		else th1[i]->Draw("same");
+	}
+	leg->Draw("same");
+	TLatex * latex = new TLatex();
+    latex->SetNDC();
+    
+    latex->SetTextAlign(10); // align left
+    latex->SetNDC(kTRUE);                 
+	latex->SetTextSize(0.06);
+ latex->DrawLatex(0.15, 0.85,"CMS #it{#bf{Preliminary}}");	
+	c1->Print("j01.pdf");
 	
 }
