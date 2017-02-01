@@ -31,6 +31,11 @@ double  makePlotBase(string input){
 			Float_t  vari = data.GetFloat("dijetmass_softdrop_corr");
 			Float_t  jet1bbtag = data.GetFloat("jet1bbtag");
 			Float_t  jet2bbtag = data.GetFloat("jet2bbtag");
+			Float_t  jet2_puppi_msoftdrop_TheaCorr = data.GetFloat("jet2_puppi_msoftdrop_TheaCorr");
+			Float_t  jet1_puppi_msoftdrop_TheaCorr = data.GetFloat("jet1_puppi_msoftdrop_TheaCorr");
+			
+			if(jet1_puppi_msoftdrop_TheaCorr<105|| jet1_puppi_msoftdrop_TheaCorr>135)continue;
+			if(jet2_puppi_msoftdrop_TheaCorr<105|| jet2_puppi_msoftdrop_TheaCorr>135)continue;
 			if(jet1bbtag<0.3 || jet2bbtag<0.3)continue;
 			if(vari>750)temp++;
 			//Float_t  jet2_puppi_msoftdrop = data.GetFloat("jet2_puppi_msoftdrop");
@@ -65,10 +70,10 @@ void makePlots(){
 	tg1->GetYaxis()->SetTitle("Efficiency");
 	//limits->GetZaxis()->SetTitle("#sigma_{95\% CL} / #sigma_{th}");
 	tg1->SetTitle("");
-	tg1->SetMaximum(0.4);
+	tg1->SetMaximum(0.15);
 	tg1->SetMarkerSize(1);
 	tg1->SetMarkerStyle(20);
-	tg1->SetMinimum(0.2);
+	tg1->SetMinimum(0.05);
 	tg1->GetYaxis()->SetTitleOffset(1);
 	//tg1->GetZaxis()->SetTitleOffset(0.65);
 	// size of axis labels
