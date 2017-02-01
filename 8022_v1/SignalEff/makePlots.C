@@ -73,7 +73,7 @@ void makePlots(){
 	tg1->GetYaxis()->SetTitleSize(0.04);
 	//limits->GetZaxis()->SetTitleSize(0.035);
 	tg1->GetXaxis()->SetLabelSize(0.05);
-	tg1->GetYaxis()->SetLabelSize(0.04); 
+	tg1->GetYaxis()->SetLabelSize(0.03); 
 	//limits->GetZaxis()->SetLabelSize(0.025);
 	
 	tg1->Draw("APL");
