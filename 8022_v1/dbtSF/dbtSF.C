@@ -117,12 +117,12 @@ void skimB(string input,string output,TH1D* th1[]){
 		
 		//Float_t isData; mynewTree->Branch("isData",&isData,"isData/F");
 		
-		Float_t SFTight=1; mynewTree->Branch("SFTight",&SFTight,"SFTight/F");
-		Float_t SFTightup=1; mynewTree->Branch("SFTightup",&SFTightup,"SFTightup/F");
-		Float_t SFTightdown=1; mynewTree->Branch("SFTightdown",&SFTightdown,"SFTightdown/F");
-		Float_t SFLoose=1; mynewTree->Branch("SFLoose",&SFLoose,"SFLoose/F");
-		Float_t SFLooseup=1; mynewTree->Branch("SFLooseup",&SFLooseup,"SFLooseup/F");
-		Float_t SFLoosedown=1; mynewTree->Branch("SFLoosedown",&SFLoosedown,"SFLoosedown/F");
+		Float_t dbtSF=1; mynewTree->Branch("dbtSF",&dbtSF,"dbtSF/F");
+		Float_t dbtSFup=1; mynewTree->Branch("dbtSFup",&dbtSFup,"dbtSFup/F");
+		Float_t dbtSFdown=1; mynewTree->Branch("dbtSFdown",&dbtSFdown,"dbtSFdown/F");
+		//Float_t SFLoose=1; mynewTree->Branch("SFLoose",&SFLoose,"SFLoose/F");
+		//Float_t SFLooseup=1; mynewTree->Branch("SFLooseup",&SFLooseup,"SFLooseup/F");
+		//Float_t SFLoosedown=1; mynewTree->Branch("SFLoosedown",&SFLoosedown,"SFLoosedown/F");
 		
 		Float_t trigWeightUp=1; mynewTree->Branch("trigWeightUp",&trigWeightUp,"trigWeightUp/F");
 		Float_t trigWeightDown=1; mynewTree->Branch("trigWeightDown",&trigWeightDown,"trigWeightDown/F");
@@ -166,12 +166,10 @@ void skimB(string input,string output,TH1D* th1[]){
 	puWeights = data.GetFloat("puWeights");
 	puWeightsUp = data.GetFloat("puWeightsUp");
 	puWeightsDown = data.GetFloat("puWeightsDown");
-	SFTight =1;
-	SFTightup = 1;
-	SFTightdown = 1;
-	SFLoose =1;
-	SFLooseup = 1;
-	SFLoosedown = 1;
+	dbtSF =1;
+	dbtSFup = 1;
+	dbtSFdown = 1;
+	
 	
 	for(int i=0;i<2;i++){
 		double pt=0,bbtag=0;
@@ -183,88 +181,69 @@ void skimB(string input,string output,TH1D* th1[]){
 			pt=jet2pt;
 			bbtag=jet2bbtag;
 		}
-		double SF=1,SFUp=1,SFDown=1,eff=1;
+		double SFL=1,SFLUp=1,SFLDown=1,effL=1;
+		double SFT=1,SFTUp=1,SFTDown=1,effT=1;
 		if (pt<350){
-			SF=0.96;
-			SFUp=0.99;
-			SFDown=0.94;
-			eff=th1[0]->GetBinContent(1);
+			SFL=0.96;
+			SFLUp=0.99;
+			SFLDown=0.94;
+			effL=th1[0]->GetBinContent(1);
+			
+			SFT=0.92;
+			SFTUp=0.95;
+			SFTDown=0.89;
+			effT=th1[1]->GetBinContent(1);
 		}
 		else if (pt <430){
-			SF=1;
-			SFUp=1.04;
-			SFDown=0.97;
-			eff=th1[0]->GetBinContent(2);
+			SFL=1;
+			SFLUp=1.04;
+			SFLDown=0.97;
+			effL=th1[0]->GetBinContent(2);
+			
+			SFT=1.01;
+			SFTUp=1.04;
+			SFTDown=0.97;
+			effT=th1[1]->GetBinContent(2);
 		}
 		else if (pt <840){
-			SF=1.01;
-			SFUp=1.03;
-			SFDown=0.97;
-			eff=th1[0]->GetBinContent(3);
+			SFL=1.01;
+			SFLUp=1.03;
+			SFLDown=0.97;
+			effL=th1[0]->GetBinContent(3);
+			
+			SFT=0.92;
+			SFTUp=0.95;
+			SFTDown=0.87;
+			effT=th1[1]->GetBinContent(3);
 		}
 		else {
-			SF=1.01;
-			SFUp=1.05;
-			SFDown=0.93;
-			eff=th1[0]->GetBinContent(4);
+			SFL=1.01;
+			SFLUp=1.05;
+			SFLDown=0.93;
+			effL=th1[0]->GetBinContent(4);
+			
+			SFT=0.92;
+			SFTUp=0.98;
+			SFTDown=0.82;
+			effT=th1[1]->GetBinContent(4);
 		}
-		if(bbtag>0.3){
-				SFLoose *=SF;
-				SFLooseup *= SFUp;
-				SFLoosedown *= SFDown;
-		}
-		else {
-			SFLoose *=(1-SF*eff)/(1-eff);
-			SFLooseup *=(1-SFUp*eff)/(1-eff);
-			SFLoosedown *=(1-SFDown*eff)/(1-eff);
-		}
-	}
-	
-	for(int i=0;i<2;i++){
-		double pt=0,bbtag=0;
-		if(i==0){
-			pt=jet1pt;
-			bbtag=jet1bbtag;
-		}
-		else {
-			pt=jet2pt;
-			bbtag=jet2bbtag;
-		}
-		double SF=1,SFUp=1,SFDown=1,eff=1;
-		if (pt<350){
-			SF=0.92;
-			SFUp=0.95;
-			SFDown=0.89;
-			eff=th1[1]->GetBinContent(1);
-		}
-		else if (pt <430){
-			SF=1.01;
-			SFUp=1.04;
-			SFDown=0.97;
-			eff=th1[1]->GetBinContent(2);
-		}
-		else if (pt <840){
-			SF=0.92;
-			SFUp=0.95;
-			SFDown=0.87;
-			eff=th1[1]->GetBinContent(3);
-		}
-		else {
-			SF=0.92;
-			SFUp=0.98;
-			SFDown=0.82;
-			eff=th1[1]->GetBinContent(4);
-		}
+		
 		if(bbtag>0.8){
-				SFTight *=SF;
-				SFTightup *= SFUp;
-				SFTightdown *= SFDown;
+			dbtSF *=SFT;
+			dbtSFup *= SFUpT;
+			dbtSFdown *= SFDownT;
+		}
+		else if (bbtag>0.3){
+			dbtSF *=(SFL*effL-SFT*effT)/(effL-effT);
+			dbtSFup *=(SFLUp*effL-SFTUp*effT)/(effL-effT);
+			dbtSFdown *=(SFLDown*effL-SFTDown*effT)/(effL-effT);
 		}
 		else {
-			SFTight *=(1-SF*eff)/(1-eff);
-			SFTightup *=(1-SFUp*eff)/(1-eff);
-			SFTightdown *=(1-SFDown*eff)/(1-eff);
+			dbtSF *=(1-SFL*effL)/(1-effL);
+			dbtSFup *=(1-SFLUp*effL)/(1-effL);
+			dbtSFdown *=(1-SFLDown*effL)/(1-effL);
 		}
+		
 	}
 	
 	
