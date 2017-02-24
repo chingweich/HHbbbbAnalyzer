@@ -230,8 +230,8 @@ void skimB(string input,string output,TH1D* th1[]){
 		
 		if(bbtag>0.8){
 			dbtSF *=SFT;
-			dbtSFup *= SFUpT;
-			dbtSFdown *= SFDownT;
+			dbtSFup *= SFTUp;
+			dbtSFdown *= SFTDown;
 		}
 		else if (bbtag>0.3){
 			dbtSF *=(SFL*effL-SFT*effT)/(effL-effT);
