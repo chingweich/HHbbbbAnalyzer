@@ -17,20 +17,20 @@
 #include "TImage.h"
 #include "TSystem.h"
 #include "TStyle.h"
-#include "../../untuplizer.h"
+#include "../../HHbbbbAnalyzer/untuplizer.h"
 #include <TClonesArray.h>
 #include <fstream>
 #include <cmath>
 #include <TSystem.h>
 #include <string>
 #include <sstream>
-#include "../../setNCUStyle.C"
+//#include "../../setNCUStyle.C"
 
 
 TH1D* makeEff(string input,double workingPoint=0.3){
-	double bins[4]={250,350,430,840};
-	TH1D* th1=new TH1D("all","",3,bins);
-	TH1D* th2=new TH1D("pass","",3,bins);
+	double bins[5]={250,350,430,840,2000};
+	TH1D* th1=new TH1D("all","",4,bins);
+	TH1D* th2=new TH1D("pass","",4,bins);
 	TFile* tf1;
 	tf1=TFile::Open(Form("%s",input.data()));
 	TTree* tree;
@@ -206,7 +206,7 @@ void skimB(string input,string output,TH1D* th1[]){
 			SF=1.01;
 			SFUp=1.05;
 			SFDown=0.93;
-			eff=th1[0]->GetBinContent(3);
+			eff=th1[0]->GetBinContent(4);
 		}
 		if(bbtag>0.3){
 				SFLoose *=SF;
@@ -253,7 +253,7 @@ void skimB(string input,string output,TH1D* th1[]){
 			SF=0.92;
 			SFUp=0.98;
 			SFDown=0.82;
-			eff=th1[1]->GetBinContent(3);
+			eff=th1[1]->GetBinContent(4);
 		}
 		if(bbtag>0.8){
 				SFTight *=SF;
