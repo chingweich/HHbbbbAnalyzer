@@ -200,13 +200,13 @@ void skimB(string input,string output,TH1D* th1[]){
 			SF=1.01;
 			SFUp=1.03;
 			SFDown=0.97;
-			eff=th1[0]->GetBinContent(2);
+			eff=th1[0]->GetBinContent(3);
 		}
 		else {
 			SF=1.01;
 			SFUp=1.05;
 			SFDown=0.93;
-			eff=th1[0]->GetBinContent(2);
+			eff=th1[0]->GetBinContent(3);
 		}
 		if(bbtag>0.3){
 				SFLoose *=SF;
@@ -247,13 +247,13 @@ void skimB(string input,string output,TH1D* th1[]){
 			SF=0.92;
 			SFUp=0.95;
 			SFDown=0.87;
-			eff=th1[1]->GetBinContent(2);
+			eff=th1[1]->GetBinContent(3);
 		}
 		else {
 			SF=0.92;
 			SFUp=0.98;
 			SFDown=0.82;
-			eff=th1[1]->GetBinContent(2);
+			eff=th1[1]->GetBinContent(3);
 		}
 		if(bbtag>0.8){
 				SFTight *=SF;
