@@ -69,9 +69,9 @@ void skimTree(int w , string st){
 
 	vector<string> str;
 	vector<double> up;vector<double> down;vector<double> nbins;
-	str.push_back("pt"); up.push_back(2000);  down.push_back(0);nbins.push_back(400);
+	str.push_back("pt"); up.push_back(2000);  down.push_back(0);nbins.push_back(100);
 	//str.push_back("pt_j1"); up.push_back(2000);  down.push_back(0);nbins.push_back(200);
-	str.push_back("eta"); up.push_back(3);  down.push_back(-3);nbins.push_back(120);
+	str.push_back("eta"); up.push_back(3);  down.push_back(-3);nbins.push_back(30);
 	//str.push_back("eta_j1"); up.push_back(3);  down.push_back(-3);nbins.push_back(60);
 	str.push_back("puppiSDMassThea"); up.push_back(200);  down.push_back(40);nbins.push_back(16);
 	//str.push_back("puppiSDMassThea_j1"); up.push_back(200);  down.push_back(40);nbins.push_back(16);
@@ -104,7 +104,7 @@ void skimTree(int w , string st){
 	}
 	standalone_LumiReWeighting LumiWeights_central(0);
 	TreeReader data(st.data());
-	for(int i=0;i<11;i++){
+	for(int N1=0;N1<11;N1++){
 		for(Long64_t jEntry=0; jEntry<data.GetEntriesFast() ;jEntry++){
 			if(jEntry%1000==0)cout<<jEntry<<" out of "<<data.GetEntriesFast() <<" events are processed"<<endl;
 			data.GetEntry(jEntry);
@@ -118,7 +118,7 @@ void skimTree(int w , string st){
 				else PU_weight=  LumiWeights_central.weight(52);
 				//if(PU_weight>2)cout<<jEntry<<","<<PU_weight<<endl;
 			}
-			if(i==0)fixScaleNum[0]+=PU_weight;
+			if(N1==0)fixScaleNum[0]+=PU_weight;
 			
 			std::string* trigName = data.GetPtrString("hlt_trigName");
 			vector<bool> &trigResult = *((vector<bool>*) data.GetPtr("hlt_trigResult"));
@@ -308,12 +308,12 @@ void skimTree(int w , string st){
 			if( !passFatJetTightID[0] ||  !passFatJetTightID[1] )continue;
 			TLorentzVector* higgsJet[2];
 			for(int i=0;i<2;i++)higgsJet[i] = (TLorentzVector*)fatjetP4->At(i);
-			if(higgsJet[0]->Pt()<300 && i!=0)continue;
-			if(higgsJet[1]->Pt()<300 && i!=1)continue;
-			if(fabs(higgsJet[0]->Eta())>2.4 && i!=2)continue;
-			if(fabs(higgsJet[1]->Eta())>2.4 && i!=3)continue;
+			if(higgsJet[0]->Pt()<300 && N1!=0)continue;
+			if(higgsJet[1]->Pt()<300 && N1!=1)continue;
+			if(fabs(higgsJet[0]->Eta())>2.4 && N1!=2)continue;
+			if(fabs(higgsJet[1]->Eta())>2.4 && N1!=3)continue;
 			float dEta = fabs(higgsJet[0]->Eta()-higgsJet[1]->Eta());
-			if(dEta>1.3 && i!=8)continue;
+			if(dEta>1.3 && N1!=8)continue;
 			
 			Int_t nGoodJets=0;
 			const float dRMax=0.8;
@@ -322,13 +322,13 @@ void skimTree(int w , string st){
 			for(int ij=0; ij<2; ij++){
 				TLorentzVector* thisJet = (TLorentzVector*)fatjetP4->At(ij);
 				float tau21_puppi = FATjetPuppiTau2[ij]/FATjetPuppiTau1[ij];
-				if( tau21_puppi > 0.6&& (!((i==6 && ij==0)||(i==7 && ij==1))) )continue;
+				if( tau21_puppi > 0.6&& (!((N1==6 && ij==0)||(N1==7 && ij==1))) )continue;
 				TLorentzVector* thisJetPuppi = (TLorentzVector*)puppijetP4->At(ij);
 				float thea_corr = getPUPPIweight(thisJetPuppi->Pt(),thisJetPuppi->Eta());
 				float raw_mass = fatjetPuppiSDmass[ij];
 				thea_mass[ij] = raw_mass*thea_corr;
 
-				if((thea_mass[ij] < 105 || thea_mass[ij] > 135)&& (!((i==4 && ij==0)||(i==5 && ij==1))))continue;
+				if((thea_mass[ij] < 105 || thea_mass[ij] > 135)&& (!((N1==4 && ij==0)||(N1==5 && ij==1))))continue;
 				if(thea_mass[ij] < 50)continue;
 				// now look for add jets
 				for(int k=0; k < nADDJets; k++){
@@ -360,7 +360,7 @@ void skimTree(int w , string st){
 			float mjj = (*higgsJet[0]+*higgsJet[1]).M();
 
 			float mjjred = mjj + 250 - thea_mass[0]-thea_mass[1];
-			if(mjjred<750 && (!((i==9)||(i==10))) )continue;
+			if(mjjred<750 && (!((N1==9)||(N1==10))) )continue;
 
 			int event_flavor=-1;
 			Int_t* FATjetHadronFlavor        = data.GetPtrInt("FATjetHadronFlavor");
@@ -376,50 +376,50 @@ void skimTree(int w , string st){
 			else event_flavor=3;
 			
 			
-			switch(i){
+			switch(N1){
 				case 0:
-					th_flavor[event_flavor][i]->Fill(higgsJet[0]->Pt(),PU_weight);
-					fixScaleNum[i+1]+=PU_weight;
+					th_flavor[event_flavor][N1]->Fill(higgsJet[0]->Pt(),PU_weight);
+					fixScaleNum[N1+1]+=PU_weight;
 					break;
 				case 1:
-					th_flavor[event_flavor][i]->Fill(higgsJet[1]->Pt(),PU_weight);
-					fixScaleNum[i+1]+=PU_weight;
+					th_flavor[event_flavor][N1]->Fill(higgsJet[1]->Pt(),PU_weight);
+					fixScaleNum[N1+1]+=PU_weight;
 					break;
 				case 2:
-					th_flavor[event_flavor][i]->Fill(higgsJet[0]->Eta(),PU_weight);
-					fixScaleNum[i+1]+=PU_weight;
+					th_flavor[event_flavor][N1]->Fill(higgsJet[0]->Eta(),PU_weight);
+					fixScaleNum[N1+1]+=PU_weight;
 					break;
 				case 3:
-					th_flavor[event_flavor][i]->Fill(higgsJet[1]->Eta(),PU_weight);
-					fixScaleNum[i+1]+=PU_weight;
+					th_flavor[event_flavor][N1]->Fill(higgsJet[1]->Eta(),PU_weight);
+					fixScaleNum[N1+1]+=PU_weight;
 					break;
 				case 4:
-					th_flavor[event_flavor][i]->Fill(thea_mass[0],PU_weight);
-					fixScaleNum[i+1]+=PU_weight;
+					th_flavor[event_flavor][N1]->Fill(thea_mass[0],PU_weight);
+					fixScaleNum[N1+1]+=PU_weight;
 					break;
 				case 5:
-					th_flavor[event_flavor][i]->Fill(thea_mass[1],PU_weight);
-					fixScaleNum[i+1]+=PU_weight;
+					th_flavor[event_flavor][N1]->Fill(thea_mass[1],PU_weight);
+					fixScaleNum[N1+1]+=PU_weight;
 					break;
 				case 6:
-					th_flavor[event_flavor][i]->Fill(FATjetPuppiTau2[0]/FATjetPuppiTau1[0],PU_weight);
-					fixScaleNum[i+1]+=PU_weight;
+					th_flavor[event_flavor][N1]->Fill(FATjetPuppiTau2[0]/FATjetPuppiTau1[0],PU_weight);
+					fixScaleNum[N1+1]+=PU_weight;
 					break;
 				case 7:
-					th_flavor[event_flavor][i]->Fill(FATjetPuppiTau2[1]/FATjetPuppiTau1[1],PU_weight);
-					fixScaleNum[i+1]+=PU_weight;
+					th_flavor[event_flavor][N1]->Fill(FATjetPuppiTau2[1]/FATjetPuppiTau1[1],PU_weight);
+					fixScaleNum[N1+1]+=PU_weight;
 					break;
 				case 8:
-					th_flavor[event_flavor][i]->Fill(dEta,PU_weight);
-					fixScaleNum[i+1]+=PU_weight;
+					th_flavor[event_flavor][N1]->Fill(dEta,PU_weight);
+					fixScaleNum[N1+1]+=PU_weight;
 					break;
 				case 9:
-					th_flavor[event_flavor][i]->Fill(mjj,PU_weight);
-					fixScaleNum[i+1]+=PU_weight;
+					th_flavor[event_flavor][N1]->Fill(mjj,PU_weight);
+					fixScaleNum[N1+1]+=PU_weight;
 					break;
 				case 10:
-					th_flavor[event_flavor][i]->Fill(mjjred,PU_weight);
-					fixScaleNum[i+1]+=PU_weight;
+					th_flavor[event_flavor][N1]->Fill(mjjred,PU_weight);
+					fixScaleNum[N1+1]+=PU_weight;
 					break;
 				default: 
 					break;
