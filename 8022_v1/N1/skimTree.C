@@ -360,7 +360,7 @@ void skimTree(int w , string st){
 			float mjj = (*higgsJet[0]+*higgsJet[1]).M();
 
 			float mjjred = mjj + 250 - thea_mass[0]-thea_mass[1];
-			if(mjjred<750 && ((i!=9)||(i!=10)) )continue;
+			if(mjjred<750 && (!((i==9)||(i==10))) )continue;
 
 			int event_flavor=-1;
 			Int_t* FATjetHadronFlavor        = data.GetPtrInt("FATjetHadronFlavor");
