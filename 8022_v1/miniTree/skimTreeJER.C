@@ -198,6 +198,18 @@ void skimTreeJERBase(string w , string st){
 		
 		//Float_t isData; mynewTree->Branch("isData",&isData,"isData/F");
 		
+		Float_t jet1JERup; mynewTree->Branch("jet1JERup",&jet1JERup,"jet1JERup/F");
+		Float_t jet1JERcentral; mynewTree->Branch("jet1JERcentral",&jet1JERcentral,"jet1JERcentral/F");
+		Float_t jet1JERdown; mynewTree->Branch("jet1JERdown",&jet1JERdown,"jet1JERdown/F");
+		Float_t jet1JECup; mynewTree->Branch("jet1JECup",&jet1JECup,"jet1JECup/F");
+		Float_t jet1JECdown; mynewTree->Branch("jet1JECdown",&jet1JECdown,"jet1JECdown/F");
+		
+		Float_t jet2JERup; mynewTree->Branch("jet2JERup",&jet2JERup,"jet2JERup/F");
+		Float_t jet2JERcentral; mynewTree->Branch("jet2JERcentral",&jet2JERcentral,"jet2JERcentral/F");
+		Float_t jet2JERdown; mynewTree->Branch("jet2JERdown",&jet2JERdown,"jet2JERdown/F");
+		Float_t jet2JECup; mynewTree->Branch("jet2JECup",&jet2JECup,"jet2JECup/F");
+		Float_t jet2JECdown; mynewTree->Branch("jet2JECdown",&jet2JECdown,"jet2JECdown/F");
+		
 		Float_t SFTight=1; mynewTree->Branch("SFTight",&SFTight,"SFTight/F");
 		Float_t SFTightup=1; mynewTree->Branch("SFTightup",&SFTightup,"SFTightup/F");
 		Float_t SFTightdown=1; mynewTree->Branch("SFTightdown",&SFTightdown,"SFTightdown/F");
@@ -631,6 +643,18 @@ void skimTreeJERBase(string w , string st){
 			jet2phi=((*higgsJet[1])*ptsmearGlobal[0][1]).Phi();
 			jet2mass=((*higgsJet[1])*ptsmearGlobal[0][1]).M();
 			
+			jet1JERup=ptsmearGlobal[1][0];
+			jet1JERcentral=ptsmearGlobal[0][0];
+			jet1JERdown=ptsmearGlobal[2][0];
+			jet1JECup=FATjetCorrUncUp[0];
+			jet1JECdown=FATjetCorrUncDown[0];
+			
+			jet2JERup=ptsmearGlobal[1][1];
+			jet2JERcentral=ptsmearGlobal[0][1];
+			jet2JERdown=ptsmearGlobal[2][1];
+			jet2JECup=FATjetCorrUncUp[1];
+			jet2JECdown=FATjetCorrUncDown[1];
+			
 			TLorentzVector* thisJetPuppi = (TLorentzVector*)puppijetP4->At(0);
 			TLorentzVector* thatJetPuppi = (TLorentzVector*)puppijetP4->At(1);
 			jet1_puppi_pt=thisJetPuppi->Pt();
@@ -689,14 +713,23 @@ void skimTreeJERBase(string w , string st){
 }
 
 void skimTreeJER(){
-	skimTreeJERBase("BulkGrav_M-1000_0.root","/data7/syu/NCUGlobalTuples/80X_Moriond/80X_puppi/doublebtagv4_JECv3/BulkGravTohhTohbbhbb/BulkGravTohhTohbbhbb_narrow_M-1000_13TeV-madgraph.root");
-	skimTreeJERBase("BulkGrav_M-1200_0.root","/data7/syu/NCUGlobalTuples/80X_Moriond/80X_puppi/doublebtagv4_JECv3/BulkGravTohhTohbbhbb/BulkGravTohhTohbbhbb_narrow_M-1200_13TeV-madgraph.root");
-	skimTreeJERBase("BulkGrav_M-1400_0.root","/data7/syu/NCUGlobalTuples/80X_Moriond/80X_puppi/doublebtagv4_JECv3/BulkGravTohhTohbbhbb/BulkGravTohhTohbbhbb_narrow_M-1400_13TeV-madgraph.root");
-	skimTreeJERBase("BulkGrav_M-1600_0.root","/data7/syu/NCUGlobalTuples/80X_Moriond/80X_puppi/doublebtagv4_JECv3/BulkGravTohhTohbbhbb/BulkGravTohhTohbbhbb_narrow_M-1600_13TeV-madgraph.root");
-	skimTreeJERBase("BulkGrav_M-1800_0.root","/data7/syu/NCUGlobalTuples/80X_Moriond/80X_puppi/doublebtagv4_JECv3/BulkGravTohhTohbbhbb/BulkGravTohhTohbbhbb_narrow_M-1800_13TeV-madgraph.root");
-	skimTreeJERBase("BulkGrav_M-2000_0.root","/data7/syu/NCUGlobalTuples/80X_Moriond/80X_puppi/doublebtagv4_JECv3/BulkGravTohhTohbbhbb/BulkGravTohhTohbbhbb_narrow_M-2000_13TeV-madgraph.root");
-	skimTreeJERBase("BulkGrav_M-2500_0.root","/data7/syu/NCUGlobalTuples/80X_Moriond/80X_puppi/doublebtagv4_JECv3/BulkGravTohhTohbbhbb/BulkGravTohhTohbbhbb_narrow_M-2500_13TeV-madgraph.root");
-	skimTreeJERBase("BulkGrav_M-3000_0.root","/data7/syu/NCUGlobalTuples/80X_Moriond/80X_puppi/doublebtagv4_JECv3/BulkGravTohhTohbbhbb/BulkGravTohhTohbbhbb_narrow_M-3000_13TeV-madgraph.root");
-	skimTreeJERBase("BulkGrav_M-4000_0.root","/data7/syu/NCUGlobalTuples/80X_Moriond/80X_puppi/doublebtagv4_JECv3/BulkGravTohhTohbbhbb/BulkGravTohhTohbbhbb_narrow_M-4000_13TeV-madgraph.root");
-	skimTreeJERBase("BulkGrav_M-4500_0.root","/data7/syu/NCUGlobalTuples/80X_Moriond/80X_puppi/doublebtagv4_JECv3/BulkGravTohhTohbbhbb/BulkGravTohhTohbbhbb_narrow_M-4500_13TeV-madgraph.root");
+	skimTreeJERBase("BulkGrav_M-1000_0","/data7/syu/NCUGlobalTuples/80X_Moriond/80X_puppi/doublebtagv4_JECv3/BulkGravTohhTohbbhbb/BulkGravTohhTohbbhbb_narrow_M-1000_13TeV-madgraph.root");
+	skimTreeJERBase("BulkGrav_M-1200_0","/data7/syu/NCUGlobalTuples/80X_Moriond/80X_puppi/doublebtagv4_JECv3/BulkGravTohhTohbbhbb/BulkGravTohhTohbbhbb_narrow_M-1200_13TeV-madgraph.root");
+	skimTreeJERBase("BulkGrav_M-1400_0","/data7/syu/NCUGlobalTuples/80X_Moriond/80X_puppi/doublebtagv4_JECv3/BulkGravTohhTohbbhbb/BulkGravTohhTohbbhbb_narrow_M-1400_13TeV-madgraph.root");
+	skimTreeJERBase("BulkGrav_M-1600_0","/data7/syu/NCUGlobalTuples/80X_Moriond/80X_puppi/doublebtagv4_JECv3/BulkGravTohhTohbbhbb/BulkGravTohhTohbbhbb_narrow_M-1600_13TeV-madgraph.root");
+	skimTreeJERBase("BulkGrav_M-1800_0","/data7/syu/NCUGlobalTuples/80X_Moriond/80X_puppi/doublebtagv4_JECv3/BulkGravTohhTohbbhbb/BulkGravTohhTohbbhbb_narrow_M-1800_13TeV-madgraph.root");
+	skimTreeJERBase("BulkGrav_M-2000_0","/data7/syu/NCUGlobalTuples/80X_Moriond/80X_puppi/doublebtagv4_JECv3/BulkGravTohhTohbbhbb/BulkGravTohhTohbbhbb_narrow_M-2000_13TeV-madgraph.root");
+	skimTreeJERBase("BulkGrav_M-2500_0","/data7/syu/NCUGlobalTuples/80X_Moriond/80X_puppi/doublebtagv4_JECv3/BulkGravTohhTohbbhbb/BulkGravTohhTohbbhbb_narrow_M-2500_13TeV-madgraph.root");
+	skimTreeJERBase("BulkGrav_M-3000_0","/data7/syu/NCUGlobalTuples/80X_Moriond/80X_puppi/doublebtagv4_JECv3/BulkGravTohhTohbbhbb/BulkGravTohhTohbbhbb_narrow_M-3000_13TeV-madgraph.root");
+	skimTreeJERBase("BulkGrav_M-4000_0","/data7/syu/NCUGlobalTuples/80X_Moriond/80X_puppi/doublebtagv4_JECv3/BulkGravTohhTohbbhbb/BulkGravTohhTohbbhbb_narrow_M-4000_13TeV-madgraph.root");
+	skimTreeJERBase("BulkGrav_M-4500_0","/data7/syu/NCUGlobalTuples/80X_Moriond/80X_puppi/doublebtagv4_JECv3/BulkGravTohhTohbbhbb/BulkGravTohhTohbbhbb_narrow_M-4500_13TeV-madgraph.root");
+
+	skimTreeJERBase("Radion1000","/data7/syu/NCUGlobalTuples/80X_Moriond/80X_puppi/doublebtagv4_JECv3/RadionTohhTohbbhbb/RadionTohhTohbbhbb_narrow_M-1000_13TeV-madgraph.root");
+	skimTreeJERBase("Radion1200","/data7/syu/NCUGlobalTuples/80X_Moriond/80X_puppi/doublebtagv4_JECv3/RadionTohhTohbbhbb/RadionTohhTohbbhbb_narrow_M-1200_13TeV-madgraph.root");
+	skimTreeJERBase("Radion1400","/data7/syu/NCUGlobalTuples/80X_Moriond/80X_puppi/doublebtagv4_JECv3/RadionTohhTohbbhbb/RadionTohhTohbbhbb_narrow_M-1400_13TeV-madgraph.root");
+	skimTreeJERBase("Radion1600","/data7/syu/NCUGlobalTuples/80X_Moriond/80X_puppi/doublebtagv4_JECv3/RadionTohhTohbbhbb/RadionTohhTohbbhbb_narrow_M-1600_13TeV-madgraph.root");
+	skimTreeJERBase("Radion2500","/data7/syu/NCUGlobalTuples/80X_Moriond/80X_puppi/doublebtagv4_JECv3/RadionTohhTohbbhbb/RadionTohhTohbbhbb_narrow_M-2500_13TeV-madgraph.root");
+	skimTreeJERBase("Radion3000","/data7/syu/NCUGlobalTuples/80X_Moriond/80X_puppi/doublebtagv4_JECv3/RadionTohhTohbbhbb/RadionTohhTohbbhbb_narrow_M-3000_13TeV-madgraph.root");
+	skimTreeJERBase("Radion3500","/data7/syu/NCUGlobalTuples/80X_Moriond/80X_puppi/doublebtagv4_JECv3/RadionTohhTohbbhbb/RadionTohhTohbbhbb_narrow_M-3500_13TeV-madgraph.root");
+	skimTreeJERBase("Radion4500","/data7/syu/NCUGlobalTuples/80X_Moriond/80X_puppi/doublebtagv4_JECv3/RadionTohhTohbbhbb/RadionTohhTohbbhbb_narrow_M-4500_13TeV-madgraph.root");
 }
