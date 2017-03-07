@@ -165,6 +165,9 @@ void skimTreeJERBase(string w , string st){
 		Float_t dijetmass_softdrop_corr; mynewTree->Branch("dijetmass_softdrop_corr",&dijetmass_softdrop_corr,"dijetmass_softdrop_corr/F");
 		Float_t dijetmass_softdrop_corr_JERup; mynewTree->Branch("dijetmass_softdrop_corr_JERup",&dijetmass_softdrop_corr_JERup,"dijetmass_softdrop_corr_JERup/F");
 		Float_t dijetmass_softdrop_corr_JERdown; mynewTree->Branch("dijetmass_softdrop_corr_JERdown",&dijetmass_softdrop_corr_JERdown,"dijetmass_softdrop_corr_JERdown/F");
+		Float_t dijetmass_softdrop_corr_JECup; mynewTree->Branch("dijetmass_softdrop_corr_JECup",&dijetmass_softdrop_corr_JECup,"dijetmass_softdrop_corr_JECup/F");
+		Float_t dijetmass_softdrop_corr_JECdown; mynewTree->Branch("dijetmass_softdrop_corr_JECdown",&dijetmass_softdrop_corr_JECdown,"dijetmass_softdrop_corr_JECdown/F");
+		
 		Float_t dijetmass_corr_punc; mynewTree->Branch("dijetmass_corr_punc",&dijetmass_corr_punc,"dijetmass_corr_punc/F");
 		
 		Float_t jet1pmass; mynewTree->Branch("jet1pmass",&jet1pmass,"jet1pmass/F");
@@ -512,7 +515,7 @@ void skimTreeJERBase(string w , string st){
       TLorentzVector JERDown=(*thisJet) *ptsmear[2];
 
 	
-	if( JERCentral.Pt()<300 )continue;
+	//if( JERCentral.Pt()<300 )continue;
 	if( fabs(JERCentral.Eta())>2.4 )continue;
 	float tau21_puppi = FATjetPuppiTau2[ij]/FATjetPuppiTau1[ij];
 	if( tau21_puppi > 0.6 )continue;
@@ -561,11 +564,19 @@ void skimTreeJERBase(string w , string st){
 
     //if(dEta>1.3)continue;
     nPass[11]++;
-    float mjj = ((*higgsJet[0])*ptsmearGlobal[0][0]+*higgsJet[1]*ptsmearGlobal[0][1]).M();
+    float mjjredJERUp=0,mjjredJERDown=0;
+    if(((*higgsJet[0])*ptsmearGlobal[1][0]).Pt()>300 && ((*higgsJet[1])*ptsmearGlobal[1][1]).Pt()>300  )mjjredJERUp = 	  ((*higgsJet[0])*ptsmearGlobal[1][0]+*higgsJet[1]*ptsmearGlobal[1][1]).M() + 250 - thea_mass[0]-thea_mass[1];
+    if(((*higgsJet[0])*ptsmearGlobal[2][0]).Pt()>300 && ((*higgsJet[1])*ptsmearGlobal[2][1]).Pt()>300  )mjjredJERDown =  ((*higgsJet[0])*ptsmearGlobal[2][0]+*higgsJet[1]*ptsmearGlobal[2][1]).M() + 250 - thea_mass[0]-thea_mass[1];
 
+    float*  FATjetCorrUncUp = data.GetPtrFloat("FATjetCorrUncUp"); 
+    float*  FATjetCorrUncDown = data.GetPtrFloat("FATjetCorrUncDown"); 
+     float mjjredJECUp=0,mjjredJECDown=0;
+    if(((*higgsJet[0])*ptsmearGlobal[0][0]*(1+FATjetCorrUncUp[0] )).Pt()>300 && ((*higgsJet[1])*ptsmearGlobal[0][1]*(1+FATjetCorrUncUp[1] )).Pt()>300  )         mjjredJECUp = 	  ((*higgsJet[0])*ptsmearGlobal[0][0]*(1+FATjetCorrUncUp[0] )+*higgsJet[1]*ptsmearGlobal[0][1]*(1+FATjetCorrUncUp[1] )).M() + 250 - thea_mass[0]-thea_mass[1];
+    if(((*higgsJet[0])*ptsmearGlobal[0][0]*(1-FATjetCorrUncDown[0] )).Pt()>300 && ((*higgsJet[1])*ptsmearGlobal[0][1]*(1-FATjetCorrUncDown[1] )).Pt()>300  )mjjredJECDown =  ((*higgsJet[0])*ptsmearGlobal[0][0]*(1-FATjetCorrUncDown[0] )+*higgsJet[1]*ptsmearGlobal[0][1]*(1-FATjetCorrUncDown[1] )).M() + 250 - thea_mass[0]-thea_mass[1];
+
+    if(((*higgsJet[0])*ptsmearGlobal[2][0]).Pt()<300 || ((*higgsJet[1])*ptsmearGlobal[2][1]).Pt()<300  ) continue;
+    float mjj = ((*higgsJet[0])*ptsmearGlobal[0][0]+*higgsJet[1]*ptsmearGlobal[0][1]).M();
     float mjjred = mjj + 250 - thea_mass[0]-thea_mass[1];
-    float mjjredJERUp = 	  ((*higgsJet[0])*ptsmearGlobal[1][0]+*higgsJet[1]*ptsmearGlobal[1][1]).M() + 250 - thea_mass[0]-thea_mass[1];
-    float mjjredJERDown =  ((*higgsJet[0])*ptsmearGlobal[2][0]+*higgsJet[1]*ptsmearGlobal[2][1]).M() + 250 - thea_mass[0]-thea_mass[1];
     //if(mjjred<750)continue;
     nPass[12]++;
 			
@@ -611,14 +622,14 @@ void skimTreeJERBase(string w , string st){
 			
 			nTrueInt=ntrue;
 			//isData=isData;
-			jet1pt=higgsJet[0]->Pt();
-			jet1eta=higgsJet[0]->Eta();
-			jet1phi=higgsJet[0]->Phi();
-			jet1mass=higgsJet[0]->M();
-			jet2pt=higgsJet[1]->Pt();
-			jet2eta=higgsJet[1]->Eta();
-			jet2phi=higgsJet[1]->Phi();
-			jet2mass=higgsJet[1]->M();
+			jet1pt=((*higgsJet[0])*ptsmearGlobal[0][0]).Pt();
+			jet1eta=((*higgsJet[0])*ptsmearGlobal[0][0]).Eta();
+			jet1phi=((*higgsJet[0])*ptsmearGlobal[0][0]).Phi();
+			jet1mass=((*higgsJet[0])*ptsmearGlobal[0][0]).M();
+			jet2pt=((*higgsJet[1])*ptsmearGlobal[0][1]).Pt();
+			jet2eta=((*higgsJet[1])*ptsmearGlobal[0][1]).Eta();
+			jet2phi=((*higgsJet[1])*ptsmearGlobal[0][1]).Phi();
+			jet2mass=((*higgsJet[1])*ptsmearGlobal[0][1]).M();
 			
 			TLorentzVector* thisJetPuppi = (TLorentzVector*)puppijetP4->At(0);
 			TLorentzVector* thatJetPuppi = (TLorentzVector*)puppijetP4->At(1);
@@ -636,6 +647,9 @@ void skimTreeJERBase(string w , string st){
 			dijetmass_softdrop_corr=mjjred;
 			dijetmass_softdrop_corr_JERup=mjjredJERUp;
 			dijetmass_softdrop_corr_JERdown=mjjredJERDown;
+			
+			dijetmass_softdrop_corr_JECup=mjjredJECUp;
+			dijetmass_softdrop_corr_JECdown=mjjredJECDown;
 			
 			dijetmass_pruned_corr=mjj;
 			dijetmass_corr_punc=mjj;
