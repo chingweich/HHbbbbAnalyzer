@@ -146,6 +146,14 @@ void skimTreeDataTrig(int w , string st){
     vector<bool> &trigResult = *((vector<bool>*) data.GetPtr("hlt_trigResult"));
     const Int_t nsize = data.GetPtrStringSize();
 
+    HLT_PFHT800=0;
+    HLT_PFHT900=0;
+    HLT_PFHT650_WideJetMJJ900DEtaJJ1p5=0;
+    HLT_AK8PFJet360_TrimMass30=0;
+    HLT_AK8DiPFJet280_200_TrimMass30_BTagCSV_p20=0;
+    HLT_AK8PFHT650_TrimR0p1PT0p03Mass50=0;
+    HLT_AK8PFHT700_TrimR0p1PT0p03Mass50=0;
+    
     bool passTrigger=false;
     for(int it=0; it< nsize; it++)
       {
