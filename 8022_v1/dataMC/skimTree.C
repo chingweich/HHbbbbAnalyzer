@@ -47,21 +47,24 @@ using namespace std;
 
 //data MC comparison
 float getPUPPIweight(float puppipt, float puppieta ){
-  TF1* puppisd_corrGEN      = new TF1("puppisd_corrGEN","[0]+[1]*pow(x*[2],-[3])");
+   TF1* puppisd_corrGEN      = new TF1("puppisd_corrGEN","[0]+[1]*pow(x*[2],-[3])");
   puppisd_corrGEN->SetParameters(1.00626, -1.06161, 0.07999,1.20454 );
   TF1* puppisd_corrRECO_cen = new TF1("puppisd_corrRECO_cen","[0]+[1]*x+[2]*pow(x,2)+[3]*pow(x,3)+[4]*pow(x,4)+[5]*pow(x,5)");
-  puppisd_corrRECO_cen->SetParameters( 1.05807,-5.91971e-05,2.296e-07, -1.98795e-10,6.67382e-14,  -7.80604e-18);
+  puppisd_corrRECO_cen->SetParameters(1.09302,-0.000150068,3.44866e-07,-2.68100e-10,8.67440e-14,-1.00114e-17);
   TF1* puppisd_corrRECO_for = new TF1("puppisd_corrRECO_for","[0]+[1]*x+[2]*pow(x,2)+[3]*pow(x,3)+[4]*pow(x,4)+[5]*pow(x,5)");
-  puppisd_corrRECO_for->SetParameters( 1.26638,-0.000658496,  9.73779e-07,-5.93843e-10, 1.61619e-13, -1.6272e-17);
-  float genCorr  = 1.,recoCorr = 1.;
+  puppisd_corrRECO_for->SetParameters( 1.27212,-0.000571640,8.37289e-07,-5.20433e-10,1.45375e-13,-1.50389e-17);
+  float genCorr  = 1.;
+  float recoCorr = 1.;
+  float totalWeight = 1.;
   genCorr =  puppisd_corrGEN->Eval( puppipt );
   if( fabs(puppieta)  <= 1.3 ) recoCorr = puppisd_corrRECO_cen->Eval( puppipt );
   else if( fabs(puppieta) > 1.3 ) recoCorr = puppisd_corrRECO_for->Eval( puppipt );
-  return genCorr * recoCorr;
+  totalWeight = genCorr * recoCorr;
+  return totalWeight;
 }
 
 void skimTree(int w , string st){
-	double nPass[30]={0},total=0,fixScaleNum[4]={0};
+	double nPass[30]={0},total=0,fixScaleNum[8]={0};
 
 	vector<string> str;
 	vector<double> up;vector<double> down;vector<double> nbins;
@@ -95,7 +98,7 @@ void skimTree(int w , string st){
 	
 	
 	
-	TH1D* th1[35],* th_flavor[4][35][3];
+	TH1D* th1[35],* th_flavor[4][35][7];
 	for(int i=0;i<13;i++ ){
 		th1[i*2]=new TH1D(Form("%s_j0",str[i].data()),Form("%s_j0",str[i].data()),nbins[i],down[i],up[i]);
 		th1[i*2+1]=new TH1D(Form("%s_j1",str[i].data()),Form("%s_j1",str[i].data()),nbins[i],down[i],up[i]);
@@ -119,9 +122,14 @@ void skimTree(int w , string st){
 	for(int i=0;i<31;i++){
 		for(int j=0;j<4;j++)th_flavor[j][i][1]=(TH1D* )th_flavor[j][i][0]->Clone(Form("%s_antiTau21",th_flavor[j][i][0]->GetTitle()));
 		for(int j=0;j<4;j++)th_flavor[j][i][2]=(TH1D* )th_flavor[j][i][0]->Clone(Form("%s_antiDBT",th_flavor[j][i][0]->GetTitle()));
+		for(int j=0;j<4;j++)th_flavor[j][i][3]=(TH1D* )th_flavor[j][i][0]->Clone(Form("%s_noTau21",th_flavor[j][i][0]->GetTitle()));
+		
+		for(int j=0;j<4;j++)th_flavor[j][i][4]=(TH1D* )th_flavor[j][i][0]->Clone(Form("%s_mjj",th_flavor[j][i][0]->GetTitle()));
+		for(int j=0;j<4;j++)th_flavor[j][i][5]=(TH1D* )th_flavor[j][i][0]->Clone(Form("%s_mjj_antiTau21",th_flavor[j][i][0]->GetTitle()));
+		for(int j=0;j<4;j++)th_flavor[j][i][6]=(TH1D* )th_flavor[j][i][0]->Clone(Form("%s_mjj_antiDBT",th_flavor[j][i][0]->GetTitle()));
+		
 		
 	}
-	
 	standalone_LumiReWeighting LumiWeights_central(0);
 	TreeReader data(st.data());
 	for(Long64_t jEntry=0; jEntry<data.GetEntriesFast() ;jEntry++){
@@ -158,7 +166,7 @@ void skimTree(int w , string st){
 			}
 		}
 
-		if(!passTrigger && isData)continue;
+		if(!passTrigger)continue;
 		nPass[0]++;
 
 		//0. has a good vertex
@@ -415,12 +423,39 @@ void skimTree(int w , string st){
 		Float_t*  EleEF = data.GetPtrFloat("FATjetEleEF");
 		Int_t* nSV=data.GetPtrInt("ADDjet_nSV");
 		vector<float>   * SVMass  =  data.GetPtrVectorFloat("ADDjet_SVMass");
+		
+		
+		for(int i=0;i<2;i++){
+			th_flavor[event_flavor][i][3]->Fill(higgsJet[i]->Pt(),PU_weight);
+			th_flavor[event_flavor][2+i][3]->Fill(higgsJet[i]->Eta(),PU_weight);
+			th_flavor[event_flavor][4+i][3]->Fill(thea_mass[i],PU_weight);
+			th_flavor[event_flavor][6+i][3]->Fill(addjet_doublesv[addJetIndex[i]],PU_weight);
+			th_flavor[event_flavor][8+i][3]->Fill(FATjetPuppiTau2[i]/FATjetPuppiTau1[i],PU_weight);
+			th_flavor[event_flavor][10+i][3]->Fill(MuoMulti[i],PU_weight);
+			th_flavor[event_flavor][12+i][3]->Fill(EleMulti[i],PU_weight);
+			th_flavor[event_flavor][14+i][3]->Fill(CMulti[i],PU_weight);		
+			th_flavor[event_flavor][16+i][3]->Fill(FATjetMuoEF[i],PU_weight);
+			th_flavor[event_flavor][18+i][3]->Fill(EleEF[i],PU_weight);
+			th_flavor[event_flavor][20+i][3]->Fill(nSV[addJetIndex[i]],PU_weight);
+			if(nSV[addJetIndex[i]]>0)th_flavor[event_flavor][22+i][3]->Fill(SVMass[addJetIndex[i]][0],PU_weight);
+			if(nSV[addJetIndex[i]]>1)th_flavor[event_flavor][24+i][3]->Fill(SVMass[addJetIndex[i]][1],PU_weight);
+				
+		}
+			
+		th_flavor[event_flavor][26][3]->Fill(dEta,PU_weight);
+		th_flavor[event_flavor][27][3]->Fill(mjj,PU_weight);
+		th_flavor[event_flavor][28][3]->Fill(mjjred,PU_weight);
+			
+		th_flavor[event_flavor][29][3]->Fill(nVtx);
+		th_flavor[event_flavor][30][3]->Fill(nVtx,PU_weight);
+		fixScaleNum[4]+=PU_weight;
+		
 
-		if( (FATjetPuppiTau2[0]/FATjetPuppiTau1[0]>0.6) && (FATjetPuppiTau2[1]/FATjetPuppiTau1[1]>0.6))continue;
+		if( (FATjetPuppiTau2[0]/FATjetPuppiTau1[0]>0.55) && (FATjetPuppiTau2[1]/FATjetPuppiTau1[1]>0.55))continue;
 		
 				
 		bool fill[3]={0};
-		if( (FATjetPuppiTau2[0]/FATjetPuppiTau1[0]<0.6) && (FATjetPuppiTau2[1]/FATjetPuppiTau1[1]<0.6))fill[0]=1;
+		if( (FATjetPuppiTau2[0]/FATjetPuppiTau1[0]<0.55) && (FATjetPuppiTau2[1]/FATjetPuppiTau1[1]<0.55))fill[0]=1;
 		else fill[1]=1;
 		
 		if(addjet_doublesv[addJetIndex[0]]<0.3|| addjet_doublesv[addJetIndex[1]]<0.3)fill[1]=0;
@@ -453,19 +488,41 @@ void skimTree(int w , string st){
 			th_flavor[event_flavor][29][antiFig]->Fill(nVtx);
 			th_flavor[event_flavor][30][antiFig]->Fill(nVtx,PU_weight);
 			fixScaleNum[1+antiFig]+=PU_weight;
+			
+			if(mjjred<1000)continue;
+			
+			for(int i=0;i<2;i++){
+				th_flavor[event_flavor][i][antiFig+4]->Fill(higgsJet[i]->Pt(),PU_weight);
+				th_flavor[event_flavor][2+i][antiFig+4]->Fill(higgsJet[i]->Eta(),PU_weight);
+				th_flavor[event_flavor][4+i][antiFig+4]->Fill(thea_mass[i],PU_weight);
+				th_flavor[event_flavor][6+i][antiFig+4]->Fill(addjet_doublesv[addJetIndex[i]],PU_weight);
+				th_flavor[event_flavor][8+i][antiFig+4]->Fill(FATjetPuppiTau2[i]/FATjetPuppiTau1[i],PU_weight);
+				th_flavor[event_flavor][10+i][antiFig+4]->Fill(MuoMulti[i],PU_weight);
+				th_flavor[event_flavor][12+i][antiFig+4]->Fill(EleMulti[i],PU_weight);
+				th_flavor[event_flavor][14+i][antiFig+4]->Fill(CMulti[i],PU_weight);		
+				th_flavor[event_flavor][16+i][antiFig+4]->Fill(FATjetMuoEF[i],PU_weight);
+				th_flavor[event_flavor][18+i][antiFig+4]->Fill(EleEF[i],PU_weight);
+				th_flavor[event_flavor][20+i][antiFig+4]->Fill(nSV[addJetIndex[i]],PU_weight);
+				if(nSV[addJetIndex[i]]>0)th_flavor[event_flavor][22+i][antiFig+4]->Fill(SVMass[addJetIndex[i]][0],PU_weight);
+				if(nSV[addJetIndex[i]]>1)th_flavor[event_flavor][24+i][antiFig+4]->Fill(SVMass[addJetIndex[i]][1],PU_weight);
+				
+			}
+			
+			th_flavor[event_flavor][26][antiFig+4]->Fill(dEta,PU_weight);
+			th_flavor[event_flavor][27][antiFig+4]->Fill(mjj,PU_weight);
+			th_flavor[event_flavor][28][antiFig+4]->Fill(mjjred,PU_weight);
+			
+			th_flavor[event_flavor][29][antiFig+4]->Fill(nVtx);
+			th_flavor[event_flavor][30][antiFig+4]->Fill(nVtx,PU_weight);
+			fixScaleNum[5+antiFig]+=PU_weight;
 		}
 	}
-	TH1D * fixScale=new TH1D("fixScale","fixScale",4,-0.5,3.5);
-	fixScale->SetBinContent(1,fixScaleNum[0]);
-	fixScale->SetBinContent(2,fixScaleNum[1]);
-	fixScale->SetBinContent(3,fixScaleNum[2]);
-	fixScale->SetBinContent(4,fixScaleNum[3]);
+	TH1D * fixScale=new TH1D("fixScale","fixScale",7,-0.5,7.5);
+	for(int i=0;i<7;i++)fixScale->SetBinContent(i+1,fixScaleNum[i]);
 	TFile* outFile= new TFile(Form("sf/%d.root",w),"recreate");
 	for(int i=0;i<31;i++){
 		for(int j=0;j<4;j++){
-			th_flavor[j][i][0]->Write();
-			th_flavor[j][i][1]->Write();
-			th_flavor[j][i][2]->Write();
+			for(int k=0;k<7;k++)th_flavor[j][i][k]->Write();
 		}
 	}
 	fixScale->Write();
