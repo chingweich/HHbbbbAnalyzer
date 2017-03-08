@@ -45,9 +45,9 @@ float getPUPPIweight(float puppipt, float puppieta ){
    TF1* puppisd_corrGEN      = new TF1("puppisd_corrGEN","[0]+[1]*pow(x*[2],-[3])");
   puppisd_corrGEN->SetParameters(1.00626, -1.06161, 0.07999,1.20454 );
   TF1* puppisd_corrRECO_cen = new TF1("puppisd_corrRECO_cen","[0]+[1]*x+[2]*pow(x,2)+[3]*pow(x,3)+[4]*pow(x,4)+[5]*pow(x,5)");
-  puppisd_corrRECO_cen->SetParameters( 1.05807,-5.91971e-05,2.296e-07, -1.98795e-10,6.67382e-14,  -7.80604e-18);
+  puppisd_corrRECO_cen->SetParameters(1.09302,-0.000150068,3.44866e-07,-2.68100e-10,8.67440e-14,-1.00114e-17);
   TF1* puppisd_corrRECO_for = new TF1("puppisd_corrRECO_for","[0]+[1]*x+[2]*pow(x,2)+[3]*pow(x,3)+[4]*pow(x,4)+[5]*pow(x,5)");
-  puppisd_corrRECO_for->SetParameters( 1.26638,-0.000658496,  9.73779e-07,-5.93843e-10, 1.61619e-13, -1.6272e-17);
+  puppisd_corrRECO_for->SetParameters( 1.27212,-0.000571640,8.37289e-07,-5.20433e-10,1.45375e-13,-1.50389e-17);
   float genCorr  = 1.;
   float recoCorr = 1.;
   float totalWeight = 1.;
@@ -417,7 +417,7 @@ void skimTree(int w , string st){
     for(int i=0;i<2;i++)higgsJet[i] = (TLorentzVector*)fatjetP4->At(i);
     float dEta = fabs(higgsJet[0]->Eta()-higgsJet[1]->Eta());
 
-    if(dEta>1.3)continue;
+    //if(dEta>1.3)continue;
     nPass[11]++;
     float mjj = (*higgsJet[0]+*higgsJet[1]).M();
 
@@ -461,7 +461,9 @@ void skimTree(int w , string st){
 					PU_weight[1] = LumiWeights_up.weight(50);
 					PU_weight[2]= LumiWeights_down.weight(50);
 			}
-			
+			puWeights=PU_weight[0] ;
+			puWeightsUp=PU_weight[1];
+			puWeightsDown=PU_weight[2];
 			
 			nTrueInt=ntrue;
 			//isData=isData;
